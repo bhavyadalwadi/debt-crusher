@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Portfolio {
+  id                       String          @id
+  extraPaymentBudget       Float
+  promoEndSoonDays         Int
+  globalCashBufferOverride Float?
+  payoffStrategy           String          @default("avalanche")
+  customStrategyJson       String?
+  updatedAt                DateTime        @updatedAt
+  createdAt                DateTime        @default(now())
+  creditAccounts           CreditAccount[]
+  cashAccounts             CashAccount[]
+}
+
+model CreditAccount {
+  id                     String    @id
+  portfolioId            String
+  institution            String
+  nickname               String
+  accountType            String
+  currentBalance         Float
+  creditLimit            Float?
+  aprPercent             Float
+  promoFlag              Boolean
+  promoEndDate           DateTime?
+  minPayment             Float
+  interestFeesThisMonth  Float
+  autoPayment            String?
+  paymentDue             DateTime?
+  howAreWeTakingCareOfIt String
+  rewardsAvailable       String?
+  pointsAvailable        Float?
+  position               Int
+  portfolio              Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioId, position])
+}
+
+model CashAccount {
+  id                       String    @id
+  portfolioId              String
+  institution              String
+  accountName              String
+  type                     String
+  currentBalance           Float
+  minDayEndBalanceRequired Float
+  position                 Int
+  portfolio                Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioId, position])
+}
+
+model ActivitySnapshot {
+  id                   String   @id @default(cuid())
+  source               String
+  label                String
+  filename             String
+  importedAt           DateTime
+  setupJson            String
+  creditAccountsJson   String
+  cashAccountsJson     String
+  dashboardSummaryJson String
+  changeDetailJson     String?
+  createdAt            DateTime @default(now())
+  events               ActivityEvent[]
+
+  @@index([importedAt])
+}
+
+model ActivityEvent {
+  id           String   @id
+  snapshotId   String
+  kind         String
+  entityType   String
+  entityId     String
+  entityName   String
+  amountDelta  Float?
+  summary      String
+  metadataJson String?
+  occurredAt   DateTime
+  createdAt    DateTime @default(now())
+  snapshot     ActivitySnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+
+  @@index([occurredAt])
+  @@index([snapshotId])
+}
