@@ -4,4 +4,8 @@ node_modules
 prisma/dev.db
 prisma/dev.db-journal
 .DS_Store
+Thumbs.db
 outputs
+graphify-out/cache/
+graphify-out/manifest.json
+graphify-out/cost.json

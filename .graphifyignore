@@ -1,0 +1,28 @@
+# Graphify repo-local ignore template
+
+# Dependency/build noise
+node_modules/
+dist/
+out/
+coverage/
+build/
+
+# Python/local env noise
+.venv/
+__pycache__/
+*.pyc
+
+# Logs and env files
+*.log
+.env
+.env.*
+
+# Assistant/tooling instructions
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+.gemini/
+.opencode/
+
+# Repo-specific generated content
+lib/integrations/occe_integrations/*/generated/
