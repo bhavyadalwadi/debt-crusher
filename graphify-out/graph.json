@@ -513,7 +513,7 @@
       "source_file": "app/api/portfolio/route.ts",
       "source_location": "L1",
       "id": "app_api_portfolio_route_ts",
-      "community": 2,
+      "community": 14,
       "norm_label": "route.ts"
     },
     {
@@ -522,7 +522,7 @@
       "source_file": "app/api/portfolio/route.ts",
       "source_location": "L26",
       "id": "portfolio_route_normalizeportfolioinput",
-      "community": 2,
+      "community": 14,
       "norm_label": "normalizeportfolioinput()"
     },
     {
@@ -531,7 +531,7 @@
       "source_file": "app/api/portfolio/route.ts",
       "source_location": "L48",
       "id": "portfolio_route_enrichsnapshots",
-      "community": 2,
+      "community": 14,
       "norm_label": "enrichsnapshots()"
     },
     {
@@ -540,7 +540,7 @@
       "source_file": "app/api/portfolio/route.ts",
       "source_location": "L59",
       "id": "portfolio_route_loadportfoliobundle",
-      "community": 2,
+      "community": 14,
       "norm_label": "loadportfoliobundle()"
     },
     {
@@ -549,7 +549,7 @@
       "source_file": "app/api/portfolio/route.ts",
       "source_location": "L122",
       "id": "portfolio_route_get",
-      "community": 2,
+      "community": 14,
       "norm_label": "get()"
     },
     {
@@ -558,7 +558,7 @@
       "source_file": "app/api/portfolio/route.ts",
       "source_location": "L133",
       "id": "portfolio_route_post",
-      "community": 2,
+      "community": 14,
       "norm_label": "post()"
     },
     {
@@ -567,7 +567,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L1",
       "id": "tests_import_workbook_test_ts",
-      "community": 6,
+      "community": 4,
       "norm_label": "import-workbook.test.ts"
     },
     {
@@ -576,7 +576,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L14",
       "id": "tests_import_workbook_test_workbookfilefromsheets",
-      "community": 6,
+      "community": 4,
       "norm_label": "workbookfilefromsheets()"
     },
     {
@@ -585,7 +585,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L33",
       "id": "tests_import_workbook_test_workbookfilefrommatrixsheets",
-      "community": 6,
+      "community": 4,
       "norm_label": "workbookfilefrommatrixsheets()"
     },
     {
@@ -594,7 +594,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L52",
       "id": "tests_import_workbook_test_basesetup",
-      "community": 6,
+      "community": 4,
       "norm_label": "basesetup"
     },
     {
@@ -603,7 +603,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L280",
       "id": "tests_import_workbook_test_cards",
-      "community": 6,
+      "community": 4,
       "norm_label": "cards"
     },
     {
@@ -612,7 +612,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L372",
       "id": "tests_import_workbook_test_paidcard",
-      "community": 6,
+      "community": 4,
       "norm_label": "paidcard"
     },
     {
@@ -621,7 +621,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L373",
       "id": "tests_import_workbook_test_activecard",
-      "community": 6,
+      "community": 4,
       "norm_label": "activecard"
     },
     {
@@ -630,7 +630,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L594",
       "id": "tests_import_workbook_test_cashaccounts",
-      "community": 6,
+      "community": 4,
       "norm_label": "cashaccounts"
     },
     {
@@ -639,7 +639,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L615",
       "id": "tests_import_workbook_test_creditaccounts",
-      "community": 6,
+      "community": 4,
       "norm_label": "creditaccounts"
     },
     {
@@ -648,7 +648,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L670",
       "id": "tests_import_workbook_test_summary",
-      "community": 6,
+      "community": 4,
       "norm_label": "summary"
     },
     {
@@ -657,7 +657,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L685",
       "id": "tests_import_workbook_test_delta",
-      "community": 6,
+      "community": 4,
       "norm_label": "delta"
     },
     {
@@ -666,7 +666,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L746",
       "id": "tests_import_workbook_test_detail",
-      "community": 6,
+      "community": 4,
       "norm_label": "detail"
     },
     {
@@ -675,7 +675,7 @@
       "source_file": "tests/import-workbook.test.ts",
       "source_location": "L775",
       "id": "tests_import_workbook_test_events",
-      "community": 6,
+      "community": 4,
       "norm_label": "events"
     },
     {
@@ -1044,7 +1044,7 @@
       "source_file": "lib/prisma.ts",
       "source_location": "L1",
       "id": "lib_prisma_ts",
-      "community": 2,
+      "community": 14,
       "norm_label": "prisma.ts"
     },
     {
@@ -1053,7 +1053,7 @@
       "source_file": "lib/prisma.ts",
       "source_location": "L3",
       "id": "lib_prisma_globalforprisma",
-      "community": 2,
+      "community": 14,
       "norm_label": "globalforprisma"
     },
     {
@@ -1062,7 +1062,7 @@
       "source_file": "lib/derived.ts",
       "source_location": "L1",
       "id": "lib_derived_ts",
-      "community": 6,
+      "community": 4,
       "norm_label": "derived.ts"
     },
     {
@@ -1071,7 +1071,7 @@
       "source_file": "lib/derived.ts",
       "source_location": "L12",
       "id": "lib_derived_creditbaserow",
-      "community": 6,
+      "community": 4,
       "norm_label": "creditbaserow"
     },
     {
@@ -1080,7 +1080,7 @@
       "source_file": "lib/derived.ts",
       "source_location": "L23",
       "id": "lib_derived_cashbaserow",
-      "community": 6,
+      "community": 4,
       "norm_label": "cashbaserow"
     },
     {
@@ -1089,7 +1089,7 @@
       "source_file": "lib/derived.ts",
       "source_location": "L27",
       "id": "lib_derived_diffindays",
-      "community": 6,
+      "community": 4,
       "norm_label": "diffindays()"
     },
     {
@@ -1098,7 +1098,7 @@
       "source_file": "lib/derived.ts",
       "source_location": "L33",
       "id": "lib_derived_hasstatementbalanceautopay",
-      "community": 6,
+      "community": 4,
       "norm_label": "hasstatementbalanceautopay()"
     },
     {
@@ -1107,7 +1107,7 @@
       "source_file": "lib/derived.ts",
       "source_location": "L39",
       "id": "lib_derived_resolvecreditstatus",
-      "community": 6,
+      "community": 4,
       "norm_label": "resolvecreditstatus()"
     },
     {
@@ -1116,7 +1116,7 @@
       "source_file": "lib/derived.ts",
       "source_location": "L88",
       "id": "lib_derived_computepriorityscore",
-      "community": 6,
+      "community": 4,
       "norm_label": "computepriorityscore()"
     },
     {
@@ -1125,7 +1125,7 @@
       "source_file": "lib/derived.ts",
       "source_location": "L165",
       "id": "lib_derived_buildrecommendedtargetreasons",
-      "community": 6,
+      "community": 4,
       "norm_label": "buildrecommendedtargetreasons()"
     },
     {
@@ -1134,7 +1134,7 @@
       "source_file": "lib/derived.ts",
       "source_location": "L223",
       "id": "lib_derived_derivecreditaccounts",
-      "community": 6,
+      "community": 4,
       "norm_label": "derivecreditaccounts()"
     },
     {
@@ -1152,7 +1152,7 @@
       "source_file": "lib/derived.ts",
       "source_location": "L316",
       "id": "lib_derived_builddashboardsummary",
-      "community": 6,
+      "community": 4,
       "norm_label": "builddashboardsummary()"
     },
     {
@@ -1242,7 +1242,7 @@
       "source_file": "lib/portfolio.ts",
       "source_location": "L129",
       "id": "lib_portfolio_buildcomputedsnapshot",
-      "community": 2,
+      "community": 14,
       "norm_label": "buildcomputedsnapshot()"
     },
     {
@@ -1251,7 +1251,7 @@
       "source_file": "lib/portfolio.ts",
       "source_location": "L161",
       "id": "lib_portfolio_buildactivitysnapshot",
-      "community": 2,
+      "community": 14,
       "norm_label": "buildactivitysnapshot()"
     },
     {
@@ -1260,7 +1260,7 @@
       "source_file": "lib/portfolio.ts",
       "source_location": "L175",
       "id": "lib_portfolio_buildsnapshotdelta",
-      "community": 2,
+      "community": 14,
       "norm_label": "buildsnapshotdelta()"
     },
     {
@@ -1269,7 +1269,7 @@
       "source_file": "lib/portfolio.ts",
       "source_location": "L196",
       "id": "lib_portfolio_buildsnapshotchangesummary",
-      "community": 2,
+      "community": 14,
       "norm_label": "buildsnapshotchangesummary()"
     },
     {
@@ -1287,7 +1287,7 @@
       "source_file": "lib/portfolio.ts",
       "source_location": "L227",
       "id": "lib_portfolio_buildsnapshotchangedetail",
-      "community": 2,
+      "community": 14,
       "norm_label": "buildsnapshotchangedetail()"
     },
     {
@@ -1404,7 +1404,7 @@
       "source_file": "lib/types.ts",
       "source_location": "L3",
       "id": "lib_types_payoffstrategy",
-      "community": 6,
+      "community": 4,
       "norm_label": "payoffstrategy"
     },
     {
@@ -1467,7 +1467,7 @@
       "source_file": "lib/types.ts",
       "source_location": "L67",
       "id": "lib_types_dashboardsummary",
-      "community": 6,
+      "community": 4,
       "norm_label": "dashboardsummary"
     },
     {
@@ -1908,7 +1908,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L1",
       "id": "lib_persistence_ts",
-      "community": 2,
+      "community": 14,
       "norm_label": "persistence.ts"
     },
     {
@@ -1917,7 +1917,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L16",
       "id": "lib_persistence_normalizecustomstrategyweights",
-      "community": 2,
+      "community": 14,
       "norm_label": "normalizecustomstrategyweights()"
     },
     {
@@ -1926,7 +1926,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L35",
       "id": "lib_persistence_normalizesetup",
-      "community": 2,
+      "community": 14,
       "norm_label": "normalizesetup()"
     },
     {
@@ -1935,7 +1935,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L52",
       "id": "lib_persistence_normalizedashboardsummary",
-      "community": 2,
+      "community": 14,
       "norm_label": "normalizedashboardsummary()"
     },
     {
@@ -1944,7 +1944,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L71",
       "id": "lib_persistence_portfoliostatetodb",
-      "community": 2,
+      "community": 14,
       "norm_label": "portfoliostatetodb()"
     },
     {
@@ -1953,7 +1953,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L83",
       "id": "lib_persistence_creditaccounttodb",
-      "community": 2,
+      "community": 14,
       "norm_label": "creditaccounttodb()"
     },
     {
@@ -1962,7 +1962,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L112",
       "id": "lib_persistence_cashaccounttodb",
-      "community": 2,
+      "community": 14,
       "norm_label": "cashaccounttodb()"
     },
     {
@@ -1971,7 +1971,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L128",
       "id": "lib_persistence_dbrowtoportfoliostate",
-      "community": 2,
+      "community": 14,
       "norm_label": "dbrowtoportfoliostate()"
     },
     {
@@ -1980,7 +1980,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L216",
       "id": "lib_persistence_activitysnapshottodb",
-      "community": 2,
+      "community": 14,
       "norm_label": "activitysnapshottodb()"
     },
     {
@@ -1989,7 +1989,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L235",
       "id": "lib_persistence_dbrowtoactivitysnapshot",
-      "community": 2,
+      "community": 14,
       "norm_label": "dbrowtoactivitysnapshot()"
     },
     {
@@ -1998,7 +1998,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L273",
       "id": "lib_persistence_activityeventtodb",
-      "community": 2,
+      "community": 14,
       "norm_label": "activityeventtodb()"
     },
     {
@@ -2007,7 +2007,7 @@
       "source_file": "lib/persistence.ts",
       "source_location": "L287",
       "id": "lib_persistence_dbrowtoactivityevent",
-      "community": 2,
+      "community": 14,
       "norm_label": "dbrowtoactivityevent()"
     },
     {
@@ -2515,10 +2515,19 @@
       "norm_label": "product shape"
     },
     {
-      "label": "Tech stack",
+      "label": "Screenshots",
       "file_type": "document",
       "source_file": "README.md",
       "source_location": "L35",
+      "id": "debt_crusher_readme_screenshots",
+      "community": 15,
+      "norm_label": "screenshots"
+    },
+    {
+      "label": "Tech stack",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L41",
       "id": "debt_crusher_readme_tech_stack",
       "community": 15,
       "norm_label": "tech stack"
@@ -2527,7 +2536,7 @@
       "label": "Local setup",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L43",
+      "source_location": "L49",
       "id": "debt_crusher_readme_local_setup",
       "community": 15,
       "norm_label": "local setup"
@@ -2536,7 +2545,7 @@
       "label": "code:bash (cp .env.example .env)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L45",
+      "source_location": "L51",
       "id": "debt_crusher_readme_codeblock_1",
       "community": 15,
       "norm_label": "code:bash (cp .env.example .env)"
@@ -2545,7 +2554,7 @@
       "label": "code:text (http://localhost:3000)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L55",
+      "source_location": "L61",
       "id": "debt_crusher_readme_codeblock_2",
       "community": 15,
       "norm_label": "code:text (http://localhost:3000)"
@@ -2554,7 +2563,7 @@
       "label": "Important workflow note",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L59",
+      "source_location": "L65",
       "id": "debt_crusher_readme_important_workflow_note",
       "community": 15,
       "norm_label": "important workflow note"
@@ -2563,7 +2572,7 @@
       "label": "Key docs",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L69",
+      "source_location": "L75",
       "id": "debt_crusher_readme_key_docs",
       "community": 15,
       "norm_label": "key docs"
@@ -2572,7 +2581,7 @@
       "label": "Current status",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L75",
+      "source_location": "L81",
       "id": "debt_crusher_readme_current_status",
       "community": 15,
       "norm_label": "current status"
@@ -2581,7 +2590,7 @@
       "label": "Resume value",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L93",
+      "source_location": "L99",
       "id": "debt_crusher_readme_resume_value",
       "community": 15,
       "norm_label": "resume value"
@@ -2590,10 +2599,19 @@
       "label": "Start here",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L103",
+      "source_location": "L109",
       "id": "debt_crusher_readme_start_here",
       "community": 15,
       "norm_label": "start here"
+    },
+    {
+      "label": "License",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L116",
+      "id": "debt_crusher_readme_license",
+      "community": 15,
+      "norm_label": "license"
     },
     {
       "label": "Plan.md",
@@ -3035,6 +3053,933 @@
       "id": "debt_crusher_plan_notes",
       "community": 1,
       "norm_label": "notes"
+    },
+    {
+      "label": "project_context.md",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L1",
+      "id": "claude_project_context_md",
+      "community": 2,
+      "norm_label": "project_context.md"
+    },
+    {
+      "label": "debt-crusher Project Context",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L1",
+      "id": "claude_project_context_debt_crusher_project_context",
+      "community": 2,
+      "norm_label": "debt-crusher project context"
+    },
+    {
+      "label": "Business Purpose",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L5",
+      "id": "claude_project_context_business_purpose",
+      "community": 2,
+      "norm_label": "business purpose"
+    },
+    {
+      "label": "System Overview",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L8",
+      "id": "claude_project_context_system_overview",
+      "community": 2,
+      "norm_label": "system overview"
+    },
+    {
+      "label": "Major Applications",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L11",
+      "id": "claude_project_context_major_applications",
+      "community": 2,
+      "norm_label": "major applications"
+    },
+    {
+      "label": "Environments",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L16",
+      "id": "claude_project_context_environments",
+      "community": 2,
+      "norm_label": "environments"
+    },
+    {
+      "label": "Tech Stack",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L20",
+      "id": "claude_project_context_tech_stack",
+      "community": 2,
+      "norm_label": "tech stack"
+    },
+    {
+      "label": "Critical Dependencies",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L28",
+      "id": "claude_project_context_critical_dependencies",
+      "community": 2,
+      "norm_label": "critical dependencies"
+    },
+    {
+      "label": "Major Workflows",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L42",
+      "id": "claude_project_context_major_workflows",
+      "community": 2,
+      "norm_label": "major workflows"
+    },
+    {
+      "label": "Operational Constraints",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L50",
+      "id": "claude_project_context_operational_constraints",
+      "community": 2,
+      "norm_label": "operational constraints"
+    },
+    {
+      "label": "Scaling Constraints",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L55",
+      "id": "claude_project_context_scaling_constraints",
+      "community": 2,
+      "norm_label": "scaling constraints"
+    },
+    {
+      "label": "Deployment Model",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L58",
+      "id": "claude_project_context_deployment_model",
+      "community": 2,
+      "norm_label": "deployment model"
+    },
+    {
+      "label": "Important APIs",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L61",
+      "id": "claude_project_context_important_apis",
+      "community": 2,
+      "norm_label": "important apis"
+    },
+    {
+      "label": "Important Databases",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L64",
+      "id": "claude_project_context_important_databases",
+      "community": 2,
+      "norm_label": "important databases"
+    },
+    {
+      "label": "Important Queues / Events",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L68",
+      "id": "claude_project_context_important_queues_events",
+      "community": 2,
+      "norm_label": "important queues / events"
+    },
+    {
+      "label": "Known Technical Debt",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L72",
+      "id": "claude_project_context_known_technical_debt",
+      "community": 2,
+      "norm_label": "known technical debt"
+    },
+    {
+      "label": "Current Architecture Themes",
+      "file_type": "document",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L80",
+      "id": "claude_project_context_current_architecture_themes",
+      "community": 2,
+      "norm_label": "current architecture themes"
+    },
+    {
+      "label": "workflows.md",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L1",
+      "id": "claude_workflows_md",
+      "community": 17,
+      "norm_label": "workflows.md"
+    },
+    {
+      "label": "debt-crusher Workflows",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L1",
+      "id": "claude_workflows_debt_crusher_workflows",
+      "community": 17,
+      "norm_label": "debt-crusher workflows"
+    },
+    {
+      "label": "Local Development",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L3",
+      "id": "claude_workflows_local_development",
+      "community": 17,
+      "norm_label": "local development"
+    },
+    {
+      "label": "Testing",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L7",
+      "id": "claude_workflows_testing",
+      "community": 17,
+      "norm_label": "testing"
+    },
+    {
+      "label": "Deployment",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L10",
+      "id": "claude_workflows_deployment",
+      "community": 17,
+      "norm_label": "deployment"
+    },
+    {
+      "label": "Migrations",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L13",
+      "id": "claude_workflows_migrations",
+      "community": 17,
+      "norm_label": "migrations"
+    },
+    {
+      "label": "Feature Rollout",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L16",
+      "id": "claude_workflows_feature_rollout",
+      "community": 17,
+      "norm_label": "feature rollout"
+    },
+    {
+      "label": "Incident Response",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L20",
+      "id": "claude_workflows_incident_response",
+      "community": 17,
+      "norm_label": "incident response"
+    },
+    {
+      "label": "Debugging",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L25",
+      "id": "claude_workflows_debugging",
+      "community": 17,
+      "norm_label": "debugging"
+    },
+    {
+      "label": "Rollback",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L30",
+      "id": "claude_workflows_rollback",
+      "community": 17,
+      "norm_label": "rollback"
+    },
+    {
+      "label": "Observability Investigation",
+      "file_type": "document",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L35",
+      "id": "claude_workflows_observability_investigation",
+      "community": 17,
+      "norm_label": "observability investigation"
+    },
+    {
+      "label": "architecture.md",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L1",
+      "id": "claude_architecture_md",
+      "community": 16,
+      "norm_label": "architecture.md"
+    },
+    {
+      "label": "debt-crusher Architecture",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L1",
+      "id": "claude_architecture_debt_crusher_architecture",
+      "community": 16,
+      "norm_label": "debt-crusher architecture"
+    },
+    {
+      "label": "End-to-End Request Flows",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L3",
+      "id": "claude_architecture_end_to_end_request_flows",
+      "community": 16,
+      "norm_label": "end-to-end request flows"
+    },
+    {
+      "label": "Frontend / Backend Interaction",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L6",
+      "id": "claude_architecture_frontend_backend_interaction",
+      "community": 16,
+      "norm_label": "frontend / backend interaction"
+    },
+    {
+      "label": "Service Boundaries",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L9",
+      "id": "claude_architecture_service_boundaries",
+      "community": 16,
+      "norm_label": "service boundaries"
+    },
+    {
+      "label": "Sync vs Async Flows",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L14",
+      "id": "claude_architecture_sync_vs_async_flows",
+      "community": 16,
+      "norm_label": "sync vs async flows"
+    },
+    {
+      "label": "Event-Driven Architecture",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L18",
+      "id": "claude_architecture_event_driven_architecture",
+      "community": 16,
+      "norm_label": "event-driven architecture"
+    },
+    {
+      "label": "Caching Layers",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L21",
+      "id": "claude_architecture_caching_layers",
+      "community": 16,
+      "norm_label": "caching layers"
+    },
+    {
+      "label": "Auth Flow",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L25",
+      "id": "claude_architecture_auth_flow",
+      "community": 16,
+      "norm_label": "auth flow"
+    },
+    {
+      "label": "Deployment Topology",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L28",
+      "id": "claude_architecture_deployment_topology",
+      "community": 16,
+      "norm_label": "deployment topology"
+    },
+    {
+      "label": "Scaling Behavior",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L31",
+      "id": "claude_architecture_scaling_behavior",
+      "community": 16,
+      "norm_label": "scaling behavior"
+    },
+    {
+      "label": "Resilience Mechanisms",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L35",
+      "id": "claude_architecture_resilience_mechanisms",
+      "community": 16,
+      "norm_label": "resilience mechanisms"
+    },
+    {
+      "label": "Failover Behavior",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L40",
+      "id": "claude_architecture_failover_behavior",
+      "community": 16,
+      "norm_label": "failover behavior"
+    },
+    {
+      "label": "Observability Architecture",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L43",
+      "id": "claude_architecture_observability_architecture",
+      "community": 16,
+      "norm_label": "observability architecture"
+    },
+    {
+      "label": "Retry / Idempotency Patterns",
+      "file_type": "document",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L46",
+      "id": "claude_architecture_retry_idempotency_patterns",
+      "community": 16,
+      "norm_label": "retry / idempotency patterns"
+    },
+    {
+      "label": "repository_navigation.md",
+      "file_type": "document",
+      "source_file": ".claude/repository_navigation.md",
+      "source_location": "L1",
+      "id": "claude_repository_navigation_md",
+      "community": 21,
+      "norm_label": "repository_navigation.md"
+    },
+    {
+      "label": "Top-Level Modules",
+      "file_type": "document",
+      "source_file": ".claude/repository_navigation.md",
+      "source_location": "L1",
+      "id": "claude_repository_navigation_top_level_modules",
+      "community": 21,
+      "norm_label": "top-level modules"
+    },
+    {
+      "label": "Read First",
+      "file_type": "document",
+      "source_file": ".claude/repository_navigation.md",
+      "source_location": "L11",
+      "id": "claude_repository_navigation_read_first",
+      "community": 21,
+      "norm_label": "read first"
+    },
+    {
+      "label": "Critical Entrypoints",
+      "file_type": "document",
+      "source_file": ".claude/repository_navigation.md",
+      "source_location": "L19",
+      "id": "claude_repository_navigation_critical_entrypoints",
+      "community": 21,
+      "norm_label": "critical entrypoints"
+    },
+    {
+      "label": "graph_relationships.md",
+      "file_type": "document",
+      "source_file": ".claude/graph_relationships.md",
+      "source_location": "L1",
+      "id": "claude_graph_relationships_md",
+      "community": 22,
+      "norm_label": "graph_relationships.md"
+    },
+    {
+      "label": "debt-crusher Graph Relationships",
+      "file_type": "document",
+      "source_file": ".claude/graph_relationships.md",
+      "source_location": "L1",
+      "id": "claude_graph_relationships_debt_crusher_graph_relationships",
+      "community": 22,
+      "norm_label": "debt-crusher graph relationships"
+    },
+    {
+      "label": "decision_log.md",
+      "file_type": "document",
+      "source_file": ".claude/decision_log.md",
+      "source_location": "L1",
+      "id": "claude_decision_log_md",
+      "community": 20,
+      "norm_label": "decision_log.md"
+    },
+    {
+      "label": "debt-crusher Decision Log",
+      "file_type": "document",
+      "source_file": ".claude/decision_log.md",
+      "source_location": "L1",
+      "id": "claude_decision_log_debt_crusher_decision_log",
+      "community": 20,
+      "norm_label": "debt-crusher decision log"
+    },
+    {
+      "label": "Graphify-first repo discovery",
+      "file_type": "document",
+      "source_file": ".claude/decision_log.md",
+      "source_location": "L3",
+      "id": "claude_decision_log_graphify_first_repo_discovery",
+      "community": 20,
+      "norm_label": "graphify-first repo discovery"
+    },
+    {
+      "label": "Preserve repo separation",
+      "file_type": "document",
+      "source_file": ".claude/decision_log.md",
+      "source_location": "L9",
+      "id": "claude_decision_log_preserve_repo_separation",
+      "community": 20,
+      "norm_label": "preserve repo separation"
+    },
+    {
+      "label": "Forms-first over workbook-first",
+      "file_type": "document",
+      "source_file": ".claude/decision_log.md",
+      "source_location": "L15",
+      "id": "claude_decision_log_forms_first_over_workbook_first",
+      "community": 20,
+      "norm_label": "forms-first over workbook-first"
+    },
+    {
+      "label": "known_pitfalls.md",
+      "file_type": "document",
+      "source_file": ".claude/known_pitfalls.md",
+      "source_location": "L1",
+      "id": "claude_known_pitfalls_md",
+      "community": 23,
+      "norm_label": "known_pitfalls.md"
+    },
+    {
+      "label": "debt-crusher Known Pitfalls",
+      "file_type": "document",
+      "source_file": ".claude/known_pitfalls.md",
+      "source_location": "L1",
+      "id": "claude_known_pitfalls_debt_crusher_known_pitfalls",
+      "community": 23,
+      "norm_label": "debt-crusher known pitfalls"
+    },
+    {
+      "label": "onboarding.md",
+      "file_type": "document",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L1",
+      "id": "claude_onboarding_md",
+      "community": 19,
+      "norm_label": "onboarding.md"
+    },
+    {
+      "label": "debt-crusher Onboarding",
+      "file_type": "document",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L1",
+      "id": "claude_onboarding_debt_crusher_onboarding",
+      "community": 19,
+      "norm_label": "debt-crusher onboarding"
+    },
+    {
+      "label": "First Read",
+      "file_type": "document",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L3",
+      "id": "claude_onboarding_first_read",
+      "community": 19,
+      "norm_label": "first read"
+    },
+    {
+      "label": "Critical Entrypoints",
+      "file_type": "document",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L11",
+      "id": "claude_onboarding_critical_entrypoints",
+      "community": 19,
+      "norm_label": "critical entrypoints"
+    },
+    {
+      "label": "Module Map",
+      "file_type": "document",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L18",
+      "id": "claude_onboarding_module_map",
+      "community": 19,
+      "norm_label": "module map"
+    },
+    {
+      "label": "How To Start Reasoning",
+      "file_type": "document",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L28",
+      "id": "claude_onboarding_how_to_start_reasoning",
+      "community": 19,
+      "norm_label": "how to start reasoning"
+    },
+    {
+      "label": "Local Run Baseline",
+      "file_type": "document",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L33",
+      "id": "claude_onboarding_local_run_baseline",
+      "community": 19,
+      "norm_label": "local run baseline"
+    },
+    {
+      "label": "coding_rules.md",
+      "file_type": "document",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L1",
+      "id": "claude_coding_rules_md",
+      "community": 18,
+      "norm_label": "coding_rules.md"
+    },
+    {
+      "label": "debt-crusher Coding Rules",
+      "file_type": "document",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L1",
+      "id": "claude_coding_rules_debt_crusher_coding_rules",
+      "community": 18,
+      "norm_label": "debt-crusher coding rules"
+    },
+    {
+      "label": "Naming / Structure",
+      "file_type": "document",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L3",
+      "id": "claude_coding_rules_naming_structure",
+      "community": 18,
+      "norm_label": "naming / structure"
+    },
+    {
+      "label": "Architecture Patterns",
+      "file_type": "document",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L7",
+      "id": "claude_coding_rules_architecture_patterns",
+      "community": 18,
+      "norm_label": "architecture patterns"
+    },
+    {
+      "label": "State Management",
+      "file_type": "document",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L15",
+      "id": "claude_coding_rules_state_management",
+      "community": 18,
+      "norm_label": "state management"
+    },
+    {
+      "label": "Error Handling / Logging",
+      "file_type": "document",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L18",
+      "id": "claude_coding_rules_error_handling_logging",
+      "community": 18,
+      "norm_label": "error handling / logging"
+    },
+    {
+      "label": "API Conventions",
+      "file_type": "document",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L23",
+      "id": "claude_coding_rules_api_conventions",
+      "community": 18,
+      "norm_label": "api conventions"
+    },
+    {
+      "label": "Testing Conventions",
+      "file_type": "document",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L27",
+      "id": "claude_coding_rules_testing_conventions",
+      "community": 18,
+      "norm_label": "testing conventions"
+    },
+    {
+      "label": "Typing / Abstractions",
+      "file_type": "document",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L30",
+      "id": "claude_coding_rules_typing_abstractions",
+      "community": 18,
+      "norm_label": "typing / abstractions"
+    },
+    {
+      "label": "Database / Migration Patterns",
+      "file_type": "document",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L34",
+      "id": "claude_coding_rules_database_migration_patterns",
+      "community": 18,
+      "norm_label": "database / migration patterns"
+    },
+    {
+      "label": "system_prompt.md",
+      "file_type": "document",
+      "source_file": ".claude/system_prompt.md",
+      "source_location": "L1",
+      "id": "claude_system_prompt_md",
+      "community": 30,
+      "norm_label": "system_prompt.md"
+    },
+    {
+      "label": "debt-crusher Claude System Prompt",
+      "file_type": "document",
+      "source_file": ".claude/system_prompt.md",
+      "source_location": "L1",
+      "id": "claude_system_prompt_debt_crusher_claude_system_prompt",
+      "community": 30,
+      "norm_label": "debt-crusher claude system prompt"
+    },
+    {
+      "label": "debug.md",
+      "file_type": "document",
+      "source_file": ".claude/prompts/debug.md",
+      "source_location": "L1",
+      "id": "claude_prompts_debug_md",
+      "community": 25,
+      "norm_label": "debug.md"
+    },
+    {
+      "label": "Debug Prompt",
+      "file_type": "document",
+      "source_file": ".claude/prompts/debug.md",
+      "source_location": "L1",
+      "id": "prompts_debug_debug_prompt",
+      "community": 25,
+      "norm_label": "debug prompt"
+    },
+    {
+      "label": "incident_response.md",
+      "file_type": "document",
+      "source_file": ".claude/prompts/incident_response.md",
+      "source_location": "L1",
+      "id": "claude_prompts_incident_response_md",
+      "community": 27,
+      "norm_label": "incident_response.md"
+    },
+    {
+      "label": "Incident Response Prompt",
+      "file_type": "document",
+      "source_file": ".claude/prompts/incident_response.md",
+      "source_location": "L1",
+      "id": "prompts_incident_response_incident_response_prompt",
+      "community": 27,
+      "norm_label": "incident response prompt"
+    },
+    {
+      "label": "architecture_review.md",
+      "file_type": "document",
+      "source_file": ".claude/prompts/architecture_review.md",
+      "source_location": "L1",
+      "id": "claude_prompts_architecture_review_md",
+      "community": 24,
+      "norm_label": "architecture_review.md"
+    },
+    {
+      "label": "Architecture Review Prompt",
+      "file_type": "document",
+      "source_file": ".claude/prompts/architecture_review.md",
+      "source_location": "L1",
+      "id": "prompts_architecture_review_architecture_review_prompt",
+      "community": 24,
+      "norm_label": "architecture review prompt"
+    },
+    {
+      "label": "refactor.md",
+      "file_type": "document",
+      "source_file": ".claude/prompts/refactor.md",
+      "source_location": "L1",
+      "id": "claude_prompts_refactor_md",
+      "community": 29,
+      "norm_label": "refactor.md"
+    },
+    {
+      "label": "Refactor Prompt",
+      "file_type": "document",
+      "source_file": ".claude/prompts/refactor.md",
+      "source_location": "L1",
+      "id": "prompts_refactor_refactor_prompt",
+      "community": 29,
+      "norm_label": "refactor prompt"
+    },
+    {
+      "label": "feature.md",
+      "file_type": "document",
+      "source_file": ".claude/prompts/feature.md",
+      "source_location": "L1",
+      "id": "claude_prompts_feature_md",
+      "community": 26,
+      "norm_label": "feature.md"
+    },
+    {
+      "label": "Feature Prompt",
+      "file_type": "document",
+      "source_file": ".claude/prompts/feature.md",
+      "source_location": "L1",
+      "id": "prompts_feature_feature_prompt",
+      "community": 26,
+      "norm_label": "feature prompt"
+    },
+    {
+      "label": "performance_analysis.md",
+      "file_type": "document",
+      "source_file": ".claude/prompts/performance_analysis.md",
+      "source_location": "L1",
+      "id": "claude_prompts_performance_analysis_md",
+      "community": 28,
+      "norm_label": "performance_analysis.md"
+    },
+    {
+      "label": "Performance Analysis Prompt",
+      "file_type": "document",
+      "source_file": ".claude/prompts/performance_analysis.md",
+      "source_location": "L1",
+      "id": "prompts_performance_analysis_performance_analysis_prompt",
+      "community": 28,
+      "norm_label": "performance analysis prompt"
+    },
+    {
+      "label": "finance-console.md",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L1",
+      "id": "claude_services_finance_console_md",
+      "community": 6,
+      "norm_label": "finance-console.md"
+    },
+    {
+      "label": "Finance Console",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L1",
+      "id": "services_finance_console_finance_console",
+      "community": 6,
+      "norm_label": "finance console"
+    },
+    {
+      "label": "Responsibility",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L3",
+      "id": "services_finance_console_responsibility",
+      "community": 6,
+      "norm_label": "responsibility"
+    },
+    {
+      "label": "Dependencies",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L6",
+      "id": "services_finance_console_dependencies",
+      "community": 6,
+      "norm_label": "dependencies"
+    },
+    {
+      "label": "Inbound APIs",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L14",
+      "id": "services_finance_console_inbound_apis",
+      "community": 6,
+      "norm_label": "inbound apis"
+    },
+    {
+      "label": "Outbound APIs",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L17",
+      "id": "services_finance_console_outbound_apis",
+      "community": 6,
+      "norm_label": "outbound apis"
+    },
+    {
+      "label": "Databases Used",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L20",
+      "id": "services_finance_console_databases_used",
+      "community": 6,
+      "norm_label": "databases used"
+    },
+    {
+      "label": "Queues / Topics",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L24",
+      "id": "services_finance_console_queues_topics",
+      "community": 6,
+      "norm_label": "queues / topics"
+    },
+    {
+      "label": "Critical Workflows",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L28",
+      "id": "services_finance_console_critical_workflows",
+      "community": 6,
+      "norm_label": "critical workflows"
+    },
+    {
+      "label": "Failure Modes",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L33",
+      "id": "services_finance_console_failure_modes",
+      "community": 6,
+      "norm_label": "failure modes"
+    },
+    {
+      "label": "Scaling Concerns",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L38",
+      "id": "services_finance_console_scaling_concerns",
+      "community": 6,
+      "norm_label": "scaling concerns"
+    },
+    {
+      "label": "Operational Concerns",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L42",
+      "id": "services_finance_console_operational_concerns",
+      "community": 6,
+      "norm_label": "operational concerns"
+    },
+    {
+      "label": "Important Source Files",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L46",
+      "id": "services_finance_console_important_source_files",
+      "community": 6,
+      "norm_label": "important source files"
+    },
+    {
+      "label": "Dangerous Code Paths",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L53",
+      "id": "services_finance_console_dangerous_code_paths",
+      "community": 6,
+      "norm_label": "dangerous code paths"
+    },
+    {
+      "label": "Testing Strategy",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L58",
+      "id": "services_finance_console_testing_strategy",
+      "community": 6,
+      "norm_label": "testing strategy"
+    },
+    {
+      "label": "Known Technical Debt",
+      "file_type": "document",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L61",
+      "id": "services_finance_console_known_technical_debt",
+      "community": 6,
+      "norm_label": "known technical debt"
     }
   ],
   "links": [
@@ -8258,9 +9203,9 @@
       "source_file": "README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_md",
-      "target": "debt_crusher_readme_debt_crusher",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_debt_crusher"
     },
     {
       "relation": "contains",
@@ -8268,9 +9213,9 @@
       "source_file": "README.md",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_debt_crusher",
-      "target": "debt_crusher_readme_why_this_exists",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_why_this_exists"
     },
     {
       "relation": "contains",
@@ -8278,9 +9223,9 @@
       "source_file": "README.md",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_debt_crusher",
-      "target": "debt_crusher_readme_what_the_app_does",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_what_the_app_does"
     },
     {
       "relation": "contains",
@@ -8288,9 +9233,9 @@
       "source_file": "README.md",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_debt_crusher",
-      "target": "debt_crusher_readme_product_shape",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_product_shape"
     },
     {
       "relation": "contains",
@@ -8299,8 +9244,18 @@
       "source_location": "L35",
       "weight": 1.0,
       "source": "debt_crusher_readme_debt_crusher",
-      "target": "debt_crusher_readme_tech_stack",
+      "target": "debt_crusher_readme_screenshots",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "debt_crusher_readme_debt_crusher",
+      "target": "debt_crusher_readme_tech_stack"
     },
     {
       "relation": "contains",
@@ -8308,9 +9263,9 @@
       "source_file": "README.md",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_debt_crusher",
-      "target": "debt_crusher_readme_local_setup",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_local_setup"
     },
     {
       "relation": "contains",
@@ -8318,9 +9273,9 @@
       "source_file": "README.md",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_debt_crusher",
-      "target": "debt_crusher_readme_important_workflow_note",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_important_workflow_note"
     },
     {
       "relation": "contains",
@@ -8328,9 +9283,9 @@
       "source_file": "README.md",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_debt_crusher",
-      "target": "debt_crusher_readme_key_docs",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_key_docs"
     },
     {
       "relation": "contains",
@@ -8338,9 +9293,9 @@
       "source_file": "README.md",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_debt_crusher",
-      "target": "debt_crusher_readme_current_status",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_current_status"
     },
     {
       "relation": "contains",
@@ -8348,9 +9303,9 @@
       "source_file": "README.md",
       "source_location": "L93",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_debt_crusher",
-      "target": "debt_crusher_readme_resume_value",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_resume_value"
     },
     {
       "relation": "contains",
@@ -8358,8 +9313,18 @@
       "source_file": "README.md",
       "source_location": "L103",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_debt_crusher",
-      "target": "debt_crusher_readme_start_here",
+      "target": "debt_crusher_readme_start_here"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L116",
+      "weight": 1.0,
+      "source": "debt_crusher_readme_debt_crusher",
+      "target": "debt_crusher_readme_license",
       "confidence_score": 1.0
     },
     {
@@ -8368,9 +9333,9 @@
       "source_file": "README.md",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_local_setup",
-      "target": "debt_crusher_readme_codeblock_1",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_codeblock_1"
     },
     {
       "relation": "contains",
@@ -8378,9 +9343,9 @@
       "source_file": "README.md",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "debt_crusher_readme_local_setup",
-      "target": "debt_crusher_readme_codeblock_2",
-      "confidence_score": 1.0
+      "target": "debt_crusher_readme_codeblock_2"
     },
     {
       "relation": "contains",
@@ -8861,8 +9826,868 @@
       "confidence_score": 1.0,
       "source": "debt_crusher_plan_testing_status",
       "target": "debt_crusher_plan_pending_coverage"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_project_context_md",
+      "target": "claude_project_context_debt_crusher_project_context",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_business_purpose",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_system_overview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_major_applications",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_environments",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_tech_stack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_critical_dependencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_major_workflows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_operational_constraints",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_scaling_constraints",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_deployment_model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_important_apis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_important_databases",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L68",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_important_queues_events",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_known_technical_debt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/project_context.md",
+      "source_location": "L80",
+      "weight": 1.0,
+      "source": "claude_project_context_debt_crusher_project_context",
+      "target": "claude_project_context_current_architecture_themes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_workflows_md",
+      "target": "claude_workflows_debt_crusher_workflows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "claude_workflows_debt_crusher_workflows",
+      "target": "claude_workflows_local_development",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "claude_workflows_debt_crusher_workflows",
+      "target": "claude_workflows_testing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "claude_workflows_debt_crusher_workflows",
+      "target": "claude_workflows_deployment",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "claude_workflows_debt_crusher_workflows",
+      "target": "claude_workflows_migrations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "claude_workflows_debt_crusher_workflows",
+      "target": "claude_workflows_feature_rollout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "claude_workflows_debt_crusher_workflows",
+      "target": "claude_workflows_incident_response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "claude_workflows_debt_crusher_workflows",
+      "target": "claude_workflows_debugging",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "claude_workflows_debt_crusher_workflows",
+      "target": "claude_workflows_rollback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/workflows.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "claude_workflows_debt_crusher_workflows",
+      "target": "claude_workflows_observability_investigation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_architecture_md",
+      "target": "claude_architecture_debt_crusher_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_end_to_end_request_flows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_frontend_backend_interaction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_service_boundaries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_sync_vs_async_flows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_event_driven_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_caching_layers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_auth_flow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_deployment_topology",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_scaling_behavior",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_resilience_mechanisms",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_failover_behavior",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_observability_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/architecture.md",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "claude_architecture_debt_crusher_architecture",
+      "target": "claude_architecture_retry_idempotency_patterns",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/repository_navigation.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_repository_navigation_md",
+      "target": "claude_repository_navigation_top_level_modules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/repository_navigation.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "claude_repository_navigation_md",
+      "target": "claude_repository_navigation_read_first",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/repository_navigation.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "claude_repository_navigation_md",
+      "target": "claude_repository_navigation_critical_entrypoints",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/graph_relationships.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_graph_relationships_md",
+      "target": "claude_graph_relationships_debt_crusher_graph_relationships",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/decision_log.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_decision_log_md",
+      "target": "claude_decision_log_debt_crusher_decision_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/decision_log.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "claude_decision_log_debt_crusher_decision_log",
+      "target": "claude_decision_log_graphify_first_repo_discovery",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/decision_log.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "claude_decision_log_debt_crusher_decision_log",
+      "target": "claude_decision_log_preserve_repo_separation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/decision_log.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "claude_decision_log_debt_crusher_decision_log",
+      "target": "claude_decision_log_forms_first_over_workbook_first",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/known_pitfalls.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_known_pitfalls_md",
+      "target": "claude_known_pitfalls_debt_crusher_known_pitfalls",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_onboarding_md",
+      "target": "claude_onboarding_debt_crusher_onboarding",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "claude_onboarding_debt_crusher_onboarding",
+      "target": "claude_onboarding_first_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "claude_onboarding_debt_crusher_onboarding",
+      "target": "claude_onboarding_critical_entrypoints",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "claude_onboarding_debt_crusher_onboarding",
+      "target": "claude_onboarding_module_map",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "claude_onboarding_debt_crusher_onboarding",
+      "target": "claude_onboarding_how_to_start_reasoning",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/onboarding.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "claude_onboarding_debt_crusher_onboarding",
+      "target": "claude_onboarding_local_run_baseline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_coding_rules_md",
+      "target": "claude_coding_rules_debt_crusher_coding_rules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "claude_coding_rules_debt_crusher_coding_rules",
+      "target": "claude_coding_rules_naming_structure",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "claude_coding_rules_debt_crusher_coding_rules",
+      "target": "claude_coding_rules_architecture_patterns",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "claude_coding_rules_debt_crusher_coding_rules",
+      "target": "claude_coding_rules_state_management",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "claude_coding_rules_debt_crusher_coding_rules",
+      "target": "claude_coding_rules_error_handling_logging",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "claude_coding_rules_debt_crusher_coding_rules",
+      "target": "claude_coding_rules_api_conventions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "claude_coding_rules_debt_crusher_coding_rules",
+      "target": "claude_coding_rules_testing_conventions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "claude_coding_rules_debt_crusher_coding_rules",
+      "target": "claude_coding_rules_typing_abstractions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/coding_rules.md",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "claude_coding_rules_debt_crusher_coding_rules",
+      "target": "claude_coding_rules_database_migration_patterns",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/system_prompt.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_system_prompt_md",
+      "target": "claude_system_prompt_debt_crusher_claude_system_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/prompts/debug.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_prompts_debug_md",
+      "target": "prompts_debug_debug_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/prompts/incident_response.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_prompts_incident_response_md",
+      "target": "prompts_incident_response_incident_response_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/prompts/architecture_review.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_prompts_architecture_review_md",
+      "target": "prompts_architecture_review_architecture_review_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/prompts/refactor.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_prompts_refactor_md",
+      "target": "prompts_refactor_refactor_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/prompts/feature.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_prompts_feature_md",
+      "target": "prompts_feature_feature_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/prompts/performance_analysis.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_prompts_performance_analysis_md",
+      "target": "prompts_performance_analysis_performance_analysis_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude_services_finance_console_md",
+      "target": "services_finance_console_finance_console",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_responsibility",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_dependencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_inbound_apis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_outbound_apis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_databases_used",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_queues_topics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_critical_workflows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_failure_modes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_scaling_concerns",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_operational_concerns",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_important_source_files",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_dangerous_code_paths",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_testing_strategy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/services/finance-console.md",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "services_finance_console_finance_console",
+      "target": "services_finance_console_known_technical_debt",
+      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "6554fed89be51d2a345bf6e71fd0dfd79c173780"
+  "built_at_commit": "d7db0e4c86614c103f282f9cc902826a07320daa"
 }
