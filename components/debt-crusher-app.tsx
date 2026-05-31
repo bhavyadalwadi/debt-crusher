@@ -7,6 +7,10 @@ import { CreditCardsView } from "@/components/credit-cards-view";
 import { DashboardView } from "@/components/dashboard-view";
 import { HistoryPanel } from "@/components/history-panel";
 import { ImportPanel } from "@/components/import-panel";
+import {
+  ScreenshotReviewPanel,
+  type ScreenshotReviewDraft,
+} from "@/components/screenshot-review-panel";
 import { exportPortfolioWorkbook } from "@/lib/export-workbook";
 import { importWorkbook } from "@/lib/import-workbook";
 import {
@@ -22,6 +26,7 @@ import type {
   ActivitySnapshot,
   AppView,
   PortfolioState,
+  ScreenshotImportExtraction,
 } from "@/lib/types";
 
 const views: { id: AppView; label: string }[] = [
@@ -45,8 +50,13 @@ export function DebtCrusherApp() {
   const [snapshots, setSnapshots] = useState<ActivitySnapshot[]>([]);
   const [recentEvents, setRecentEvents] = useState<ActivityEvent[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [screenshotImporting, setScreenshotImporting] = useState(false);
+  const [screenshotSaving, setScreenshotSaving] = useState(false);
+  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
+  const [screenshotReview, setScreenshotReview] = useState<ScreenshotReviewDraft | null>(null);
+  const [screenshotWarnings, setScreenshotWarnings] = useState<string[]>([]);
   const [toasts, setToasts] = useState<
-    Array<{ id: string; tone: "success" | "error" | "warning"; message: string }>
+    Array<{ id: string; tone: "success" | "error" | "warning"; message: string; count: number; createdAt: number }>
   >([]);
   const backupInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -76,11 +86,34 @@ export function DebtCrusherApp() {
     tone: "success" | "error" | "warning",
     message: string,
   ) {
-    const id = crypto.randomUUID();
-    setToasts((current) => [...current, { id, tone, message }]);
-    window.setTimeout(() => {
-      setToasts((current) => current.filter((toast) => toast.id !== id));
-    }, 3600);
+    const DEDUPE_WINDOW_MS = 2000;
+    const AUTO_DISMISS_MS = 4000;
+    const now = Date.now();
+
+    setToasts((current) => {
+      // Check for a recent duplicate (same tone + message within the dedupe window)
+      const existingIndex = current.findIndex(
+        (t) =>
+          t.tone === tone &&
+          t.message === message &&
+          (now - t.createdAt) < DEDUPE_WINDOW_MS,
+      );
+      if (existingIndex !== -1) {
+        // Bump count on the existing toast instead of adding a new one
+        return current.map((t, i) =>
+          i === existingIndex ? { ...t, count: t.count + 1 } : t,
+        );
+      }
+      const id = crypto.randomUUID();
+      window.setTimeout(() => {
+        setToasts((c) => c.filter((toast) => toast.id !== id));
+      }, AUTO_DISMISS_MS);
+      return [...current, { id, tone, message, count: 1, createdAt: now }];
+    });
+  }
+
+  function dismissToast(id: string) {
+    setToasts((current) => current.filter((toast) => toast.id !== id));
   }
 
   useEffect(() => {
@@ -207,9 +240,26 @@ export function DebtCrusherApp() {
     };
   }
 
+  function applySavedBundle(payload: {
+    portfolio?: PortfolioState;
+    snapshots?: ActivitySnapshot[];
+    recentEvents?: ActivityEvent[];
+    error?: string;
+  }) {
+    if (!payload.portfolio) {
+      throw new Error(payload.error ?? "Failed to save portfolio");
+    }
+
+    setSavedPortfolio(payload.portfolio);
+    setDraftPortfolio(payload.portfolio);
+    setSnapshots(payload.snapshots ?? []);
+    setRecentEvents(payload.recentEvents ?? []);
+    setDirty(false);
+  }
+
   async function persistPortfolio(
     portfolio: PortfolioState,
-    source: "import" | "manual_save",
+    source: ActivitySnapshot["source"],
     options?: { filename?: string; label?: string },
   ) {
     const portfolioToSave = {
@@ -236,15 +286,11 @@ export function DebtCrusherApp() {
       error?: string;
     };
 
-    if (!response.ok || !payload.portfolio) {
+    if (!response.ok) {
       throw new Error(payload.error ?? "Failed to save portfolio");
     }
 
-    setSavedPortfolio(payload.portfolio);
-    setDraftPortfolio(payload.portfolio);
-    setSnapshots(payload.snapshots ?? []);
-    setRecentEvents(payload.recentEvents ?? []);
-    setDirty(false);
+    applySavedBundle(payload);
   }
 
   function replaceDraft(nextPortfolio: PortfolioState) {
@@ -302,6 +348,163 @@ export function DebtCrusherApp() {
         pushToast("error", "Workbook import failed.");
       }
     });
+  }
+
+  async function handleScreenshotImport(file: File) {
+    setErrors([]);
+    setWarnings([]);
+    setScreenshotWarnings([]);
+    setScreenshotImporting(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch("/api/screenshot-import/analyze", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = (await response.json()) as {
+        extraction?: ScreenshotImportExtraction;
+        extractedText?: string;
+        warnings?: string[];
+        error?: string;
+        fileName?: string;
+        mimeType?: string;
+      };
+
+      if (!response.ok || !payload.extraction || !payload.fileName || !payload.mimeType) {
+        throw new Error(payload.error ?? "Failed to analyze screenshot");
+      }
+
+      setScreenshotFile(file);
+      setScreenshotWarnings(payload.warnings ?? []);
+      setScreenshotReview({
+        ...payload.extraction,
+        fileName: payload.fileName,
+        mimeType: payload.mimeType,
+        extractedText: payload.extractedText ?? "",
+        institution: payload.extraction.institution ?? "",
+        accountName: payload.extraction.accountName ?? "",
+      });
+      pushToast("success", `Read screenshot ${file.name} for review.`);
+    } catch (error) {
+      setErrors([
+        error instanceof Error ? error.message : "Failed to analyze screenshot",
+      ]);
+      pushToast("error", "Screenshot import failed.");
+    } finally {
+      setScreenshotImporting(false);
+    }
+  }
+
+  function clearScreenshotReview() {
+    setScreenshotFile(null);
+    setScreenshotReview(null);
+    setScreenshotWarnings([]);
+  }
+
+  function buildScreenshotPortfolio(review: ScreenshotReviewDraft): PortfolioState {
+    const base: PortfolioState = {
+      ...createEmptyPortfolio(),
+      setup: draftPortfolio.setup,
+    };
+
+    if (review.accountKind === "credit") {
+      const card = createCreditCardInput();
+      return {
+        ...base,
+        creditAccounts: [
+          {
+            ...card,
+            institution: review.institution,
+            nickname: review.accountName,
+            current_balance: review.currentBalance,
+          },
+        ],
+      };
+    }
+
+    const cash = createCashAccountInput();
+    return {
+      ...base,
+      cashAccounts: [
+        {
+          ...cash,
+          institution: review.institution,
+          account_name: review.accountName,
+          current_balance: review.currentBalance,
+        },
+      ],
+    };
+  }
+
+  async function handleSaveScreenshotImport() {
+    if (!screenshotFile || !screenshotReview) {
+      return;
+    }
+
+    setErrors([]);
+    setWarnings([]);
+    setScreenshotSaving(true);
+
+    try {
+      const extractedPortfolio = buildScreenshotPortfolio(screenshotReview);
+      const nextPortfolio =
+        importMode === "merge"
+          ? mergePortfolio(draftPortfolio, extractedPortfolio)
+          : extractedPortfolio;
+      const portfolioToSave = {
+        ...nextPortfolio,
+        updatedAt: new Date().toISOString(),
+      };
+      const formData = new FormData();
+      formData.append("file", screenshotFile);
+      formData.append("portfolio", JSON.stringify(portfolioToSave));
+      const extractionPayload: ScreenshotImportExtraction = {
+        accountKind: screenshotReview.accountKind,
+        institution: screenshotReview.institution || null,
+        accountName: screenshotReview.accountName || null,
+        currentBalance: screenshotReview.currentBalance,
+        availableBalance: screenshotReview.availableBalance,
+        capturedAt: screenshotReview.capturedAt,
+        balanceCandidates: screenshotReview.balanceCandidates,
+        lowConfidence: screenshotReview.lowConfidence,
+      };
+      formData.append(
+        "extraction",
+        JSON.stringify(extractionPayload),
+      );
+      formData.append("extractedText", screenshotReview.extractedText);
+      formData.append(
+        "label",
+        importMode === "merge" ? "Screenshot merge import" : "Screenshot import",
+      );
+      const response = await fetch("/api/screenshot-import/save", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = (await response.json()) as {
+        portfolio?: PortfolioState;
+        snapshots?: ActivitySnapshot[];
+        recentEvents?: ActivityEvent[];
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(payload.error ?? "Failed to save screenshot import");
+      }
+
+      applySavedBundle(payload);
+      clearScreenshotReview();
+      pushToast("success", `Saved screenshot import from ${screenshotFile.name}.`);
+    } catch (error) {
+      setErrors([
+        error instanceof Error ? error.message : "Failed to save screenshot import",
+      ]);
+      pushToast("error", "Screenshot save failed.");
+    } finally {
+      setScreenshotSaving(false);
+    }
   }
 
   async function handleSave(label: string) {
@@ -466,10 +669,23 @@ export function DebtCrusherApp() {
 
       <ImportPanel
         importing={isPending}
+        screenshotImporting={screenshotImporting}
         importMode={importMode}
         onImportModeChange={setImportMode}
         onImport={handleImport}
+        onScreenshotImport={handleScreenshotImport}
       />
+
+      {screenshotReview ? (
+        <ScreenshotReviewPanel
+          draft={screenshotReview}
+          warnings={screenshotWarnings}
+          saving={screenshotSaving}
+          onChange={setScreenshotReview}
+          onDismiss={clearScreenshotReview}
+          onSave={handleSaveScreenshotImport}
+        />
+      ) : null}
 
       {errors.length > 0 ? (
         <section className="message-panel error-panel">
@@ -582,13 +798,26 @@ export function DebtCrusherApp() {
       <div className="toast-stack" aria-live="polite" aria-atomic="true">
         {toasts.map((toast) => (
           <div key={toast.id} className={`toast-card ${toast.tone}`}>
-            <strong>
-              {toast.tone === "success"
-                ? "Saved"
-                : toast.tone === "warning"
-                  ? "Notice"
-                  : "Problem"}
-            </strong>
+            <div className="toast-header">
+              <strong>
+                {toast.tone === "success"
+                  ? "Saved"
+                  : toast.tone === "warning"
+                    ? "Notice"
+                    : "Problem"}
+              </strong>
+              {toast.count > 1 ? (
+                <span className="toast-count">{toast.count}</span>
+              ) : null}
+              <button
+                className="toast-dismiss"
+                type="button"
+                aria-label="Dismiss"
+                onClick={() => dismissToast(toast.id)}
+              >
+                ×
+              </button>
+            </div>
             <span>{toast.message}</span>
           </div>
         ))}

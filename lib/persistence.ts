@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import type {
   ActivityEvent,
   ActivitySnapshot,
@@ -6,6 +7,8 @@ import type {
   CreditCardInput,
   DashboardSummary,
   PortfolioState,
+  ScreenshotImportArtifactSummary,
+  ScreenshotImportExtraction,
   SetupConfig,
 } from "@/lib/types";
 import {
@@ -232,6 +235,22 @@ export function activitySnapshotToDb(
   };
 }
 
+export function screenshotImportArtifactToDb(args: {
+  fileName: string;
+  mimeType: string;
+  imageData: Prisma.Bytes;
+  extractedText: string;
+  extraction: ScreenshotImportExtraction;
+}) {
+  return {
+    fileName: args.fileName,
+    mimeType: args.mimeType,
+    imageData: args.imageData,
+    extractedText: args.extractedText,
+    extractionJson: JSON.stringify(args.extraction),
+  };
+}
+
 export function dbRowToActivitySnapshot(row: {
   id: string;
   source: string;
@@ -243,6 +262,12 @@ export function dbRowToActivitySnapshot(row: {
   cashAccountsJson: string;
   dashboardSummaryJson: string;
   changeDetailJson?: string | null;
+  importArtifact?: {
+    id: string;
+    fileName: string;
+    mimeType: string;
+    extractionJson: string;
+  } | null;
 }): ActivitySnapshot {
   const setup = normalizeSetup(JSON.parse(row.setupJson) as Partial<SetupConfig>);
   const dashboardSummary = normalizeDashboardSummary(
@@ -266,6 +291,16 @@ export function dbRowToActivitySnapshot(row: {
     dashboardSummary,
     changeDetail: row.changeDetailJson
       ? (JSON.parse(row.changeDetailJson) as ActivitySnapshot["changeDetail"])
+      : null,
+    sourceArtifact: row.importArtifact
+      ? ({
+          id: row.importArtifact.id,
+          fileName: row.importArtifact.fileName,
+          mimeType: row.importArtifact.mimeType,
+          extraction: JSON.parse(
+            row.importArtifact.extractionJson,
+          ) as ScreenshotImportArtifactSummary["extraction"],
+        })
       : null,
   };
 }

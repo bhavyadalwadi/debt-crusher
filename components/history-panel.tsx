@@ -14,6 +14,75 @@ export function HistoryPanel({ snapshots, recentEvents }: HistoryPanelProps) {
     return `${prefix}${currencyFormatter.format(value)}`;
   }
 
+  function formatPctDelta(value: number) {
+    const prefix = value > 0 ? "+" : "";
+    return `${prefix}${value.toFixed(1)}%`;
+  }
+
+  /**
+   * Renders a single comparison metric with directional arrow and color.
+   * lower_is_better=true means a negative delta is good (e.g., balance going down).
+   */
+  function ComparisonChip({
+    label,
+    delta,
+    pctDelta,
+    lowerIsBetter,
+  }: {
+    label: string;
+    delta: number;
+    pctDelta: number | null;
+    lowerIsBetter: boolean;
+  }) {
+    if (delta === 0) return null;
+    const improved = lowerIsBetter ? delta < 0 : delta > 0;
+    const arrow = delta < 0 ? "↓" : "↑";
+    const tone = improved ? "comparison-chip good" : "comparison-chip bad";
+    return (
+      <span className={tone} title={label}>
+        {arrow} {label}: {formatDelta(delta)}
+        {pctDelta !== null ? ` (${formatPctDelta(pctDelta)})` : ""}
+      </span>
+    );
+  }
+
+  function renderComparisonRow(snapshot: ActivitySnapshot, prevSnapshot: ActivitySnapshot | null) {
+    if (!snapshot.deltaFromPrevious || !prevSnapshot) return null;
+    const d = snapshot.deltaFromPrevious;
+
+    const prevBalance = prevSnapshot.dashboardSummary.total_credit_balance;
+    const prevCash = prevSnapshot.dashboardSummary.total_cash_above_minimums;
+    const prevUtil = prevSnapshot.dashboardSummary.weighted_utilization_percent;
+    const currUtil = snapshot.dashboardSummary.weighted_utilization_percent;
+    const utilizationDelta = currUtil - prevUtil;
+
+    const creditPct = prevBalance !== 0 ? (d.creditBalanceChange / prevBalance) * 100 : null;
+    const cashPct = prevCash !== 0 ? (d.cashAboveMinimumChange / prevCash) * 100 : null;
+
+    return (
+      <div className="comparison-row">
+        <span className="comparison-label">vs prev</span>
+        <ComparisonChip
+          label="Credit"
+          delta={d.creditBalanceChange}
+          pctDelta={creditPct}
+          lowerIsBetter={true}
+        />
+        <ComparisonChip
+          label="Cash"
+          delta={d.cashAboveMinimumChange}
+          pctDelta={cashPct}
+          lowerIsBetter={false}
+        />
+        {utilizationDelta !== 0 ? (
+          <span className={`comparison-chip ${utilizationDelta < 0 ? "good" : "bad"}`}>
+            {utilizationDelta < 0 ? "↓" : "↑"} Util: {formatPctDelta(utilizationDelta)}
+          </span>
+        ) : null}
+      </div>
+    );
+  }
+
   function renderNamedDeltas(title: string, deltas: NamedDelta[] | undefined) {
     if (!deltas || deltas.length === 0) {
       return null;
@@ -78,18 +147,26 @@ export function HistoryPanel({ snapshots, recentEvents }: HistoryPanelProps) {
               <span>
                 {snapshot.source === "import"
                   ? snapshot.filename || "Workbook import"
-                  : "Manual save"}
+                  : snapshot.source === "screenshot_import"
+                    ? snapshot.filename || "Screenshot import"
+                    : "Manual save"}
               </span>
+              {snapshot.sourceArtifact ? (
+                <a
+                  className="text-link"
+                  href={`/api/screenshot-import/artifacts/${snapshot.sourceArtifact.id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  View saved screenshot
+                </a>
+              ) : null}
               <span>
                 Credit {currencyFormatter.format(snapshot.dashboardSummary.total_credit_balance)}
               </span>
-              {snapshot.deltaFromPrevious ? (
-                <span>
-                  Δ credit {formatDelta(snapshot.deltaFromPrevious.creditBalanceChange)}
-                </span>
-              ) : null}
+              {renderComparisonRow(snapshot, snapshots[index + 1] ?? null)}
               {formatChangeSummary(snapshot) ? (
-                <span>{formatChangeSummary(snapshot)}</span>
+                <span className="change-summary">{formatChangeSummary(snapshot)}</span>
               ) : null}
               {snapshot.changeDetail?.creditAddedNames.length ? (
                 <span>

@@ -52,12 +52,19 @@ Turn Debt Crusher into a forms-first finance console where the app is the primar
 - account-level change summaries inside saved snapshot history
 - event trail for save-driven account and setup changes
 - searchable institution picker with alias-aware typeahead for card and cash forms
+- screenshot OCR import with:
+  - image upload
+  - OCR extraction
+  - review-before-save editing
+  - replace or merge save behavior
+  - stored screenshot artifacts linked from history
 
 ### Partially Done
 - recommendation engine is explainable, but still fairly simple
 - form UX is improved, but still has room for polish
 
 ### Pending
+- native iPhone wrapper / true Share Sheet target for direct screenshot intake
 - richer recommendation engine:
   - due-date pressure explanation improvements
   - promo-pressure explanation improvements
@@ -148,11 +155,13 @@ Use Prisma as the persistence layer.
 - workbook export
 - JSON app-state export
 - JSON app-state restore
+- screenshot OCR import
 - replace vs merge import behavior
 - overwrite confirmation before destructive restore/import
 
 ### Pending
 - import preview before overwrite
+- native iPhone Share Sheet target / Shortcut-native entrypoint
 
 ## UX Roadmap
 ### Completed baseline
@@ -170,6 +179,7 @@ Use Prisma as the persistence layer.
 - denser/faster-entry forms
 - stronger mobile form ergonomics
 - richer historical comparison views
+- native iPhone capture handoff if we want first-class iOS intake
 
 ## Execution Phases
 ## Phase A: Forms-first Foundation

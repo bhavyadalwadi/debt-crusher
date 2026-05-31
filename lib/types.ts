@@ -125,6 +125,24 @@ export interface ActivityEvent {
   occurredAt: string;
 }
 
+export interface ScreenshotImportExtraction {
+  accountKind: "cash" | "credit";
+  institution: string | null;
+  accountName: string | null;
+  currentBalance: number;
+  availableBalance: number | null;
+  capturedAt: string | null;
+  balanceCandidates: number;
+  lowConfidence: boolean;
+}
+
+export interface ScreenshotImportArtifactSummary {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  extraction: ScreenshotImportExtraction;
+}
+
 export interface PortfolioState {
   id: string;
   updatedAt: string;
@@ -135,7 +153,7 @@ export interface PortfolioState {
 
 export interface ActivitySnapshot {
   id: string;
-  source: "import" | "manual_save";
+  source: "import" | "manual_save" | "screenshot_import";
   label: string;
   filename: string;
   importedAt: string;
@@ -146,6 +164,7 @@ export interface ActivitySnapshot {
   deltaFromPrevious?: SnapshotDelta | null;
   changeSummary?: SnapshotChangeSummary | null;
   changeDetail?: SnapshotChangeDetail | null;
+  sourceArtifact?: ScreenshotImportArtifactSummary | null;
 }
 
 export interface ImportSnapshot extends ActivitySnapshot {}

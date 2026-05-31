@@ -71,8 +71,23 @@ model ActivitySnapshot {
   changeDetailJson     String?
   createdAt            DateTime @default(now())
   events               ActivityEvent[]
+  importArtifact       ScreenshotImportArtifact?
 
   @@index([importedAt])
+}
+
+model ScreenshotImportArtifact {
+  id                String           @id @default(cuid())
+  snapshotId        String           @unique
+  fileName          String
+  mimeType          String
+  imageData         Bytes
+  extractedText     String
+  extractionJson    String
+  createdAt         DateTime         @default(now())
+  snapshot          ActivitySnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
 }
 
 model ActivityEvent {

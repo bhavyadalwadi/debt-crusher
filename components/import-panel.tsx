@@ -4,18 +4,23 @@ import { useRef } from "react";
 
 interface ImportPanelProps {
   importing: boolean;
+  screenshotImporting: boolean;
   importMode: "replace" | "merge";
   onImportModeChange: (mode: "replace" | "merge") => void;
   onImport: (file: File) => Promise<void>;
+  onScreenshotImport: (file: File) => Promise<void>;
 }
 
 export function ImportPanel({
   importing,
+  screenshotImporting,
   importMode,
   onImportModeChange,
   onImport,
+  onScreenshotImport,
 }: ImportPanelProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const screenshotInputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <section className="control-strip">
@@ -26,6 +31,10 @@ export function ImportPanel({
           The main workflow is direct user input in the app. Workbook import is a
           secondary path, and the template below shows the exact structure if you
           want to fill a spreadsheet first.
+        </p>
+        <p className="subtle-copy">
+          For iPhone capture: take the screenshot in your banking app, then import
+          that image here for OCR review before saving.
         </p>
         <div className="inline-links">
           <a className="text-link" href="/debt-crusher-import-template.xlsx" download>
@@ -46,6 +55,29 @@ export function ImportPanel({
         </div>
       </div>
       <div className="control-actions">
+        <input
+          ref={screenshotInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden-input"
+          onChange={async (event) => {
+            const file = event.target.files?.[0];
+            if (!file) {
+              return;
+            }
+
+            await onScreenshotImport(file);
+            event.target.value = "";
+          }}
+        />
+        <button
+          className="primary-button"
+          disabled={screenshotImporting}
+          onClick={() => screenshotInputRef.current?.click()}
+          type="button"
+        >
+          {screenshotImporting ? "Reading Screenshot..." : "Import Screenshot"}
+        </button>
         <input
           ref={inputRef}
           type="file"

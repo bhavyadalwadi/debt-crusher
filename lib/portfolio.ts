@@ -141,6 +141,7 @@ export function buildComputedSnapshot(
     setup: portfolio.setup,
     creditAccounts,
     cashAccounts,
+    importedAt,
   });
 
   return {
@@ -148,7 +149,11 @@ export function buildComputedSnapshot(
     source: options?.source ?? "manual_save",
     label:
       options?.label ??
-      (options?.source === "import" ? "Workbook import" : "Current portfolio"),
+      (options?.source === "import"
+        ? "Workbook import"
+        : options?.source === "screenshot_import"
+          ? "Screenshot import"
+          : "Current portfolio"),
     filename: options?.filename ?? "",
     importedAt,
     setup: portfolio.setup,

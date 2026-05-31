@@ -1,6 +1,6 @@
 # Debt Crusher
 
-Debt Crusher is a forms-first finance workspace for managing credit cards, cash accounts, payoff priorities, and progress history. The app treats direct user input as the primary workflow and keeps spreadsheet import/export as a secondary convenience path.
+Debt Crusher is a forms-first finance workspace for managing credit cards, cash accounts, payoff priorities, and progress history. The app treats direct user input as the primary workflow and keeps spreadsheet import/export and screenshot OCR import as secondary convenience paths.
 
 ## Why this exists
 
@@ -20,6 +20,7 @@ Most debt tools either feel like bookkeeping spreadsheets or hide their decision
 - supports payoff strategy modes such as avalanche, snowball, promo-first, and custom weighting
 - keeps snapshot history, trend views, and event-style save history
 - supports workbook import/export plus JSON backup export/restore
+- supports screenshot OCR import with review-before-save and stored source images
 
 ## Product shape
 
@@ -45,6 +46,7 @@ Main views:
 - TypeScript
 - Prisma
 - SQLite
+- Tesseract.js
 
 ## Local setup
 
@@ -72,6 +74,23 @@ Debt Crusher does **not** autosave every keystroke.
 
 That behavior is intentional so the app remains decision-oriented and predictable.
 
+## Screenshot import flow
+
+This repo now supports a screenshot-first intake path intended for iPhone use:
+
+1. open a banking app on your phone
+2. take a screenshot manually
+3. upload that screenshot into Debt Crusher
+4. review the OCR result
+5. save it as a replace or merge import
+
+Current scope:
+
+- OCR runs locally inside the app with `tesseract.js`
+- the import is always review-first; it does not autosave
+- the original screenshot is stored with the saved snapshot for recheck later
+- this is a web-app import flow, not yet a native iPhone Share Sheet target
+
 ## Key docs
 
 - `Plan.md` - product roadmap and current build status
@@ -87,9 +106,11 @@ Implemented:
 - history snapshots and trend charts
 - searchable institution picker
 - workbook import/export and JSON backup restore/export
+- screenshot OCR import, review-before-save flow, and saved screenshot artifacts
 
 Still planned:
 
+- native iPhone wrapper / real Share Sheet target if we want direct iOS intake
 - richer recommendation logic
 - stronger historical comparison views
 - more explicit event-level tracking

@@ -326,6 +326,74 @@ button {
   border-radius: 18px;
 }
 
+.screenshot-review-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-color: rgba(31, 107, 93, 0.2);
+}
+
+.review-header,
+.review-meta,
+.review-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.review-header {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  align-items: start;
+}
+
+.review-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.review-grid label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.review-grid input,
+.review-grid select {
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 252, 245, 0.88);
+  color: var(--ink);
+}
+
+.review-warning-list {
+  display: grid;
+  gap: 6px;
+  color: var(--warning);
+}
+
+.review-meta {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.ocr-details summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.ocr-details pre {
+  margin: 10px 0 0;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 252, 245, 0.72);
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--muted);
+}
+
 .error-panel {
   border-color: rgba(179, 69, 47, 0.24);
 }
@@ -359,6 +427,44 @@ button {
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
   background: rgba(255, 252, 245, 0.96);
+}
+
+.toast-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toast-header strong {
+  flex: 1;
+}
+
+.toast-count {
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 10px;
+  padding: 1px 7px;
+  line-height: 1.6;
+}
+
+.toast-dismiss {
+  margin-left: auto;
+  padding: 0 4px;
+  line-height: 1;
+  font-size: 18px;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.12s, background 0.12s;
+}
+
+.toast-dismiss:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
 }
 
 .toast-card.success {
@@ -435,6 +541,40 @@ button {
 .history-item.active {
   border-color: rgba(31, 107, 93, 0.44);
   background: rgba(31, 107, 93, 0.08);
+}
+
+.comparison-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.comparison-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.comparison-chip {
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 2px 7px;
+  line-height: 1.5;
+}
+
+.comparison-chip.good {
+  background: rgba(46, 103, 83, 0.13);
+  color: var(--ok);
+}
+
+.comparison-chip.bad {
+  background: rgba(179, 69, 47, 0.11);
+  color: var(--danger);
 }
 
 .workspace-panel {
