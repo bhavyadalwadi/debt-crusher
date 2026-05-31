@@ -114,7 +114,7 @@ export function ScreenshotReviewPanel({
           <span>Captured at</span>
           <input
             type="date"
-            value={draft.capturedAt ?? ""}
+            value={draft.capturedAt ? draft.capturedAt.split("T")[0] : ""}
             onChange={(event) =>
               onChange({
                 ...draft,

@@ -94,7 +94,7 @@ function pickCandidates(text: string) {
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
-  const currencyRegex = /-?\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})|-?\$?\d+(?:\.\d{2})/g;
+  const currencyRegex = /(?:\([\$\d,.]+\))|(?:-?\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})|-?\$?\d+(?:\.\d{2}))/g;
   const candidates: ScreenshotBalanceCandidate[] = [];
 
   for (const line of lines) {
@@ -104,13 +104,23 @@ function pickCandidates(text: string) {
     }
 
     for (const raw of matches) {
-      const value = normalizeMoney(raw);
+      let cleanRaw = raw;
+      let value: number | null = null;
+
+      if (raw.startsWith("(") && raw.endsWith(")")) {
+        cleanRaw = raw.slice(1, -1);
+        const parsed = normalizeMoney(cleanRaw);
+        value = parsed !== null ? -parsed : null;
+      } else {
+        value = normalizeMoney(raw);
+      }
+
       if (value === null) {
         continue;
       }
 
       candidates.push({
-        id: `${candidates.length + 1}`,
+        id: `${line}:${raw}:${value}`.replace(/[^a-z0-9:\-$.]/gi, "").substring(0, 50),
         line,
         raw,
         value,
@@ -128,8 +138,7 @@ function chooseCurrentBalance(candidates: ScreenshotBalanceCandidate[]) {
     return (
       lower.includes("current balance") ||
       lower.includes("statement balance") ||
-      lower.includes("total balance") ||
-      lower === candidate.raw.toLowerCase()
+      lower.includes("total balance")
     );
   });
   if (preferred) {
@@ -143,7 +152,7 @@ function chooseCurrentBalance(candidates: ScreenshotBalanceCandidate[]) {
     return genericBalance;
   }
 
-  return [...candidates].sort((left, right) => Math.abs(right.value) - Math.abs(left.value))[0] ?? null;
+  return candidates.find((c) => c.value >= 0) ?? candidates[0] ?? null;
 }
 
 function chooseAvailableBalance(candidates: ScreenshotBalanceCandidate[], current: ScreenshotBalanceCandidate | null) {

@@ -154,6 +154,15 @@ export function CreditCardsView({
     );
   }
 
+  function handleEnterSave(event: React.KeyboardEvent) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      if (dirty && !validation.hasErrors) {
+        void onSave();
+      }
+    }
+  }
+
   function removeSelected() {
     if (!selectedDraft) {
       return;
@@ -498,6 +507,7 @@ export function CreditCardsView({
                         points_available: nullableNumberValue(event.target.value),
                       }))
                     }
+                    onKeyDown={handleEnterSave}
                   />
                 </label>
               </div>
@@ -511,7 +521,16 @@ export function CreditCardsView({
                       how_are_we_taking_care_of_it: event.target.value,
                     }))
                   }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+                      event.preventDefault();
+                      if (dirty && !validation.hasErrors) {
+                        void onSave();
+                      }
+                    }
+                  }}
                 />
+                <small className="field-hint">Cmd/Ctrl+Enter saves the form.</small>
               </label>
               <div className="form-actions">
                 <span className="form-status-note">

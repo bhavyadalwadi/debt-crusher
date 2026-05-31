@@ -165,9 +165,14 @@ function computePriorityScore(card: {
 function buildRecommendedTargetReasons(
   card: CreditCardAccount | null,
   strategy: PayoffStrategy,
+  importedAt: string,
 ): string[] {
   if (!card) {
     return [];
+  }
+
+  if (card.current_balance <= 0) {
+    return ["Account is paid off — no payment action needed"];
   }
 
   const reasons: string[] = [];
@@ -194,8 +199,9 @@ function buildRecommendedTargetReasons(
     reasons.push("Its APR still adds meaningful payoff pressure.");
   }
 
-  if (card.promo_flag && card.promo_end_soon) {
-    reasons.push("Its promo period is ending soon.");
+  if (card.promo_flag && card.promo_end_soon && card.promo_end_date) {
+    const promoDays = diffInDays(card.promo_end_date, importedAt);
+    reasons.push(`Promo expires in ${promoDays} day${promoDays === 1 ? "" : "s"}.`);
   }
 
   if (card.promo_flag && card.promo_end_date && !card.promo_end_soon) {
@@ -209,8 +215,15 @@ function buildRecommendedTargetReasons(
     reasons.push("Its utilization is elevated and worth bringing down.");
   }
 
-  if (card.payment_due && card.status_flag === "warning") {
-    reasons.push("Its near-term payment timing keeps it on the radar.");
+  if (card.payment_due) {
+    const daysUntilDue = diffInDays(card.payment_due, importedAt);
+    if (daysUntilDue === 0) {
+      reasons.push("Due today.");
+    } else if (daysUntilDue < 0) {
+      reasons.push(`${Math.abs(daysUntilDue)} day${Math.abs(daysUntilDue) === 1 ? "" : "s"} overdue.`);
+    } else if (card.status_flag === "warning") {
+      reasons.push(`Due in ${daysUntilDue} day${daysUntilDue === 1 ? "" : "s"}.`);
+    }
   }
 
   if (reasons.length === 0) {
@@ -285,7 +298,17 @@ export function deriveCreditAccounts(
       return -1;
     }
 
-    return right.priority_score - left.priority_score;
+    const scoreDiff = right.priority_score - left.priority_score;
+    if (scoreDiff !== 0) {
+      return scoreDiff;
+    }
+
+    const aprDiff = right.apr_percent - left.apr_percent;
+    if (aprDiff !== 0) {
+      return aprDiff;
+    }
+
+    return right.current_balance - left.current_balance;
   });
 
   const rankMap = new Map(ranked.map((card, index) => [card.id, index + 1]));
@@ -317,6 +340,7 @@ export function buildDashboardSummary(args: {
   setup: SetupConfig;
   creditAccounts: CreditCardAccount[];
   cashAccounts: CashAccount[];
+  importedAt?: string;
 }): DashboardSummary {
   const sortedCreditAccounts = [...args.creditAccounts].sort(
     (left, right) => left.priority_rank - right.priority_rank,
@@ -343,6 +367,7 @@ export function buildDashboardSummary(args: {
     recommended_target_reasons: buildRecommendedTargetReasons(
       recommended_target_card,
       args.setup.payoff_strategy,
+      args.importedAt ?? new Date().toISOString().slice(0, 10),
     ),
     payoff_strategy: args.setup.payoff_strategy,
     total_credit_balance,

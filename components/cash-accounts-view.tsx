@@ -75,6 +75,15 @@ export function CashAccountsView({
     );
   }
 
+  function handleEnterSave(event: React.KeyboardEvent) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      if (dirty && !validation.hasErrors) {
+        void onSave();
+      }
+    }
+  }
+
   function removeSelected() {
     if (!selectedDraft) {
       return;
@@ -289,6 +298,7 @@ export function CashAccountsView({
                         ),
                       }))
                     }
+                    onKeyDown={handleEnterSave}
                   />
                   {selectedErrors.min_day_end_balance_required ? (
                     <small className="field-error">
@@ -296,7 +306,7 @@ export function CashAccountsView({
                     </small>
                   ) : (
                     <small className="field-hint">
-                      Use the real day-end floor you do not want to breach.
+                      Use the real day-end floor you do not want to breach. Press Enter to save.
                     </small>
                   )}
                 </label>

@@ -586,6 +586,7 @@ export async function importWorkbook(
       setup,
       creditAccounts,
       cashAccounts,
+      importedAt,
     });
 
     const snapshot: ImportSnapshot = {

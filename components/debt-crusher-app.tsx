@@ -409,6 +409,9 @@ export function DebtCrusherApp() {
       setup: draftPortfolio.setup,
     };
 
+    const institution = review.institution || "Captured from Screenshot";
+    const accountName = review.accountName || "Screenshot Import";
+
     if (review.accountKind === "credit") {
       const card = createCreditCardInput();
       return {
@@ -416,9 +419,13 @@ export function DebtCrusherApp() {
         creditAccounts: [
           {
             ...card,
-            institution: review.institution,
-            nickname: review.accountName,
+            institution,
+            nickname: accountName,
             current_balance: review.currentBalance,
+            credit_limit:
+              review.availableBalance !== null && review.availableBalance !== undefined
+                ? review.currentBalance + review.availableBalance
+                : null,
           },
         ],
       };
@@ -430,8 +437,8 @@ export function DebtCrusherApp() {
       cashAccounts: [
         {
           ...cash,
-          institution: review.institution,
-          account_name: review.accountName,
+          institution,
+          account_name: accountName,
           current_balance: review.currentBalance,
         },
       ],
