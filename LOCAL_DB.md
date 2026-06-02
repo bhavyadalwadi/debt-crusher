@@ -1,28 +1,30 @@
 # Local Database Setup
 
-This app now runs on local SQLite for development with Prisma. No Docker or Postgres install is required.
+This app now uses a hosted Neon Postgres database for both local development and Vercel. The app no longer uses local SQLite.
 
-## 1. Use local SQLite
+## 1. Set local env
 Copy the example env if you have not already:
 
 ```bash
 cp .env.example .env
 ```
 
-The local default connection string is:
+Then replace the placeholders with your real Neon credentials and private gate values:
 
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://..."
+BASIC_AUTH_USERNAME="..."
+BASIC_AUTH_PASSWORD="..."
 ```
 
-## 2. Generate Prisma client and create the local database schema
+## 2. Generate Prisma client and push the schema
 
 ```bash
 npm run prisma:generate
 npm run db:push
 ```
 
-This creates `prisma/dev.db` automatically.
+This pushes the Prisma schema to Neon.
 
 ## 3. Start the app
 
@@ -30,16 +32,11 @@ This creates `prisma/dev.db` automatically.
 npm run dev
 ```
 
-## 4. Switch to Neon later
-When you are ready for Neon, you will need to:
-- change `provider = "sqlite"` to `provider = "postgresql"` in `prisma/schema.prisma`
-- replace `DATABASE_URL` in `.env` with your Neon connection string
-- regenerate Prisma client
-- push the schema
+## 4. Vercel
 
-```bash
-npm run prisma:generate
-npm run db:push
-```
+Set the same values in Vercel project env vars:
+- `DATABASE_URL`
+- `BASIC_AUTH_USERNAME`
+- `BASIC_AUTH_PASSWORD`
 
-The app code can stay the same; the Prisma datasource is the part that changes.
+Use the same Neon database unless you intentionally want a separate production database.

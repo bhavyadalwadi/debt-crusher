@@ -23,13 +23,14 @@ npm run dev
 
 Copy `.env.example` to `.env` first and set:
 
-- `DATABASE_URL` to a hosted Postgres database
+- `DATABASE_URL` to your direct Neon Postgres connection string
 - `BASIC_AUTH_USERNAME` and `BASIC_AUTH_PASSWORD` for the site-wide gate
 
 ## Vercel
 
-- Add a Postgres integration in Vercel or bring your own hosted Postgres
+- Use Neon as the hosted Postgres database
 - Set `DATABASE_URL`, `BASIC_AUTH_USERNAME`, and `BASIC_AUTH_PASSWORD` in Vercel project env vars
-- Run `npx prisma db push` against that database before first use, or after schema changes
+- Run `npx prisma db push` against the Neon database before first use, or after schema changes
+- The current setup intentionally uses one direct `DATABASE_URL` for both local and Vercel to keep config simple
 
 See [STATUS.md](./STATUS.md) for project status.
