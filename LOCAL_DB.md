@@ -1,6 +1,6 @@
 # Local Database Setup
 
-This app now uses Postgres in both environments. Local development should use a local-only Postgres database, and Vercel production should use a separate Neon prod database. The app no longer uses local SQLite.
+This app uses SQLite locally and a separate Neon Postgres database in Vercel production.
 
 ## 1. Set local env
 Copy the example env if you have not already:
@@ -9,10 +9,10 @@ Copy the example env if you have not already:
 cp .env.example .env
 ```
 
-Then replace the placeholders with your real local Postgres credentials and private gate values:
+Then keep the local SQLite path and set your private gate values:
 
 ```env
-DATABASE_URL="postgresql://localhost:5432/debt_crusher_local"
+DATABASE_URL="file:./dev.db"
 BASIC_AUTH_USERNAME="..."
 BASIC_AUTH_PASSWORD="..."
 ```
@@ -24,7 +24,7 @@ npm run prisma:generate
 npm run db:push
 ```
 
-This pushes the Prisma schema to your local Postgres database.
+This creates or updates your local SQLite database at `prisma/dev.db`.
 
 ## 3. Start the app
 
