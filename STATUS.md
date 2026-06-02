@@ -13,7 +13,7 @@ Project is in **active development** phase.
 ## Recent Changes
 
 - Prisma datasource switched from SQLite to Postgres for Vercel readiness
-- Site-wide Basic Auth gate added for private access in local and Vercel
+- Site-wide sign-in page and cookie session gate added for private access in local and Vercel
 - Deployment path narrowed to direct Neon credentials via `DATABASE_URL`
 - Deployment plan updated to use local SQLite for development and Neon for prod
 
@@ -28,6 +28,7 @@ Project is in **active development** phase.
 - TODO: create or choose the Neon prod database instance
 - TODO: replace Vercel `DATABASE_URL` with the real Neon prod connection string
 - TODO: set `BASIC_AUTH_USERNAME` and `BASIC_AUTH_PASSWORD` to real private values
+- TODO: validate the `/signin` flow in production after Vercel deploy
 - TODO: deploy to Vercel and confirm authenticated access against production
 
 ## Questions or Feedback

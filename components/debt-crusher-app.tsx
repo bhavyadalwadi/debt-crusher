@@ -58,6 +58,7 @@ export function DebtCrusherApp() {
   const [toasts, setToasts] = useState<
     Array<{ id: string; tone: "success" | "error" | "warning"; message: string; count: number; createdAt: number }>
   >([]);
+  const [loggingOut, startLogoutTransition] = useTransition();
   const backupInputRef = useRef<HTMLInputElement | null>(null);
 
   const activeView = (searchParams.get("view") as AppView) || "dashboard";
@@ -114,6 +115,12 @@ export function DebtCrusherApp() {
 
   function dismissToast(id: string) {
     setToasts((current) => current.filter((toast) => toast.id !== id));
+  }
+
+  function handleLogout() {
+    startLogoutTransition(() => {
+      router.push("/signout");
+    });
   }
 
   useEffect(() => {
@@ -610,6 +617,9 @@ export function DebtCrusherApp() {
             <span className="legend-chip watch">Watch</span>
             <span className="legend-chip ok">OK</span>
             <span className="legend-chip paid">Paid</span>
+            <button className="ghost-button" onClick={handleLogout} type="button">
+              {loggingOut ? "Signing Out..." : "Sign Out"}
+            </button>
           </div>
         </div>
       </header>

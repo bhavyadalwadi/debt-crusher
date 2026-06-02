@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "prisma generate",
     "dev": "next dev",
     "build": "prisma generate --schema prisma/schema.postgres.prisma && next build",
+    "prestart": "prisma generate",
     "start": "next start",
     "test": "vitest run",
     "postinstall": "prisma generate",

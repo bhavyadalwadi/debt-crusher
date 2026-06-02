@@ -55,6 +55,10 @@ button {
   cursor: pointer;
 }
 
+input {
+  font: inherit;
+}
+
 .app-shell {
   width: min(1480px, calc(100% - 32px));
   margin: 0 auto;
@@ -160,6 +164,24 @@ button {
   letter-spacing: 0.02em;
 }
 
+.ghost-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 252, 245, 0.88);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.ghost-button:hover {
+  background: var(--panel-strong);
+}
+
 .legend-chip.danger,
 .status-danger {
   color: var(--danger);
@@ -217,6 +239,70 @@ button {
   margin-top: 16px;
   padding: 22px 24px;
   border-radius: 14px 14px 24px 24px;
+}
+
+.signin-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.signin-card {
+  width: min(460px, 100%);
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--panel);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+}
+
+.signin-card h1 {
+  margin: 8px 0 10px;
+  font-family: var(--display-font);
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.signin-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.signin-field {
+  display: grid;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.signin-field input {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 252, 245, 0.92);
+  color: var(--ink);
+}
+
+.signin-field input:focus {
+  outline: 2px solid rgba(31, 107, 93, 0.25);
+  outline-offset: 1px;
+}
+
+.signin-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.92rem;
+}
+
+.signin-submit {
+  width: 100%;
+  justify-content: center;
 }
 
 .primary-actions-panel {

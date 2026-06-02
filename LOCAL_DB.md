@@ -9,7 +9,7 @@ Copy the example env if you have not already:
 cp .env.example .env
 ```
 
-Then keep the local SQLite path and set your private gate values:
+Then keep the local SQLite path and set your private sign-in values:
 
 ```env
 DATABASE_URL="file:./dev.db"
@@ -31,6 +31,8 @@ This creates or updates your local SQLite database at `prisma/dev.db`.
 ```bash
 npm run dev
 ```
+
+The app will redirect unauthenticated users to `/signin`.
 
 ## 4. Vercel
 

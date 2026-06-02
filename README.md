@@ -24,7 +24,7 @@ npm run dev
 Copy `.env.example` to `.env` first and set:
 
 - `DATABASE_URL` to the local default SQLite path, or another local SQLite file path
-- `BASIC_AUTH_USERNAME` and `BASIC_AUTH_PASSWORD` for the site-wide gate
+- `BASIC_AUTH_USERNAME` and `BASIC_AUTH_PASSWORD` for the shared sign-in page
 
 ## Vercel
 
@@ -34,5 +34,6 @@ Copy `.env.example` to `.env` first and set:
 - Keep your local `.env` pointed at local SQLite
 - Run `npm run db:push` for local SQLite
 - Run `npm run db:push:postgres` against Neon before first use, or after schema changes
+- The app now uses a custom `/signin` page with an HttpOnly session cookie instead of the browser Basic Auth popup
 
 See [STATUS.md](./STATUS.md) for project status.
