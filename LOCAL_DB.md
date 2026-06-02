@@ -1,6 +1,6 @@
 # Local Database Setup
 
-This app now uses hosted Neon Postgres databases. Local development uses one Neon database, and Vercel production uses a separate Neon prod database. The app no longer uses local SQLite.
+This app now uses Postgres in both environments. Local development should use a local-only Postgres database, and Vercel production should use a separate Neon prod database. The app no longer uses local SQLite.
 
 ## 1. Set local env
 Copy the example env if you have not already:
@@ -9,10 +9,10 @@ Copy the example env if you have not already:
 cp .env.example .env
 ```
 
-Then replace the placeholders with your real local/dev Neon credentials and private gate values:
+Then replace the placeholders with your real local Postgres credentials and private gate values:
 
 ```env
-DATABASE_URL="postgresql://..."
+DATABASE_URL="postgresql://localhost:5432/debt_crusher_local"
 BASIC_AUTH_USERNAME="..."
 BASIC_AUTH_PASSWORD="..."
 ```
@@ -24,7 +24,7 @@ npm run prisma:generate
 npm run db:push
 ```
 
-This pushes the Prisma schema to your local/dev Neon database.
+This pushes the Prisma schema to your local Postgres database.
 
 ## 3. Start the app
 
