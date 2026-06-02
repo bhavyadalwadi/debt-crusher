@@ -20,6 +20,7 @@ Project is in **active development** phase.
 
 - Real Neon credentials still need to be added to local `.env` and Vercel env vars
 - First real deploy still requires `npx prisma db push` against the Neon database
+- Project docs should be updated whenever deploy, auth, env, or runtime behavior changes
 
 ## Next Steps
 
