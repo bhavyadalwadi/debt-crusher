@@ -118,8 +118,12 @@ export function DebtCrusherApp() {
   }
 
   function handleLogout() {
-    startLogoutTransition(() => {
-      router.push("/signout");
+    startLogoutTransition(async () => {
+      await fetch("/signout", {
+        method: "POST",
+      });
+      router.replace("/signin");
+      router.refresh();
     });
   }
 

@@ -1,4 +1,5 @@
 import { SignInForm } from "@/components/signin-form";
+import { sanitizeNextPath } from "@/lib/auth";
 
 export default async function SignInPage({
   searchParams,
@@ -6,8 +7,7 @@ export default async function SignInPage({
   searchParams: Promise<{ next?: string }>;
 }) {
   const params = await searchParams;
-  const next =
-    typeof params.next === "string" && params.next.startsWith("/") ? params.next : "/";
+  const next = sanitizeNextPath(params.next);
 
   return (
     <main className="signin-shell">

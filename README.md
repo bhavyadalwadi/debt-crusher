@@ -24,12 +24,12 @@ npm run dev
 Copy `.env.example` to `.env` first and set:
 
 - `DATABASE_URL` to the local default SQLite path, or another local SQLite file path
-- `BASIC_AUTH_USERNAME` and `BASIC_AUTH_PASSWORD` for the shared sign-in page
+- `PRIVATE_ACCESS_USERNAME` and `PRIVATE_ACCESS_PASSWORD` for the shared sign-in page
 
 ## Vercel
 
 - Use a separate Neon production database for Vercel
-- Set `DATABASE_URL`, `BASIC_AUTH_USERNAME`, and `BASIC_AUTH_PASSWORD` in Vercel project env vars
+- Set `DATABASE_URL`, `PRIVATE_ACCESS_USERNAME`, and `PRIVATE_ACCESS_PASSWORD` in Vercel project env vars
 - Use your prod Neon connection string for Vercel `DATABASE_URL`
 - Keep your local `.env` pointed at local SQLite
 - Run `npm run db:push` for local SQLite

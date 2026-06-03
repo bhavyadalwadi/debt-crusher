@@ -13,8 +13,8 @@ Then keep the local SQLite path and set your private sign-in values:
 
 ```env
 DATABASE_URL="file:./dev.db"
-BASIC_AUTH_USERNAME="..."
-BASIC_AUTH_PASSWORD="..."
+PRIVATE_ACCESS_USERNAME="..."
+PRIVATE_ACCESS_PASSWORD="..."
 ```
 
 ## 2. Generate Prisma client and push the schema
@@ -38,7 +38,7 @@ The app will redirect unauthenticated users to `/signin`.
 
 Set these values in Vercel project env vars:
 - `DATABASE_URL`
-- `BASIC_AUTH_USERNAME`
-- `BASIC_AUTH_PASSWORD`
+- `PRIVATE_ACCESS_USERNAME`
+- `PRIVATE_ACCESS_PASSWORD`
 
 For Vercel, `DATABASE_URL` should point to the separate Neon prod database.

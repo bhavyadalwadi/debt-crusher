@@ -1,16 +1,16 @@
-# Graph Report - debt-crusher  (2026-05-26)
+# Graph Report - debt-crusher  (2026-06-03)
 
 ## Corpus Check
-- 51 files · ~58,694 words
+- 69 files · ~63,619 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 442 nodes · 645 edges · 31 communities (20 shown, 11 thin omitted)
+- 589 nodes · 897 edges · 50 communities (37 shown, 13 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d7db0e4c`
+- Built from commit: `81146bfb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -44,40 +44,59 @@
 - [[_COMMUNITY_Community 28|Community 28]]
 - [[_COMMUNITY_Community 29|Community 29]]
 - [[_COMMUNITY_Community 30|Community 30]]
+- [[_COMMUNITY_Community 31|Community 31]]
+- [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
+- [[_COMMUNITY_Community 35|Community 35]]
+- [[_COMMUNITY_Community 36|Community 36]]
+- [[_COMMUNITY_Community 37|Community 37]]
+- [[_COMMUNITY_Community 38|Community 38]]
+- [[_COMMUNITY_Community 39|Community 39]]
+- [[_COMMUNITY_Community 40|Community 40]]
+- [[_COMMUNITY_Community 41|Community 41]]
+- [[_COMMUNITY_Community 42|Community 42]]
+- [[_COMMUNITY_Community 43|Community 43]]
+- [[_COMMUNITY_Community 44|Community 44]]
+- [[_COMMUNITY_Community 45|Community 45]]
+- [[_COMMUNITY_Community 46|Community 46]]
+- [[_COMMUNITY_Community 47|Community 47]]
+- [[_COMMUNITY_Community 48|Community 48]]
+- [[_COMMUNITY_Community 49|Community 49]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Debt Crusher Product Plan` - 19 edges
 2. `Debt Crusher User Guide` - 18 edges
 3. `compilerOptions` - 16 edges
-4. `debt-crusher Project Context` - 16 edges
-5. `Finance Console` - 15 edges
-6. `debt-crusher Architecture` - 14 edges
-7. `Debt Crusher` - 13 edges
-8. `dependencies` - 10 edges
-9. `loadPortfolioBundle()` - 10 edges
-10. `createDefaultCustomStrategyWeights()` - 10 edges
+4. `Debt Crusher` - 16 edges
+5. `debt-crusher Project Context` - 16 edges
+6. `Project Status` - 15 edges
+7. `Finance Console` - 15 edges
+8. `debt-crusher Architecture` - 14 edges
+9. `buildComputedSnapshot()` - 13 edges
+10. `savePortfolioBundle()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `normalizePortfolioInput()` --calls--> `createDefaultCustomStrategyWeights()`  [EXTRACTED]
-  app/api/portfolio/route.ts → lib/portfolio.ts
-- `loadPortfolioBundle()` --calls--> `createEmptyPortfolio()`  [EXTRACTED]
-  app/api/portfolio/route.ts → lib/portfolio.ts
-- `loadPortfolioBundle()` --calls--> `buildComputedSnapshot()`  [EXTRACTED]
-  app/api/portfolio/route.ts → lib/portfolio.ts
-- `loadPortfolioBundle()` --calls--> `dbRowToPortfolioState()`  [EXTRACTED]
-  app/api/portfolio/route.ts → lib/persistence.ts
-- `loadPortfolioBundle()` --calls--> `buildSnapshotDelta()`  [EXTRACTED]
-  app/api/portfolio/route.ts → lib/portfolio.ts
+- `SignInPage()` --calls--> `sanitizeNextPath()`  [EXTRACTED]
+  app/signin/page.tsx → lib/auth.ts
+- `POST()` --calls--> `analyzeScreenshotImport()`  [EXTRACTED]
+  app/api/screenshot-import/analyze/route.ts → lib/screenshot-import.ts
+- `POST()` --calls--> `savePortfolioBundle()`  [EXTRACTED]
+  app/api/screenshot-import/save/route.ts → lib/portfolio-store.ts
+- `middleware()` --calls--> `hasPrivateAccessCredentials()`  [EXTRACTED]
+  middleware.ts → lib/auth.ts
+- `middleware()` --calls--> `getMissingPrivateAccessMessage()`  [EXTRACTED]
+  middleware.ts → lib/auth.ts
 
-## Communities (31 total, 11 thin omitted)
+## Communities (50 total, 13 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.08
-Nodes (32): CashAccountsView(), CashAccountsViewProps, columnHelper, CreditCardsView(), CreditCardsViewProps, formatAutoPayment(), chartColors, DashboardView() (+24 more)
+Cohesion: 0.06
+Nodes (40): CashAccountsView(), CashAccountsViewProps, columnHelper, CreditCardsView(), CreditCardsViewProps, formatAutoPayment(), chartColors, DashboardView() (+32 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.04
-Nodes (48): Completed baseline, Current Build Status, Current core entities, Current Derived Logic, Current Status Model, Current storage, Data Model, Debt Crusher Product Plan (+40 more)
+Cohesion: 0.2
+Nodes (9): Current Status Model, Debt Crusher Product Plan, Execution Phases, Goal, Implemented statuses, Next-Level Suggestions, Notes, Product Principles (+1 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.12
@@ -88,12 +107,12 @@ Cohesion: 0.06
 Nodes (35): Backup And Export, Cash Accounts, code:bash (cp .env.example .env), Credit Cards, Danger, Dashboard, Debt Crusher User Guide, Export Backup (+27 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.06
-Nodes (50): buildDashboardSummary(), buildRecommendedTargetReasons(), CashBaseRow, computePriorityScore(), CreditBaseRow, deriveCashAccounts(), deriveCreditAccounts(), diffInDays() (+42 more)
+Cohesion: 0.11
+Nodes (30): CASH_HEADER_ALIASES, CashBaseRow, CREDIT_HEADER_ALIASES, CreditBaseRow, findHeaderRowIndex(), headerIndexMap(), parseCashRows(), parseCreditRows() (+22 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.07
-Nodes (26): dependencies, next, prisma, @prisma/client, react, react-dom, recharts, @tanstack/react-table (+18 more)
+Cohesion: 0.06
+Nodes (33): dependencies, next, prisma, @prisma/client, react, react-dom, recharts, @tanstack/react-table (+25 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.12
@@ -105,19 +124,19 @@ Nodes (19): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModu
 
 ### Community 8 - "Community 8"
 Cohesion: 0.18
-Nodes (10): 1. Use local SQLite, 2. Generate Prisma client and create the local database schema, 3. Start the app, 4. Switch to Neon later, code:bash (cp .env.example .env), code:env (DATABASE_URL="file:./dev.db"), code:bash (npm run prisma:generate), code:bash (npm run dev) (+2 more)
+Nodes (13): 1. Set local env, 1. Use local SQLite, 2. Generate Prisma client and create the local database schema, 2. Generate Prisma client and push the schema, 3. Start the app, 4. Switch to Neon later, 4. Vercel, code:bash (cp .env.example .env) (+5 more)
 
 ### Community 9 - "Community 9"
 Cohesion: 0.22
 Nodes (6): cashSheet, creditSheet, outputDir, outputPath, setupSheet, workbook
 
 ### Community 14 - "Community 14"
-Cohesion: 0.08
-Nodes (48): DebtCrusherApp(), views, HistoryPanel(), HistoryPanelProps, ImportPanel(), ImportPanelProps, exportPortfolioWorkbook(), activityEventToDb() (+40 more)
+Cohesion: 0.07
+Nodes (70): DebtCrusherApp(), views, HistoryPanel(), HistoryPanelProps, ImportPanel(), ImportPanelProps, ScreenshotReviewDraft, ScreenshotReviewPanel() (+62 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.12
-Nodes (15): code:bash (cp .env.example .env), code:text (http://localhost:3000), Current status, Debt Crusher, Important workflow note, Key docs, License, Local setup (+7 more)
+Cohesion: 0.11
+Nodes (18): code:bash (npm install), code:text (http://localhost:3000), Current status, Debt Crusher, Getting Started, Important workflow note, Key docs, License (+10 more)
 
 ### Community 16 - "Community 16"
 Cohesion: 0.13
@@ -143,25 +162,93 @@ Nodes (4): debt-crusher Decision Log, Forms-first over workbook-first, Graphify-
 Cohesion: 0.5
 Nodes (3): Critical Entrypoints, Read First, Top-Level Modules
 
+### Community 31 - "Community 31"
+Cohesion: 0.17
+Nodes (21): SignInForm(), config, isPublicPath(), middleware(), constantTimeEqual(), createSessionToken(), getMissingPrivateAccessMessage(), getSessionCookieName() (+13 more)
+
+### Community 32 - "Community 32"
+Cohesion: 0.08
+Nodes (24): code:typescript (credit_limit:), code:typescript (value={draft.capturedAt ? draft.capturedAt.split("T")[0] : "), code:typescript (id: `${line}:${raw}:${value}`.replace(/[^a-z0-9:\-$.]/gi, ""), code:typescript (return candidates.find((c) => c.value >= 0) ?? candidates[0]), code:bash (# Proposed test file location validates logic:), code:bash (nvm use 20.19.0), Environment Blockers, How to Verify Fixes (+16 more)
+
+### Community 33 - "Community 33"
+Cohesion: 0.18
+Nodes (15): POST(), analyzeScreenshotImport(), chooseAvailableBalance(), chooseCurrentBalance(), cleanText(), engData, inferKind(), normalizeMoney() (+7 more)
+
+### Community 34 - "Community 34"
+Cohesion: 0.12
+Nodes (15): Attention Now, Benefit, Category, Completion, Current Plan, Current Status, Done, Ecosystem (+7 more)
+
+### Community 35 - "Community 35"
+Cohesion: 0.25
+Nodes (7): Current Phase, Key Metrics, Known Issues, Next Steps, Project Status, Questions or Feedback, Recent Changes
+
+### Community 36 - "Community 36"
+Cohesion: 0.29
+Nodes (7): Done, Done, Phase B: History That Explains Change, Remaining, Remaining, Status, Status
+
+### Community 37 - "Community 37"
+Cohesion: 0.29
+Nodes (7): Done, Done, Phase C: Recommendation Engine Upgrade, Remaining, Remaining, Status, Status
+
+### Community 38 - "Community 38"
+Cohesion: 0.29
+Nodes (7): Done, Done, Phase D: Import / Export Reliability, Remaining, Remaining, Status, Status
+
+### Community 39 - "Community 39"
+Cohesion: 0.4
+Nodes (4): Code Changes, Contributing, License, Reporting Issues
+
+### Community 40 - "Community 40"
+Cohesion: 0.4
+Nodes (5): Done, Done, Phase A: Forms-first Foundation, Remaining, Status
+
+### Community 41 - "Community 41"
+Cohesion: 0.4
+Nodes (5): Implemented, Implemented, Import / Export, Pending, Pending
+
+### Community 42 - "Community 42"
+Cohesion: 0.4
+Nodes (5): Phase E: Event-based Tracking, Remaining, Remaining, Status, Status
+
+### Community 44 - "Community 44"
+Cohesion: 0.5
+Nodes (4): Current Build Status, Done, Partially Done, Pending
+
+### Community 45 - "Community 45"
+Cohesion: 0.5
+Nodes (4): Current core entities, Current storage, Data Model, Planned later entities
+
+### Community 47 - "Community 47"
+Cohesion: 0.67
+Nodes (3): Completed baseline, Remaining UX work, UX Roadmap
+
+### Community 48 - "Community 48"
+Cohesion: 0.67
+Nodes (3): Current Derived Logic, Implemented, Pending improvements
+
+### Community 49 - "Community 49"
+Cohesion: 0.67
+Nodes (3): Implemented coverage, Pending coverage, Testing Status
+
 ## Knowledge Gaps
-- **243 isolated node(s):** `name`, `version`, `private`, `dev`, `build` (+238 more)
+- **310 isolated node(s):** `config`, `name`, `version`, `private`, `predev` (+305 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `createDefaultCustomStrategyWeights()` connect `Community 4` to `Community 14`?**
-  _High betweenness centrality (0.004) - this node is a cross-community bridge._
-- **What connects `name`, `version`, `private` to the rest of the system?**
-  _243 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `Debt Crusher Product Plan` connect `Community 1` to `Community 36`, `Community 37`, `Community 38`, `Community 40`, `Community 41`, `Community 42`, `Community 44`, `Community 45`, `Community 47`, `Community 48`, `Community 49`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `createDefaultCustomStrategyWeights()` connect `Community 14` to `Community 4`?**
+  _High betweenness centrality (0.003) - this node is a cross-community bridge._
+- **What connects `config`, `name`, `version` to the rest of the system?**
+  _310 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
-- **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.04 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.12 - nodes in this community are weakly interconnected._
 - **Should `Community 3` be split into smaller, more focused modules?**
   _Cohesion score 0.06 - nodes in this community are weakly interconnected._
 - **Should `Community 4` be split into smaller, more focused modules?**
-  _Cohesion score 0.06 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11 - nodes in this community are weakly interconnected._

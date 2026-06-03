@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import {
   createSessionToken,
   getSessionCookieName,
+  getSessionCookieOptions,
   isValidLogin,
+  sanitizeNextPath,
 } from "@/lib/auth";
 
 export async function POST(request: Request) {
@@ -15,8 +17,7 @@ export async function POST(request: Request) {
 
     const username = body.username?.trim() ?? "";
     const password = body.password ?? "";
-    const next =
-      typeof body.next === "string" && body.next.startsWith("/") ? body.next : "/";
+    const next = sanitizeNextPath(body.next);
 
     if (!(await isValidLogin(username, password))) {
       return NextResponse.json(
@@ -29,11 +30,7 @@ export async function POST(request: Request) {
     response.cookies.set({
       name: getSessionCookieName(),
       value: await createSessionToken(),
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 30,
+      ...getSessionCookieOptions(),
     });
 
     return response;

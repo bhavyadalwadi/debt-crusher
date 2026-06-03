@@ -27,7 +27,7 @@ Project is in **active development** phase.
 
 - TODO: create or choose the Neon prod database instance
 - TODO: replace Vercel `DATABASE_URL` with the real Neon prod connection string
-- TODO: set `BASIC_AUTH_USERNAME` and `BASIC_AUTH_PASSWORD` to real private values
+- TODO: set `PRIVATE_ACCESS_USERNAME` and `PRIVATE_ACCESS_PASSWORD` to real private values
 - TODO: validate the `/signin` flow in production after Vercel deploy
 - TODO: deploy to Vercel and confirm authenticated access against production
 
