@@ -184,6 +184,7 @@ export async function analyzeScreenshotImport(imageData: Buffer): Promise<Screen
   const worker = await createWorker("eng", 1, {
     langPath: engData.langPath,
     gzip: engData.gzip,
+    cacheMethod: "none",
   });
 
   try {
