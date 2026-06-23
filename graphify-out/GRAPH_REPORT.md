@@ -1,16 +1,16 @@
-# Graph Report - debt-crusher  (2026-06-03)
+# Graph Report - debt-crusher  (2026-06-04)
 
 ## Corpus Check
-- 69 files · ~63,619 words
+- 69 files · ~63,702 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 589 nodes · 897 edges · 50 communities (37 shown, 13 thin omitted)
+- 589 nodes · 901 edges · 50 communities (37 shown, 13 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `81146bfb`
+- Built from commit: `4c208fa8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -77,15 +77,15 @@
 10. `savePortfolioBundle()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `SignInPage()` --calls--> `sanitizeNextPath()`  [EXTRACTED]
-  app/signin/page.tsx → lib/auth.ts
 - `POST()` --calls--> `analyzeScreenshotImport()`  [EXTRACTED]
   app/api/screenshot-import/analyze/route.ts → lib/screenshot-import.ts
 - `POST()` --calls--> `savePortfolioBundle()`  [EXTRACTED]
   app/api/screenshot-import/save/route.ts → lib/portfolio-store.ts
 - `middleware()` --calls--> `hasPrivateAccessCredentials()`  [EXTRACTED]
   middleware.ts → lib/auth.ts
-- `middleware()` --calls--> `getMissingPrivateAccessMessage()`  [EXTRACTED]
+- `middleware()` --calls--> `isValidSessionToken()`  [EXTRACTED]
+  middleware.ts → lib/auth.ts
+- `middleware()` --calls--> `getSessionCookieName()`  [EXTRACTED]
   middleware.ts → lib/auth.ts
 
 ## Communities (50 total, 13 thin omitted)
@@ -163,7 +163,7 @@ Cohesion: 0.5
 Nodes (3): Critical Entrypoints, Read First, Top-Level Modules
 
 ### Community 31 - "Community 31"
-Cohesion: 0.17
+Cohesion: 0.18
 Nodes (21): SignInForm(), config, isPublicPath(), middleware(), constantTimeEqual(), createSessionToken(), getMissingPrivateAccessMessage(), getSessionCookieName() (+13 more)
 
 ### Community 32 - "Community 32"

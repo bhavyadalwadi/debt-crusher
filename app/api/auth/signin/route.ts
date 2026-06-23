@@ -3,6 +3,7 @@ import {
   createSessionToken,
   getSessionCookieName,
   getSessionCookieOptions,
+  hasPrivateAccessCredentials,
   isValidLogin,
   sanitizeNextPath,
 } from "@/lib/auth";
@@ -18,6 +19,16 @@ export async function POST(request: Request) {
     const username = body.username?.trim() ?? "";
     const password = body.password ?? "";
     const next = sanitizeNextPath(body.next);
+
+    if (!hasPrivateAccessCredentials()) {
+      return NextResponse.json(
+        {
+          error:
+            "Shared sign-in is not configured yet. Set `PRIVATE_ACCESS_USERNAME` and `PRIVATE_ACCESS_PASSWORD` in the active env file, then restart the app.",
+        },
+        { status: 500 },
+      );
+    }
 
     if (!(await isValidLogin(username, password))) {
       return NextResponse.json(
