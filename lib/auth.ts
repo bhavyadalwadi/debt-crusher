@@ -4,7 +4,8 @@ const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 14;
 
 type RequiredEnvName =
   | "PRIVATE_ACCESS_USERNAME"
-  | "PRIVATE_ACCESS_PASSWORD";
+  | "PRIVATE_ACCESS_PASSWORD"
+  | "SESSION_SECRET";
 
 function requiredEnv(name: RequiredEnvName) {
   const value = process.env[name];
@@ -36,11 +37,8 @@ async function constantTimeEqual(left: string, right: string) {
 }
 
 async function getSessionSignature(payload: string) {
-  const username = requiredEnv("PRIVATE_ACCESS_USERNAME");
-  const password = requiredEnv("PRIVATE_ACCESS_PASSWORD");
-  return sha256Hex(
-    `debt-crusher:${SESSION_TOKEN_VERSION}:${payload}:${username}:${password}`,
-  );
+  const sessionSecret = requiredEnv("SESSION_SECRET");
+  return sha256Hex(`debt-crusher:${SESSION_TOKEN_VERSION}:${payload}:${sessionSecret}`);
 }
 
 export function getSessionCookieName() {
@@ -63,12 +61,14 @@ export function getSessionCookieOptions(maxAge = SESSION_MAX_AGE_SECONDS) {
 
 export function hasPrivateAccessCredentials() {
   return Boolean(
-    process.env.PRIVATE_ACCESS_USERNAME && process.env.PRIVATE_ACCESS_PASSWORD,
+    process.env.PRIVATE_ACCESS_USERNAME &&
+      process.env.PRIVATE_ACCESS_PASSWORD &&
+      process.env.SESSION_SECRET,
   );
 }
 
 export function getMissingPrivateAccessMessage() {
-  return "Missing PRIVATE_ACCESS_USERNAME or PRIVATE_ACCESS_PASSWORD";
+  return "Missing PRIVATE_ACCESS_USERNAME, PRIVATE_ACCESS_PASSWORD, or SESSION_SECRET";
 }
 
 export function sanitizeNextPath(next?: string | null) {

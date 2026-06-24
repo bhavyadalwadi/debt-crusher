@@ -1,7 +1,7 @@
-# Graph Report - debt-crusher  (2026-06-04)
+# Graph Report - debt-crusher  (2026-06-23)
 
 ## Corpus Check
-- 69 files · ~63,702 words
+- 69 files · ~63,709 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4c208fa8`
+- Built from commit: `9ff461fb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

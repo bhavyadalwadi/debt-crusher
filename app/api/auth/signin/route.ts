@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error:
-            "Shared sign-in is not configured yet. Set `PRIVATE_ACCESS_USERNAME` and `PRIVATE_ACCESS_PASSWORD` in the active env file, then restart the app.",
+            "Shared sign-in is not configured yet. Set `PRIVATE_ACCESS_USERNAME`, `PRIVATE_ACCESS_PASSWORD`, and `SESSION_SECRET` in the active env file, then restart the app.",
         },
         { status: 500 },
       );

@@ -2518,7 +2518,7 @@
       "label": "requiredEnv()",
       "file_type": "code",
       "source_file": "lib/auth.ts",
-      "source_location": "L9",
+      "source_location": "L10",
       "id": "lib_auth_requiredenv",
       "community": 31,
       "norm_label": "requiredenv()"
@@ -2527,7 +2527,7 @@
       "label": "sha256()",
       "file_type": "code",
       "source_file": "lib/auth.ts",
-      "source_location": "L17",
+      "source_location": "L18",
       "id": "lib_auth_sha256",
       "community": 31,
       "norm_label": "sha256()"
@@ -2536,7 +2536,7 @@
       "label": "sha256Hex()",
       "file_type": "code",
       "source_file": "lib/auth.ts",
-      "source_location": "L22",
+      "source_location": "L23",
       "id": "lib_auth_sha256hex",
       "community": 31,
       "norm_label": "sha256hex()"
@@ -2545,7 +2545,7 @@
       "label": "constantTimeEqual()",
       "file_type": "code",
       "source_file": "lib/auth.ts",
-      "source_location": "L28",
+      "source_location": "L29",
       "id": "lib_auth_constanttimeequal",
       "community": 31,
       "norm_label": "constanttimeequal()"
@@ -2554,7 +2554,7 @@
       "label": "getSessionSignature()",
       "file_type": "code",
       "source_file": "lib/auth.ts",
-      "source_location": "L38",
+      "source_location": "L39",
       "id": "lib_auth_getsessionsignature",
       "community": 31,
       "norm_label": "getsessionsignature()"
@@ -2563,7 +2563,7 @@
       "label": "getSessionCookieName()",
       "file_type": "code",
       "source_file": "lib/auth.ts",
-      "source_location": "L46",
+      "source_location": "L44",
       "id": "lib_auth_getsessioncookiename",
       "community": 31,
       "norm_label": "getsessioncookiename()"
@@ -2572,7 +2572,7 @@
       "label": "getSessionMaxAge()",
       "file_type": "code",
       "source_file": "lib/auth.ts",
-      "source_location": "L50",
+      "source_location": "L48",
       "id": "lib_auth_getsessionmaxage",
       "community": 31,
       "norm_label": "getsessionmaxage()"
@@ -2581,7 +2581,7 @@
       "label": "getSessionCookieOptions()",
       "file_type": "code",
       "source_file": "lib/auth.ts",
-      "source_location": "L54",
+      "source_location": "L52",
       "id": "lib_auth_getsessioncookieoptions",
       "community": 31,
       "norm_label": "getsessioncookieoptions()"
@@ -2590,7 +2590,7 @@
       "label": "hasPrivateAccessCredentials()",
       "file_type": "code",
       "source_file": "lib/auth.ts",
-      "source_location": "L64",
+      "source_location": "L62",
       "id": "lib_auth_hasprivateaccesscredentials",
       "community": 31,
       "norm_label": "hasprivateaccesscredentials()"
@@ -3193,7 +3193,7 @@
       "label": "2. Generate Prisma client and push the schema",
       "file_type": "document",
       "source_file": "LOCAL_DB.md",
-      "source_location": "L20",
+      "source_location": "L21",
       "id": "debt_crusher_local_db_2_generate_prisma_client_and_push_the_schema",
       "community": 8,
       "norm_label": "2. generate prisma client and push the schema"
@@ -3202,7 +3202,7 @@
       "label": "code:bash (npm run prisma:generate)",
       "file_type": "document",
       "source_file": "LOCAL_DB.md",
-      "source_location": "L22",
+      "source_location": "L23",
       "id": "debt_crusher_local_db_codeblock_3",
       "community": 8,
       "norm_label": "code:bash (npm run prisma:generate)"
@@ -3211,7 +3211,7 @@
       "label": "3. Start the app",
       "file_type": "document",
       "source_file": "LOCAL_DB.md",
-      "source_location": "L29",
+      "source_location": "L30",
       "id": "debt_crusher_local_db_3_start_the_app",
       "community": 8,
       "norm_label": "3. start the app"
@@ -3220,7 +3220,7 @@
       "label": "code:bash (npm run dev)",
       "file_type": "document",
       "source_file": "LOCAL_DB.md",
-      "source_location": "L31",
+      "source_location": "L32",
       "id": "debt_crusher_local_db_codeblock_4",
       "community": 8,
       "norm_label": "code:bash (npm run dev)"
@@ -3229,7 +3229,7 @@
       "label": "4. Vercel",
       "file_type": "document",
       "source_file": "LOCAL_DB.md",
-      "source_location": "L37",
+      "source_location": "L38",
       "id": "debt_crusher_local_db_4_vercel",
       "community": 8,
       "norm_label": "4. vercel"
@@ -6155,9 +6155,9 @@
       "source_file": "app/signin/page.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_signin_page_tsx",
-      "target": "lib_auth_hasprivateaccesscredentials",
-      "confidence_score": 1.0
+      "target": "lib_auth_hasprivateaccesscredentials"
     },
     {
       "relation": "imports",
@@ -6253,9 +6253,9 @@
       "source_file": "app/api/auth/signin/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_api_auth_signin_route_ts",
-      "target": "lib_auth_hasprivateaccesscredentials",
-      "confidence_score": 1.0
+      "target": "lib_auth_hasprivateaccesscredentials"
     },
     {
       "relation": "imports",
@@ -14695,5 +14695,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4c208fa889d9ffaad1806d6aea564fecee32255a"
+  "built_at_commit": "9ff461fb1197de569148c2311e2b0ca9efe6f9e0"
 }
