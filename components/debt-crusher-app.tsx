@@ -7,6 +7,7 @@ import { CreditCardsView } from "@/components/credit-cards-view";
 import { DashboardView } from "@/components/dashboard-view";
 import { HistoryPanel } from "@/components/history-panel";
 import { ImportPanel } from "@/components/import-panel";
+import { ManualWorkflow } from "@/components/manual-workflow";
 import {
   ScreenshotReviewPanel,
   type ScreenshotReviewDraft,
@@ -31,8 +32,11 @@ import type {
 
 const views: { id: AppView; label: string }[] = [
   { id: "dashboard", label: "Dashboard" },
+  { id: "setup", label: "Setup" },
+  { id: "monthly-review", label: "Monthly Review" },
   { id: "credit-cards", label: "Credit Cards" },
   { id: "cash-accounts", label: "Cash Accounts" },
+  { id: "utilities", label: "Utilities" },
 ];
 
 export function DebtCrusherApp() {
@@ -59,6 +63,7 @@ export function DebtCrusherApp() {
     Array<{ id: string; tone: "success" | "error" | "warning"; message: string; count: number; createdAt: number }>
   >([]);
   const [loggingOut, startLogoutTransition] = useTransition();
+  const [reviewSummary, setReviewSummary] = useState<{ setupNeeded: boolean; monthlyReviewDue: boolean; lastCompletedAt: string | null } | null>(null);
   const backupInputRef = useRef<HTMLInputElement | null>(null);
 
   const activeView = (searchParams.get("view") as AppView) || "dashboard";
@@ -132,13 +137,14 @@ export function DebtCrusherApp() {
 
     async function loadPortfolio() {
       try {
-        const response = await fetch("/api/portfolio", { cache: "no-store" });
+        const [response, reviewResponse] = await Promise.all([fetch("/api/portfolio", { cache: "no-store" }), fetch("/api/reviews", { cache: "no-store" })]);
         const payload = (await response.json()) as {
           portfolio?: PortfolioState;
           snapshots?: ActivitySnapshot[];
           recentEvents?: ActivityEvent[];
           error?: string;
         };
+        const reviewPayload = await reviewResponse.json() as { setupNeeded?: boolean; monthlyReviewDue?: boolean; lastCompletedAt?: string | null };
 
         if (!response.ok) {
           throw new Error(payload.error ?? "Failed to load portfolio");
@@ -150,7 +156,9 @@ export function DebtCrusherApp() {
           setSnapshots(payload.snapshots ?? []);
           setRecentEvents(payload.recentEvents ?? []);
           setDirty(false);
+          setReviewSummary({ setupNeeded: reviewPayload.setupNeeded ?? true, monthlyReviewDue: reviewPayload.monthlyReviewDue ?? false, lastCompletedAt: reviewPayload.lastCompletedAt ?? null });
           setLoaded(true);
+          if (!searchParams.get("view") && (reviewPayload.setupNeeded ?? true)) router.replace("/?view=setup");
         }
       } catch (error) {
         if (!cancelled) {
@@ -167,7 +175,7 @@ export function DebtCrusherApp() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [router, searchParams]);
 
   function handleAddCard() {
     replaceDraft({
@@ -632,8 +640,8 @@ export function DebtCrusherApp() {
         <div className="primary-actions-copy">
           <p className="eyebrow">Primary Workflow</p>
           <p className="subtle-copy">
-            Add records directly here. Workbook import stays available as a backup
-            or seed path.
+            Add records directly and review them monthly. Spreadsheet tools now live
+            under Utilities.
           </p>
         </div>
         <div className="toolbar-actions">
@@ -645,17 +653,12 @@ export function DebtCrusherApp() {
           </button>
           <button
             className="secondary-button"
-            onClick={() => router.push("/?view=dashboard")}
+            onClick={() => router.push("/?view=setup")}
             type="button"
           >
-            Edit Setup
+            Guided Setup
           </button>
-          <button className="secondary-button" onClick={handleExportBackup} type="button">
-            Export Backup
-          </button>
-          <button className="secondary-button" onClick={handleExportWorkbook} type="button">
-            Export Workbook
-          </button>
+          <button className="secondary-button" onClick={() => router.push("/?view=monthly-review")} type="button">Monthly Review</button>
           <input
             ref={backupInputRef}
             type="file"
@@ -672,13 +675,6 @@ export function DebtCrusherApp() {
           />
           <button
             className="secondary-button"
-            onClick={() => backupInputRef.current?.click()}
-            type="button"
-          >
-            Restore Backup
-          </button>
-          <button
-            className="secondary-button"
             disabled={!dirty}
             onClick={resetUnsavedChanges}
             type="button"
@@ -688,14 +684,10 @@ export function DebtCrusherApp() {
         </div>
       </section>
 
-      <ImportPanel
-        importing={isPending}
-        screenshotImporting={screenshotImporting}
-        importMode={importMode}
-        onImportModeChange={setImportMode}
-        onImport={handleImport}
-        onScreenshotImport={handleScreenshotImport}
-      />
+      {activeView === "utilities" ? <>
+        <section className="primary-actions-panel"><div><p className="eyebrow">Utilities</p><h2>Backups and optional spreadsheet tools</h2><p className="subtle-copy">Manual entry remains authoritative. Review imported changes before saving.</p></div><div className="toolbar-actions"><button className="secondary-button" onClick={handleExportBackup} type="button">Export Backup</button><button className="secondary-button" onClick={handleExportWorkbook} type="button">Export Workbook</button><button className="secondary-button" onClick={() => backupInputRef.current?.click()} type="button">Restore Backup</button></div></section>
+        <ImportPanel importing={isPending} screenshotImporting={screenshotImporting} importMode={importMode} onImportModeChange={setImportMode} onImport={handleImport} onScreenshotImport={handleScreenshotImport} />
+      </> : null}
 
       {screenshotReview ? (
         <ScreenshotReviewPanel
@@ -768,7 +760,7 @@ export function DebtCrusherApp() {
           ) : null}
 
           {activeView === "dashboard" ? (
-            <DashboardView
+            <>{reviewSummary?.monthlyReviewDue ? <section className="control-strip"><div><p className="eyebrow">Monthly Review Due</p><h2>Confirm this month&apos;s balances and payment details.</h2><p className="subtle-copy">Your last completed review was {reviewSummary.lastCompletedAt ? new Date(reviewSummary.lastCompletedAt).toLocaleDateString() : "not recorded"}.</p></div><button className="primary-button" onClick={() => router.push("/?view=monthly-review")}>Start monthly review</button></section> : null}<DashboardView
               snapshot={computedSnapshot}
               activitySnapshots={snapshots}
               setup={draftPortfolio.setup}
@@ -781,8 +773,10 @@ export function DebtCrusherApp() {
                 })
               }
               onSave={() => handleSave("Settings update")}
-            />
+            /></>
           ) : null}
+          {activeView === "setup" ? <ManualWorkflow mode="setup" setup={draftPortfolio.setup} onSetupChange={(setup) => replaceDraft({ ...draftPortfolio, setup })} onSaveSetup={() => handleSave("Setup preferences")} onFinished={() => { setReviewSummary((current) => current ? { ...current, setupNeeded: false } : current); router.push("/?view=dashboard"); }} /> : null}
+          {activeView === "monthly-review" ? <ManualWorkflow mode="review" setup={draftPortfolio.setup} onSetupChange={(setup) => replaceDraft({ ...draftPortfolio, setup })} onSaveSetup={() => handleSave("Monthly settings")} onFinished={() => { setReviewSummary((current) => current ? { ...current, monthlyReviewDue: false, lastCompletedAt: new Date().toISOString() } : current); router.push("/?view=dashboard"); }} /> : null}
           {activeView === "credit-cards" ? (
             <CreditCardsView
               accounts={computedSnapshot.creditAccounts}

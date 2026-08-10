@@ -1,55 +1,51 @@
-# Project Status
+# Debt Crusher Project Status
 
-- Review State: Reviewed
-- Source Type: project_status
-- Confidence: high
-- Last Updated: 2026-05-31T08:10:00.000Z
+- Review state: Reviewed
+- Confidence: High
+- Last updated: 2026-08-09
+- Status: Working
 
-## What This Repo Is For
-Debt Crusher is a forms-first finance workspace for managing credit cards, cash accounts, payoff priorities, and progress history.
+## Purpose
 
-## Category
-Finance / decision support
+Debt Crusher is a private, forms-first financial operations console for managing credit cards, cash accounts, autopay funding, promotional balances, recurring cash flow, payoff priorities, forecasts, and review history.
 
-## Benefit
-Helps make clearer debt-payoff decisions and track progress without falling back to spreadsheets.
+## Implemented
 
-## Current Status
-Implemented: - forms-first CRUD flow for cards, cash accounts, and settings - explainable recommendation engine baseline - history snapshots and trend charts - searchable institution picker - workbook import/export and JSON backup restore/export - screenshot OCR import with review-before-save and stored source screenshots Still planned: - native iPhone wrapper / true Share Sheet target if we want direct iOS intake - richer recommendation logic - stronger historical comparison views - more explicit event-level tracking - better notification polish - optional hosted persistence migration later
+- app-owned manual entry with workbook, JSON, and screenshot utilities as secondary paths
+- local SQLite persistence and production PostgreSQL/Neon schema support
+- private sign-in and signed session-cookie protection
+- normalized operations entities with legacy compatibility
+- additive migration baselines, stable-ID backfill, verification, and rollback documentation
+- six-step setup and resumable monthly review
+- explicit unknown-value and data-quality handling
+- multiple promotions per card and autopay-to-funding-account relationships
+- recurring income, expense, transfer, and debt-payment configuration
+- 35-day cash forecasts, account shortfall warnings, promo pace, and cash-safe extra-payment guidance
+- audit logs, review records, snapshots, activity events, and review-freshness indicators
+- explainable payoff ranking and Avalanche, Snowball, Promo-first, and custom strategies
+- workbook import/export, JSON backup/restore, and screenshot OCR review
 
-## Current Plan
-Turn Debt Crusher into a forms-first finance console where the app is the primary source of truth, workbook import is a secondary bootstrap/backup path, and saved history supports payoff decisions and progress tracking.
+## Remaining
 
-## Done
-- manages credit cards, cash accounts, and setup values in a forms-first UI - stores data locally with Prisma and SQLite for development - computes dashboard metrics such as total balance, utilization, cash above minimums, and top payoff target - explains the top recommendation rather than only giving a raw rank - supports payoff strategy modes such as avalanche, snowball, promo-first, and custom weighting - keeps snapshot history, trend views, and event-style save history - supports workbook import/export plus JSON backup export/restore - supports screenshot OCR intake, review-before-save, and saved screenshot artifacts
+- production Neon/Vercel provisioning and authenticated end-to-end validation
+- dedicated payment, balance-update, and cash-transfer event entry
+- richer month-over-month comparisons and a unified event timeline
+- payoff-date and interest-cost simulation
+- import conflict preview, notification polish, and faster mobile entry
+- optional read-only Plaid connectivity to reduce manual account updates, subject to security, pricing, and data-matching review
+- optional native iPhone Share Sheet integration
 
-## Next Step
-Decide whether to keep screenshot intake web-only or add a native iPhone wrapper with a true Share Sheet target and Shortcut entrypoint. After that: event-level tracking and optional hosted persistence migration.
+## Current Priority
 
-## Working Status
-Status: Working
-Reason: Screenshot OCR import, review-before-save flow, and screenshot artifact storage shipped this session.
+Rehearse and validate the additive migration path against a disposable database copy or Neon branch, then complete the production rollout. Product development should next focus on explicit financial events and richer historical comparisons.
 
-## Completion
-Percentage: 97
-Rationale: Shipped this session: screenshot OCR import, review-before-save editing, saved screenshot artifacts, and history links back to source screenshots. Remaining: native iPhone wrapper if desired, event-level tracking, optional Neon migration.
+## Main Risk
 
-## Attention Now
-Level: Medium
-Why: Core daily-use workflow is now stronger for manual bank screenshot capture. The main open product decision is whether to stay web-only or add a native iPhone shell for direct Share Sheet intake.
-
-## Main Blocker
-No daily-use blocker. The main open gap is native iPhone integration; current screenshot intake still starts from the web app upload path.
-
-## Ecosystem
-Decision support ecosystem
-
-## Merge Candidate
-Candidate: No
-Reason: No merge recommendation has been explicitly reviewed for this repo yet.
+There is no known daily-use architecture blocker. The material operational risk is applying schema and backfill changes to real financial history without first completing the documented backup, rehearsal, and count-verification steps.
 
 ## Evidence
-- README.md
-- PLAN.md
-- Plan.md
-- graphify-out/repo-semantic-summary.md
+
+- [README.md](./README.md)
+- [Plan.md](./Plan.md)
+- [USER_GUIDE.md](./USER_GUIDE.md)
+- [prisma/MIGRATIONS.md](./prisma/MIGRATIONS.md)

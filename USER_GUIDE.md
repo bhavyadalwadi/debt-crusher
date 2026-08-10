@@ -1,244 +1,182 @@
 # Debt Crusher User Guide
 
 ## What This App Is
-Debt Crusher is a local debt payoff workspace.
 
-The main workflow is:
-- enter your data directly in the app
-- save your portfolio locally
-- use the dashboard to decide what needs attention next
+Debt Crusher is a private financial operations workspace. Enter current values manually, review them on a regular cadence, and use the dashboard to see upcoming activity, cash pressure, promotion risk, and payoff priorities.
 
-Workbook import exists as a backup or starting point, not as the main way to operate the app.
+Manual entry is the source of current financial truth. Workbook, JSON, and screenshot tools are for bootstrap, backup, portability, or review; imported values should not be assumed current until confirmed.
 
-## What The App Saves
-The app stores:
-- your current portfolio
-- saved snapshots of that portfolio over time
-- change history and recent save-driven events
+## What the App Saves
 
-For local development, this data is stored in SQLite through Prisma.
+- payoff preferences and cash-buffer settings
+- cash accounts and current balances
+- credit cards, statement details, APRs, limits, and due days
+- card autopay rules and their funding accounts
+- multiple promotional balances per card
+- recurring income, expenses, transfers, and debt payments
+- setup and monthly-review progress
+- snapshots, activity events, audit records, and screenshot artifacts
 
-## First-Time Setup
+Local development stores this data in SQLite. Production is designed for PostgreSQL/Neon.
+
+Never enter full account numbers, routing numbers, card numbers, CVVs, or banking credentials. Store only institution, nickname/product, and last four digits.
+
+## First-Time Local Setup
+
 From the project folder:
 
 ```bash
 cp .env.example .env
-npm run prisma:generate
-npm run db:push
+npm install
+npm run db:migrate
 npm run dev
 ```
 
-Then open:
+Set `DATABASE_URL`, `PRIVATE_ACCESS_USERNAME`, `PRIVATE_ACCESS_PASSWORD`, and `SESSION_SECRET` in `.env`, then open [http://localhost:3000](http://localhost:3000) and sign in.
 
-[http://localhost:3000](http://localhost:3000)
+If the local database already contains financial history, do not recreate it. Follow [prisma/MIGRATIONS.md](./prisma/MIGRATIONS.md).
+
+## Recommended First Setup
+
+On an empty portfolio, open **Setup** and complete the six steps:
+
+1. Enter the extra-payment budget, promotion warning window, cash-buffer preference, and payoff strategy.
+2. Add every active cash account, including its current balance, required minimum, optional target, and as-of date.
+3. Add every active credit card, including current and statement balances, minimum due, APR, credit limit, due day, and as-of date.
+4. Confirm each card's autopay mode, funding account, and execution day.
+5. Add each known promotional balance. A card may have more than one promotion.
+6. Review warnings and finish setup.
+
+Enter cash accounts before cards so each card's funding account can be selected. Use **Save and add another** when entering several records.
+
+Statement balance, minimum payment, autopay, or promotion terms may be left unknown. The final review flags missing values instead of inventing them.
 
 ## Main Screens
-### Dashboard
-Use this as the decision screen.
 
-It shows:
-- immediate payoff focus
-- total credit balance
-- weighted utilization
-- cash above minimums
-- danger, warning, and watch items
-- trend charts
-- setup controls
+### Dashboard
+
+Use the dashboard as the decision screen. It includes:
+
+- immediate payoff focus, portfolio totals, utilization, and trend history
+- **Today** and **Next 7 Days** expected account activity
+- **Cash Health**, a 35-day forecast for each active cash account
+- funding shortfall and missing-payment-data warnings
+- **Promo Deadlines** with required payoff pace and risk reasons
+- planned extra-payment budget compared with the currently cash-safe amount
+- quick statement, minimum, due-date, autopay, promotion, and recurring-cash-flow configuration
+
+The forecast includes configured recurring transactions and expected card payments. If a required payment amount is unknown, the app reports it as unknown and does not reduce projected cash by a guessed amount.
 
 ### Credit Cards
-Use this to add, edit, save, or remove cards.
 
-It includes:
-- sortable card table
-- detail form for the selected card
-- institution search picker
-- ranking and status feedback
+Use this screen for the existing card list and detail editor. It includes sorting, institution search, ranking/status feedback, and a review-freshness label:
+
+- **Reviewed this month**
+- **Needs review**
+- the last review date
 
 ### Cash Accounts
-Use this to add, edit, save, or remove checking and savings accounts.
 
-It includes:
-- account table
-- detail form for the selected account
-- institution search picker
-- safe cash calculations
+Use this screen for checking and savings account details, required cash minimums, safe-cash calculations, institution search, and review freshness.
 
-## Important Save Behavior
-Edits are **not** saved automatically to the database on every keystroke.
+### Utilities
 
-What happens:
-- typing in a form updates the local draft immediately
-- the app marks the portfolio as having unsaved changes
-- nothing is persisted until you click:
-  - `Save Cards`
-  - `Save Accounts`
-  - `Save Settings`
+Use Utilities for workbook import/export, JSON backup/restore, templates, and screenshot-assisted entry. These remain secondary to the manual workflow.
 
-If you leave without saving, the draft changes are not part of saved history.
+## Monthly Review
 
-## How To Add A Credit Card
-1. Click `Add Card`.
-2. Select the new row in the card list if needed.
-3. Fill in the card form on the right.
-4. Use the `Institution` field search to find a known issuer.
-   It supports aliases like `Amex`, `BofA`, and `US Bank`.
-5. Enter your own `Nickname`.
-   This is your label for the card.
-6. Fill in balance, APR, due date, promo details, autopay details, and notes.
-7. Click `Save Cards`.
+Run **Monthly Review** once per calendar month.
 
-## How To Add A Cash Account
-1. Click `Add Cash Account` or `Add Account`.
-2. Select the new account if needed.
-3. Fill in the account form.
-4. Use the `Institution` search to find a known bank, or type your own.
-5. Set the real day-end minimum you do not want to breach.
-6. Click `Save Accounts`.
+The review includes every active cash account, credit card, and recurring transaction. For each item you can:
 
-## Institution Search
-The institution picker is searchable and still allows custom text.
+- update current values and their as-of date
+- confirm that the saved values are unchanged
+- mark unavailable values as unknown
+- skip the item for this review
 
-It works like this:
-- type part of a bank or issuer name
-- type a common alias like `Amex`, `BofA`, `Schwab`, or `SoFi`
-- choose the suggested canonical institution name
-- or ignore suggestions and type your own institution
+Progress is saved, so an interrupted review can resume. Completing the review creates durable review/audit history and a portfolio snapshot. Card and cash lists then show the updated review date.
 
-The `Nickname` or `Account Name` remains fully user-defined.
+## Fast Operational Updates
 
-## Setup And Strategy
-Open the `Dashboard` and use the setup panel to control how the app prioritizes cards.
+The dashboard operations console lets you update a card's statement balance, minimum due, due day, autopay mode, funding account, execution day, and as-of date without opening the full legacy editor.
 
-### Setup fields
-- `Extra payment budget`
-- `Promo soon days`
-- `Global cash buffer override`
-- `Payoff strategy`
+You can also add:
 
-### Payoff strategies
-- `Avalanche`
-  Focuses more on expensive debt first.
-- `Snowball`
-  Pushes smaller balances higher for faster wins.
-- `Promo-first`
-  Pushes expiring promotional balances higher.
-- `Custom`
-  Lets you set your own weighting values.
+- recurring income
+- recurring expenses
+- transfers between cash accounts
+- recurring debt payments
+- card-specific promotional offers, including deferred-interest terms and safety days
 
-If you choose `Custom`, extra weight inputs appear. Higher values make that factor matter more in ranking.
+Recurring rules use a day of month. In shorter months, the forecast uses the last valid calendar day.
 
-## Status Meaning
-### Danger
-Needs urgent attention.
+## Payoff Strategies and Status
 
-Common reasons:
-- active interest pressure
-- expired promo
-- very high utilization
-- cash below minimum buffer
+- **Avalanche** emphasizes higher-interest balances.
+- **Snowball** emphasizes smaller balances.
+- **Promo-first** elevates promotional balances approaching their deadlines.
+- **Custom** lets you tune the ranking weights.
 
-### Warning
-Needs attention soon.
+Legacy card status labels are:
 
-Common reasons:
-- promo ending soon
-- due date close
-- elevated utilization
+- **Danger** — urgent interest, expired promotion, severe utilization, or cash pressure
+- **Warning** — near-term promotion, due-date, or utilization pressure
+- **Watch** — worth monitoring, often because statement-balance autopay reduces immediate urgency
+- **OK** — stable and not notable
+- **Paid** — zero balance
 
-### Watch
-Not urgent, but still worth monitoring.
+Promotion risk is assessed separately using the balance, deadline or target date, safety buffer, deferred-interest flag, and known planned payment pace.
 
-Common case:
-- statement-balance autopay is active, so the card is not treated like immediate danger
+## Save Behavior
 
-### OK
-Stable enough for now.
+The legacy card, cash, and setup editors use a draft model. Typing marks the portfolio unsaved; click **Save Cards**, **Save Accounts**, or **Save Settings** to persist those edits and include them in history. **Reset Unsaved** restores the last saved portfolio.
 
-### Paid
-Zero-balance account.
+The Setup, Monthly Review, fast-update, promotion, and recurring-transaction workflows save through their individual action buttons.
 
-## Importing A Workbook
-Workbook import is secondary.
+## Import, Backup, and Export
 
-Use it when:
-- you already track data in a spreadsheet
-- you want to seed the app
-- you want to restore from a workbook-style snapshot
+### Workbook
 
-### Import steps
-1. Use the `Import Backup Workbook` area.
-2. Choose `Replace current portfolio` or `Merge into current portfolio`.
-3. Upload your workbook.
-
-### Template
-If you need the expected structure, download:
-
-[public/debt-crusher-import-template.xlsx](/Users/basho00/_github/_personal/debt-crusher/public/debt-crusher-import-template.xlsx)
-
-### Import notes
-- replace mode overwrites the working portfolio
-- merge mode keeps existing records and adds or updates matching ones
-- the app validates required sheets and columns
+- **Replace** overwrites the working portfolio after confirmation.
+- **Merge** keeps existing records and adds or updates matching records.
+- the importer validates required sheets, columns, and bad summary rows
 - workbook import becomes part of saved history
 
-## Backup And Export
-### Export Backup
-Downloads a JSON backup of the app-owned portfolio and snapshot history.
+The template is available at [public/debt-crusher-import-template.xlsx](./public/debt-crusher-import-template.xlsx).
 
-Use this for:
-- local backups
-- portability
-- later restore
+### JSON backup
 
-### Restore Backup
-Loads a previously exported JSON backup into the app.
+- **Export Backup** downloads app-owned portfolio and history data.
+- **Restore Backup** replaces the working portfolio after confirmation.
 
-This replaces the current working portfolio after confirmation.
+### Screenshot-assisted entry
 
-### Export Workbook
-Downloads the current app-owned data as an Excel workbook.
+Upload a screenshot for OCR extraction, review and correct the extracted fields, then save with replace or merge behavior. The source screenshot is retained as an artifact linked from history.
 
-Use this when:
-- you want a spreadsheet copy
-- you want to archive a workbook snapshot
-- you want to move data back into an Excel-based process
+Do not upload screenshots containing full account/card numbers, routing numbers, credentials, or other unnecessary secrets.
 
-## History Panel
-The history rail shows:
-- saved snapshots
-- balance deltas
-- added/removed accounts
-- setup changes
-- recent save-driven events
+## Recommended Ongoing Workflow
 
-This helps answer:
-- what changed since the last save
-- which balances moved
-- when setup or accounts changed
+1. Check Today, Next 7 Days, cash warnings, and promotion warnings.
+2. Correct missing statement or autopay details when a data-quality action appears.
+3. Keep recurring cash flow and funding-account links current.
+4. Run Monthly Review once per month and confirm every active record.
+5. Use the lower of the planned extra-payment budget and cash-safe amount when deciding what can leave cash accounts.
+6. Export a JSON backup before major imports, restores, or database upgrades.
 
-## Reset Unsaved
-`Reset Unsaved` discards the current draft and restores the last saved portfolio.
+## Current Limits
 
-Use it if:
-- you edited a lot of fields and want to back out
-- you imported or typed something incorrectly
-
-## Recommended User Workflow
-1. Add your cash accounts.
-2. Add your credit cards.
-3. Set your payoff strategy and cash rules in `Dashboard`.
-4. Save everything.
-5. Use the `Immediate Focus` card on the dashboard.
-6. Update balances and cash periodically.
-7. Save after each meaningful update so history stays useful.
-
-## Known Limits In The Current Version
 - no automatic bank sync
-- no write-back to your original workbook
-- no explicit payment-entry workflow yet
-- no projected payoff date simulator yet
-- comparisons are snapshot-based, not a full ledger
+- optional Plaid-based bank connectivity is on the future roadmap but is not implemented
+- no dedicated payment/cash-transfer ledger entry yet
+- no projected payoff-date and interest-cost simulator yet
+- historical comparison is primarily snapshot- and audit-based
+- no native iPhone Share Sheet target; screenshot intake starts with web upload
 
-## Related Docs
-- Local DB setup: [LOCAL_DB.md](/Users/basho00/_github/_personal/debt-crusher/LOCAL_DB.md)
-- Product plan: [Plan.md](/Users/basho00/_github/_personal/debt-crusher/Plan.md)
+## Related Documentation
+
+- [README](./README.md)
+- [Local database notes](./LOCAL_DB.md)
+- [Product plan](./Plan.md)
+- [Current status](./STATUS.md)
+- [Migration and rollback guide](./prisma/MIGRATIONS.md)

@@ -59,12 +59,17 @@ export function CreditCardsView({
   const [selectedCardId, setSelectedCardId] = useState<string | null>(
     accounts[0]?.id ?? null,
   );
+  const [reviewMetadata, setReviewMetadata] = useState<Record<string, { lastReviewedAt: string | null } | null>>({});
 
   useEffect(() => {
     if (!selectedCardId && accounts[0]) {
       setSelectedCardId(accounts[0].id);
     }
   }, [accounts, selectedCardId]);
+
+  useEffect(() => {
+    fetch("/api/operations/config").then((response) => response.json()).then((payload: { cards?: Array<{ id: string; review: { lastReviewedAt: string | null } | null }> }) => setReviewMetadata(Object.fromEntries((payload.cards ?? []).map((card) => [card.id, card.review])))).catch(() => undefined);
+  }, [accounts]);
 
   const filteredAccounts = useMemo(() => {
     return accounts.filter((account) => {
@@ -118,6 +123,15 @@ export function CreditCardsView({
     columnHelper.accessor("payment_due", {
       header: "Due",
       cell: (info) => formatShortDate(info.getValue()),
+    }),
+    columnHelper.display({
+      id: "review",
+      header: "Review",
+      cell: (info) => {
+        const reviewed = reviewMetadata[info.row.original.id]?.lastReviewedAt;
+        const thisMonth = reviewed?.slice(0, 7) === new Date().toISOString().slice(0, 7);
+        return <span className={`review-chip ${thisMonth ? "complete" : "due"}`}>{thisMonth ? "Reviewed this month" : reviewed ? `Last ${new Date(reviewed).toLocaleDateString()}` : "Needs review"}</span>;
+      },
     }),
   ];
 

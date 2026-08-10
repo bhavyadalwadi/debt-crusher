@@ -13,6 +13,7 @@ import {
   YAxis,
 } from "recharts";
 import { StatusBadge } from "@/components/status-badge";
+import { OperationsPanel } from "@/components/operations-panel";
 import { currencyFormatter, formatPercentFromValue } from "@/lib/format";
 import { validateSetup } from "@/lib/form-validation";
 import type {
@@ -166,6 +167,8 @@ export function DashboardView({
           <strong>{currencyFormatter.format(dashboardSummary.extra_payment_budget)}</strong>
         </article>
       </div>
+
+      <OperationsPanel />
 
       <div className="two-column-grid">
         <section className="signal-panel">

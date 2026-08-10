@@ -8,16 +8,22 @@ datasource db {
 }
 
 model Portfolio {
-  id                       String          @id
+  id                       String                 @id
   extraPaymentBudget       Float
   promoEndSoonDays         Int
   globalCashBufferOverride Float?
-  payoffStrategy           String          @default("avalanche")
+  payoffStrategy           String                 @default("avalanche")
   customStrategyJson       String?
-  updatedAt                DateTime        @updatedAt
-  createdAt                DateTime        @default(now())
+  updatedAt                DateTime               @updatedAt
+  createdAt                DateTime               @default(now())
   creditAccounts           CreditAccount[]
   cashAccounts             CashAccount[]
+  institutions             FinancialInstitution[]
+  creditCards              CreditCard[]
+  recurringTransactions    RecurringTransaction[]
+  expectedPayments         ExpectedPayment[]
+  auditLogs                AuditLog[]
+  financialReviews         FinancialReview[]
 }
 
 model CreditAccount {
@@ -45,7 +51,7 @@ model CreditAccount {
 }
 
 model CashAccount {
-  id                       String    @id
+  id                       String                 @id
   portfolioId              String
   institution              String
   accountName              String
@@ -53,13 +59,287 @@ model CashAccount {
   currentBalance           Float
   minDayEndBalanceRequired Float
   position                 Int
-  portfolio                Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  institutionId            String?
+  nickname                 String?
+  lastFour                 String?
+  targetBalance            Decimal?
+  active                   Boolean                @default(true)
+  balanceAsOf              DateTime?
+  balanceSource            String?
+  portfolio                Portfolio              @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  financialInstitution     FinancialInstitution?  @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+  autopayRules             AutopayRule[]
+  recurringSources         RecurringTransaction[] @relation("RecurringSource")
+  recurringDestinations    RecurringTransaction[] @relation("RecurringDestination")
+  expectedPayments         ExpectedPayment[]
 
   @@index([portfolioId, position])
 }
 
+enum CashAccountType {
+  CHECKING
+  SAVINGS
+  MONEY_MARKET
+  OTHER
+}
+
+enum CreditCardStatus {
+  ACTIVE
+  PAID_OFF
+  CLOSED
+  TRANSFERRED
+  SUSPENDED
+}
+
+enum AutopayMode {
+  STATEMENT_BALANCE
+  MINIMUM_PAYMENT
+  FIXED_AMOUNT
+  PROMO_TARGET
+  CUSTOM
+  DISABLED
+  UNKNOWN
+}
+
+enum PromoType {
+  BALANCE_TRANSFER
+  PURCHASE_PROMO
+  APR_PROMO
+  DEFERRED_INTEREST
+  OTHER
+  UNKNOWN
+}
+
+enum RecurringTransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+  DEBT_PAYMENT
+}
+
+enum PaymentStatus {
+  EXPECTED
+  SCHEDULED
+  POSTED
+  CLEARED
+  FAILED
+  CANCELLED
+  RECONCILED
+}
+
+enum PromoRiskStatus {
+  SAFE
+  WATCH
+  AT_RISK
+  URGENT
+  EXPIRED
+  PAID_OFF
+  UNKNOWN
+}
+
+enum FinancialReviewType {
+  SETUP
+  MONTHLY
+}
+
+enum FinancialReviewStatus {
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum FinancialReviewItemStatus {
+  PENDING
+  CONFIRMED
+  UPDATED
+  SKIPPED
+  UNKNOWN
+}
+
+model FinancialReview {
+  id           String                @id @default(cuid())
+  portfolioId  String
+  type         FinancialReviewType
+  reviewMonth  String
+  status       FinancialReviewStatus @default(IN_PROGRESS)
+  currentStep  Int                   @default(1)
+  warningCount Int                   @default(0)
+  startedAt    DateTime              @default(now())
+  completedAt  DateTime?
+  snapshotId   String?               @unique
+  portfolio    Portfolio             @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  snapshot     ActivitySnapshot?     @relation(fields: [snapshotId], references: [id], onDelete: SetNull)
+  items        FinancialReviewItem[]
+
+  @@unique([portfolioId, type, reviewMonth])
+  @@index([portfolioId, status])
+}
+
+model FinancialReviewItem {
+  id           String                    @id @default(cuid())
+  reviewId     String
+  entityType   String
+  entityId     String
+  entityName   String
+  status       FinancialReviewItemStatus @default(PENDING)
+  asOfDate     DateTime?
+  beforeJson   String?
+  afterJson    String?
+  warningsJson String?
+  reviewedAt   DateTime?
+  review       FinancialReview           @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, entityType, entityId])
+  @@index([entityType, entityId, reviewedAt])
+}
+
+model FinancialInstitution {
+  id            String        @id @default(cuid())
+  portfolioId   String
+  canonicalName String
+  displayName   String
+  active        Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  portfolio     Portfolio     @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  cashAccounts  CashAccount[]
+  creditCards   CreditCard[]
+
+  @@unique([portfolioId, canonicalName])
+}
+
+model CreditCard {
+  id                  String                @id
+  portfolioId         String
+  institutionId       String?
+  issuerName          String
+  product             String?
+  brand               String?
+  nickname            String
+  lastFour            String?
+  status              CreditCardStatus      @default(ACTIVE)
+  currentBalance      Decimal               @default(0)
+  statementBalance    Decimal?
+  minimumPaymentDue   Decimal?
+  creditLimit         Decimal?
+  purchaseApr         Decimal               @default(0)
+  statementClosingDay Int?
+  paymentDueDay       Int?
+  balanceAsOf         DateTime?
+  balanceSource       String?
+  notes               String?
+  position            Int                   @default(0)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  portfolio           Portfolio             @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  institution         FinancialInstitution? @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+  autopayRule         AutopayRule?
+  promotions          PromotionalOffer[]
+  expectedPayments    ExpectedPayment[]
+
+  @@index([portfolioId, position])
+}
+
+model AutopayRule {
+  id                  String            @id @default(cuid())
+  creditCardId        String            @unique
+  fundingAccountId    String?
+  mode                AutopayMode       @default(UNKNOWN)
+  executionDay        Int?
+  executionOffsetDays Int               @default(0)
+  fixedAmount         Decimal?
+  active              Boolean           @default(true)
+  notes               String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  creditCard          CreditCard        @relation(fields: [creditCardId], references: [id], onDelete: Cascade)
+  fundingAccount      CashAccount?      @relation(fields: [fundingAccountId], references: [id], onDelete: Restrict)
+  expectedPayments    ExpectedPayment[]
+}
+
+model PromotionalOffer {
+  id                    String     @id @default(cuid())
+  creditCardId          String
+  type                  PromoType  @default(UNKNOWN)
+  promotionalApr        Decimal?
+  standardAprAfterPromo Decimal?
+  startDate             DateTime?
+  endDate               DateTime?
+  originalPromoBalance  Decimal?
+  currentPromoBalance   Decimal?
+  balanceTransferFee    Decimal?
+  deferredInterest      Boolean    @default(false)
+  targetPayoffDate      DateTime?
+  safetyBufferDays      Int        @default(14)
+  active                Boolean    @default(true)
+  notes                 String?
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+  creditCard            CreditCard @relation(fields: [creditCardId], references: [id], onDelete: Cascade)
+
+  @@index([creditCardId, endDate])
+}
+
+model RecurringTransaction {
+  id                   String                   @id @default(cuid())
+  portfolioId          String
+  name                 String
+  type                 RecurringTransactionType
+  amount               Decimal
+  dayOfMonth           Int
+  sourceAccountId      String?
+  destinationAccountId String?
+  category             String?
+  active               Boolean                  @default(true)
+  notes                String?
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+  portfolio            Portfolio                @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  sourceAccount        CashAccount?             @relation("RecurringSource", fields: [sourceAccountId], references: [id], onDelete: Restrict)
+  destinationAccount   CashAccount?             @relation("RecurringDestination", fields: [destinationAccountId], references: [id], onDelete: Restrict)
+
+  @@index([portfolioId, dayOfMonth])
+}
+
+model ExpectedPayment {
+  id               String        @id @default(cuid())
+  portfolioId      String
+  creditCardId     String
+  autopayRuleId    String?
+  fundingAccountId String?
+  dueDate          DateTime
+  executionDate    DateTime
+  amount           Decimal?
+  unknownReason    String?
+  status           PaymentStatus @default(EXPECTED)
+  occurrenceKey    String        @unique
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  portfolio        Portfolio     @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  creditCard       CreditCard    @relation(fields: [creditCardId], references: [id], onDelete: Cascade)
+  autopayRule      AutopayRule?  @relation(fields: [autopayRuleId], references: [id], onDelete: SetNull)
+  fundingAccount   CashAccount?  @relation(fields: [fundingAccountId], references: [id], onDelete: Restrict)
+
+  @@index([portfolioId, executionDate])
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  portfolioId String
+  entityType  String
+  entityId    String
+  action      String
+  beforeJson  String?
+  afterJson   String?
+  source      String
+  occurredAt  DateTime  @default(now())
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioId, occurredAt])
+  @@index([entityType, entityId])
+}
+
 model ActivitySnapshot {
-  id                   String   @id @default(cuid())
+  id                   String                    @id @default(cuid())
   source               String
   label                String
   filename             String
@@ -69,29 +349,30 @@ model ActivitySnapshot {
   cashAccountsJson     String
   dashboardSummaryJson String
   changeDetailJson     String?
-  createdAt            DateTime @default(now())
+  createdAt            DateTime                  @default(now())
   events               ActivityEvent[]
   importArtifact       ScreenshotImportArtifact?
+  financialReview      FinancialReview?
 
   @@index([importedAt])
 }
 
 model ScreenshotImportArtifact {
-  id                String           @id @default(cuid())
-  snapshotId        String           @unique
-  fileName          String
-  mimeType          String
-  imageData         Bytes
-  extractedText     String
-  extractionJson    String
-  createdAt         DateTime         @default(now())
-  snapshot          ActivitySnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  id             String           @id @default(cuid())
+  snapshotId     String           @unique
+  fileName       String
+  mimeType       String
+  imageData      Bytes
+  extractedText  String
+  extractionJson String
+  createdAt      DateTime         @default(now())
+  snapshot       ActivitySnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
 
   @@index([createdAt])
 }
 
 model ActivityEvent {
-  id           String   @id
+  id           String           @id
   snapshotId   String
   kind         String
   entityType   String
@@ -101,7 +382,7 @@ model ActivityEvent {
   summary      String
   metadataJson String?
   occurredAt   DateTime
-  createdAt    DateTime @default(now())
+  createdAt    DateTime         @default(now())
   snapshot     ActivitySnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
 
   @@index([occurredAt])

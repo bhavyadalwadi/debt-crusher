@@ -1,63 +1,84 @@
 # Repo Semantic Summary - debt-crusher
 
-Generated: 2026-05-19 21:48 UTC
+Generated: 2026-08-09
 
 ## What This Repo Is For
-Debt Crusher is a forms-first finance workspace for managing credit cards, cash accounts, payoff priorities, and progress history.
+
+Debt Crusher is a private, forms-first financial operations console for managing cash accounts, credit cards, autopay funding, promotional balances, recurring cash flow, payoff priorities, forecasts, and review history.
 
 ## Snapshot
-- Domains: finance, ai, web app, devops
-- Tech stack: Node.js, Next.js, React, TypeScript, CSS, JavaScript
+
+- Domains: finance, decision support, web app, devops
+- Tech stack: Node.js, Next.js, React, TypeScript, Prisma, SQLite, PostgreSQL
 - Pending state: documented
 - Status confidence: high
-- Current work guess: richer recommendation engine - due-date pressure explanation improvements
-- Graph stats: 337 nodes · 557 edges · 16 communities (14 shown, 2 thin omitted)
+- Current work: normalized operations foundation and migration/review rollout
+- Graph stats: 632 nodes · 1096 edges · 40 communities
 
 ## Features
-- Next.js app with `Dashboard`, `Credit Cards`, and `Cash Accounts` views
-- Prisma-based persistence
-- local SQLite development database
-- forms-first workflow for - setup values
-- forms-first workflow for - credit cards
-- forms-first workflow for - cash accounts
+
+- Dashboard, Credit Cards, Cash Accounts, Setup, Monthly Review, and Utilities workflows
+- private session authentication
+- Prisma persistence with local SQLite and production PostgreSQL schemas
+- normalized institutions, cards, cash accounts, autopay rules, promotions, recurring transactions, reviews, expected payments, and audit logs
+- additive migration baselines, stable-ID backfill, verification, and rollback guidance
+- six-step manual setup and resumable monthly review
+- 35-day cash forecasts, promotion pace, funding shortfall warnings, and cash-safe extra-payment guidance
+- workbook import/export, JSON backup/restore, and screenshot OCR review
 
 ## Pending
-- richer recommendation engine - due-date pressure explanation improvements
-- richer recommendation engine - promo-pressure explanation improvements
-- richer recommendation engine - more nuanced status thresholds
-- richer activity insights - stronger historical comparison views
-- event-level tracking beyond snapshots - explicit payment events
-- event-level tracking beyond snapshots - explicit balance update events
+
+- production Neon/Vercel rollout and authenticated end-to-end validation
+- explicit payment, balance-update, and cash-transfer event entry
+- richer historical comparison and unified timeline views
+- payoff-date and interest-cost strategy simulation
+- import preview, notification polish, and faster mobile entry
+- optional read-only Plaid connectivity to reduce manual updates
+- optional native iPhone Share Sheet intake
 
 ## Read First
+
 - `README.md`
-- `graphify-out/GRAPH_REPORT.md`
 - `Plan.md`
-- `PLAN.md`
-- `package.json`
+- `STATUS.md`
+- `USER_GUIDE.md`
+- `prisma/MIGRATIONS.md`
+- `graphify-out/GRAPH_REPORT.md`
 
 ## Likely Entrypoints
-- `README.md`
-- `Plan.md`
-- `PLAN.md`
+
+- `app/page.tsx`
+- `components/debt-crusher-app.tsx`
+- `components/dashboard-view.tsx`
+- `components/manual-workflow.tsx`
+- `components/operations-panel.tsx`
+- `lib/operations-store.ts`
+- `lib/review-store.ts`
 - `package.json`
 
 ## Main Modules
+
 - `app`
 - `components`
 - `lib`
+- `prisma`
 - `scripts`
-- `node_modules`
+- `tests`
 
 ## Conservative Suggestions
-- richer recommendation engine - due-date pressure explanation improvements
-- richer recommendation engine - promo-pressure explanation improvements
-- richer recommendation engine - more nuanced status thresholds
+
+- rehearse migration on a disposable database or Neon branch before production
+- keep unknown statement and payment amounts explicit
+- add explicit financial events before relying on snapshots as a ledger
 
 ## Evidence Files
-- `Plan.md`
+
 - `README.md`
-- `README.MD`
+- `Plan.md`
+- `STATUS.md`
+- `USER_GUIDE.md`
+- `prisma/MIGRATIONS.md`
 
 ## Graph Signals
-- God nodes: Debt Crusher Product Plan, Debt Crusher User Guide, compilerOptions, Debt Crusher, dependencies
+
+- Major communities include the product plan, user guide, operations logic, review store, manual workflow, migration scripts, authentication, imports, and shared types.

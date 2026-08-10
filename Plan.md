@@ -1,289 +1,183 @@
 # Debt Crusher Product Plan
 
 ## Goal
-Turn Debt Crusher into a forms-first finance console where the app is the primary source of truth, workbook import is a secondary bootstrap/backup path, and saved history supports payoff decisions and progress tracking.
+
+Make Debt Crusher the private, forms-first source of truth for day-to-day debt and cash operations. Manual entry is authoritative; workbook, JSON, and screenshot paths remain secondary tools for bootstrap, backup, and review.
 
 ## Current Build Status
+
 ### Done
-- Next.js app with `Dashboard`, `Credit Cards`, and `Cash Accounts` views
-- Prisma-based persistence
-- local SQLite development database
-- forms-first workflow for:
-  - setup values
-  - credit cards
-  - cash accounts
-- add, edit, remove, and save flows for app-owned records
-- workbook import as a secondary path
-- downloadable workbook template in-app
-- import support for the current styled workbook format
-- protection against bad import rows like unlabeled summary rows
-- computed dashboard metrics:
-  - total credit balance
-  - weighted utilization
-  - cash above minimums
-  - recommended target card
-- activity snapshot history on every import/save
-- trend charts based on saved snapshots
-- statement-balance autopay downgrade to `watch`
-- inline form validation
-- save/import success feedback
-- delete confirmation
-- recommendation reason list for the top-ranked card
-- selectable payoff strategy modes:
-  - avalanche
-  - snowball
-  - promo-first
-- custom payoff strategy with editable weighting fields
-- `since last save` deltas for:
-  - credit balance
-  - cash above minimums
-  - extra payment budget
-- JSON backup export
-- JSON backup restore
-- workbook export from app-owned data
-- import mode selection:
-  - replace
-  - merge
-- overwrite confirmation for import and backup restore
-- reset unsaved changes
-- last-saved and unsaved-state indicator
-- denser top-level shell with a smaller header and less static chrome
-- toast-style save/export/import feedback
-- account-level change summaries inside saved snapshot history
-- event trail for save-driven account and setup changes
-- searchable institution picker with alias-aware typeahead for card and cash forms
-- screenshot OCR import with:
-  - image upload
-  - OCR extraction
-  - review-before-save editing
-  - replace or merge save behavior
-  - stored screenshot artifacts linked from history
+
+- Next.js application with Dashboard, Credit Cards, Cash Accounts, Setup, Monthly Review, and Utilities workflows
+- private sign-in and signed session-cookie protection for application and API routes
+- Prisma persistence with SQLite for local development and PostgreSQL/Neon support for production
+- legacy portfolio compatibility plus a normalized operations model for:
+  - financial institutions
+  - credit cards and cash accounts
+  - autopay rules and funding-account links
+  - multiple promotional offers per card
+  - recurring income, expenses, transfers, and debt payments
+  - financial reviews and review items
+  - audit logs, expected payments, snapshots, and activity events
+- additive SQLite and PostgreSQL migration baselines, stable-ID backfill, verification, and rollback guidance
+- six-step manual setup that records payoff preferences, cash accounts, cards, autopay, promotions, and a final accuracy review
+- resumable monthly review with confirm, update, unknown, and skip states
+- explicit unknown-value handling for statement balances, minimum payments, autopay configuration, and promotion details
+- review-freshness indicators on card and cash-account lists
+- 35-day cash forecast with recurring activity, expected card payments, funding shortfalls, and unknown-payment warnings
+- dashboard sections for Today, Next 7 Days, Cash Health, Promo Deadlines, and Recommended Actions
+- cash-safe extra-payment amount compared with the configured extra-payment budget
+- promotion pace and risk assessment, including safety buffers and deferred-interest warnings
+- Avalanche, Snowball, Promo-first, and custom payoff strategies
+- explainable ranking, status flags, dashboard totals, snapshot deltas, and trend charts
+- workbook import/export, JSON backup/restore, and screenshot OCR review with stored source artifacts
+- replace and merge import modes with overwrite confirmation
+- inline validation, delete confirmation, unsaved-state handling, reset, and save feedback
 
 ### Partially Done
-- recommendation engine is explainable, but still fairly simple
-- form UX is improved, but still has room for polish
+
+- the normalized operations console is integrated alongside legacy card, cash, snapshot, and import surfaces; compatibility fields remain during rollout
+- recommendations cover cash shortfalls, promo pace, and missing data, but payoff simulation and urgency tuning can be richer
+- audit records and snapshots are durable, but there is not yet a dedicated user-facing transaction ledger
+- forms are usable on mobile, with room for faster keyboard-first entry and further polish
 
 ### Pending
-- native iPhone wrapper / true Share Sheet target for direct screenshot intake
-- richer recommendation engine:
-  - due-date pressure explanation improvements
-  - promo-pressure explanation improvements
-  - more nuanced status thresholds
-- richer activity insights:
-  - stronger historical comparison views
-- event-level tracking beyond snapshots:
-  - explicit payment events
-  - explicit balance update events
-  - cash transfer events
-  - note history
-- better notification UX:
-  - dismiss controls
-  - grouping/reducing repeated toasts
-- keyboard-first and faster-entry form improvements
-- optional hosted persistence migration to Neon
+
+- dedicated payment, balance-update, and cash-transfer event entry
+- richer historical comparisons and a consolidated audit/event timeline
+- projected payoff-date and interest-cost simulation across strategies
+- import preview and conflict-by-conflict merge review
+- notification grouping, dismissal, and stale-data reminders
+- additional keyboard-first and mobile ergonomics
+- optional Plaid integration for consent-based bank and credit-card syncing to reduce manual balance and transaction entry
+- optional native iPhone wrapper / Share Sheet target for direct screenshot intake
+- production Neon provisioning and end-to-end Vercel authentication validation
 
 ## Product Principles
-- User input is the main workflow.
-- Workbook import/export exists for convenience, not as the core operating model.
-- Recommendations must be explainable.
-- History must be durable enough to support graphs, comparisons, and trust.
-- The UI should optimize for decisions, not bookkeeping theater.
 
-## Data Model
-Use Prisma as the persistence layer.
+- Manual entry is the source of current financial truth.
+- Unknown values stay unknown; forecasts must not invent payment amounts.
+- Workbook, JSON, and screenshot tools support the core workflow rather than define it.
+- Recommendations must explain the cash, due-date, interest, or promotion pressure behind them.
+- History and review state must be durable enough to support trust and comparison.
+- Financial identifiers are limited to institution, nickname/product, and last four digits; full credentials and account/card numbers do not belong in the app.
+- The UI should optimize for decisions and safe cash movement.
 
-### Current storage
-- local SQLite for development
-- app code designed so datasource can later switch to Postgres/Neon
+## Current Architecture
 
-### Current core entities
-- `portfolio`
-  - single active working set
-  - setup config
-- `credit_accounts`
-  - identity, balance, limit, APR, promo, payment behavior, notes, rewards
-- `cash_accounts`
-  - identity, type, balance, required minimum
-- `activity_snapshots`
-  - append-only snapshots created on import and manual save
+### Storage and deployment
 
-### Planned later entities
-- `account_events`
-  - payment made
-  - balance updated
-  - cash transfer
-  - note/status changes
+- Local development uses SQLite through `prisma/schema.prisma`.
+- Production builds use PostgreSQL through `prisma/schema.postgres.prisma`.
+- Migration baselines exist for both providers.
+- Backfill normalizes legacy records without importing workbook values or replacing current balances.
+- Verification compares legacy and normalized account counts before rollout proceeds.
 
-## Current Status Model
-### Implemented statuses
-- `danger`
-  - expired promo with balance
-  - severe utilization
-  - true urgent attention
-- `warning`
-  - promo ending soon
-  - due soon
-  - elevated utilization
-- `watch`
-  - statement-balance autopay cards that still deserve attention
-- `paid`
-  - zero balance
-- `ok`
-  - stable and not notable
+See [prisma/MIGRATIONS.md](./prisma/MIGRATIONS.md) for the exact upgrade, verification, and rollback sequence.
 
-## Current Derived Logic
-### Implemented
-- `utilization_percent`
-- `paying_interest_now`
-- `statement_balance_autopay`
-- `promo_end_soon`
-- `priority_score`
-- `priority_rank`
-- `status_flag`
-- dashboard summary totals
-- recommendation reasons for the top-ranked card
-- snapshot deltas against the previous save
+### Core data groups
 
-### Pending improvements
-- better threshold tuning
-- stronger explanation detail for due date and promo timing
+- Portfolio and legacy compatibility: `Portfolio`, `CreditAccount`, `CashAccount`
+- Operations configuration: `FinancialInstitution`, `CreditCard`, `AutopayRule`, `PromotionalOffer`, `RecurringTransaction`
+- Operational history: `FinancialReview`, `FinancialReviewItem`, `ExpectedPayment`, `AuditLog`
+- Existing history and utilities: `ActivitySnapshot`, `ActivityEvent`, `ScreenshotImportArtifact`
 
-## Import / Export
-### Implemented
-- workbook import
-- workbook template download
-- workbook export
-- JSON app-state export
-- JSON app-state restore
-- screenshot OCR import
-- replace vs merge import behavior
-- overwrite confirmation before destructive restore/import
+## Current Operational Logic
 
-### Pending
-- import preview before overwrite
-- native iPhone Share Sheet target / Shortcut-native entrypoint
+### Forecasting
 
-## UX Roadmap
-### Completed baseline
-- forms-first shell
-- top-level add/edit actions
-- validation and destructive confirmation
-- secondary import lane
-- history panel
-- trend charts
-- explanation layer for top recommendation
-- compact top chrome and save-state visibility
-- searchable institution lookup for manual entry
+- projects each active cash account across a 35-day window
+- includes recurring income, expenses, transfers, debt payments, and autopay-derived expected payments
+- clamps calendar-day rules to the last valid day of shorter months
+- reports projected low and final balances plus the first required-balance shortfall
+- preserves unknown expected-payment amounts as data-quality actions
 
-### Remaining UX work
-- denser/faster-entry forms
-- stronger mobile form ergonomics
-- richer historical comparison views
-- native iPhone capture handoff if we want first-class iOS intake
+### Promotions
+
+- supports more than one promotional offer per card
+- calculates required monthly payoff pace against the target or buffered end date
+- compares required pace with known planned payment amounts where possible
+- classifies promotion risk and elevates deferred-interest concerns
+
+### Reviews and audit
+
+- setup and monthly reviews are durable and resumable
+- each active account, card, and recurring transaction receives a review item
+- completion creates snapshots and audit records
+- list views expose whether an account was reviewed this month or needs review
 
 ## Execution Phases
-## Phase A: Forms-first Foundation
-### Status
-- largely complete
 
-### Done
-- forms-first CRUD workflow
-- validation
-- save feedback
-- delete confirmation
-- import as fallback
+### Phase A: Forms-first foundation — complete
 
-### Remaining
-- better notification presentation
-- faster-entry ergonomics
+CRUD, validation, persistence, import fallback, history, authentication, and manual setup are implemented.
 
-## Phase B: History That Explains Change
-### Status
-- partially complete
+### Phase B: Operations data model and migration — complete
 
-### Done
-- activity snapshots
-- trend chart
-- `since last save` summary deltas
+The normalized schema, dual-provider migration baselines, stable-ID backfill, verification scripts, compatibility layer, and rollback documentation are implemented.
 
-### Remaining
-- richer comparison views
+### Phase C: Forecast and review loop — complete baseline
 
-## Phase C: Recommendation Engine Upgrade
-### Status
-- partially complete
+The 35-day forecast, recurring cash flow, autopay funding, promotion risk, cash-safe extra budget, setup review, monthly review, and freshness indicators are implemented.
 
-### Done
-- recommendation reasons for rank #1
-- autopay-safe `watch` behavior
-- strategy modes:
-  - avalanche
-  - snowball
-  - promo-first
-- custom weighting mode
+Remaining work is deeper scenario modeling and UI refinement, not another core-schema redesign.
 
-### Remaining
-- more nuanced urgency model
-- better explanation coverage for due dates and promos
+### Phase D: Event-based tracking — next
 
-## Phase D: Import / Export Reliability
-### Status
-- partially complete
+Add explicit payment, balance-update, and cash-transfer entry, then expose a consolidated timeline that connects those events to snapshots and reviews.
 
-### Done
-- template help path
-- JSON backup export/import
-- workbook import validation
+### Phase E: Strategy simulation and historical insight — later
 
-### Remaining
-- workbook export
-- import replace confirmation
-- import merge mode
+Add payoff-date and interest-cost comparisons, stronger month-over-month views, and richer recommendation explanations.
 
-## Phase E: Event-based Tracking
-### Status
-- partially complete
+### Phase F: Production rollout — operational task
 
-### Remaining
-- explicit payment events
-- explicit balance update events
-- cash transfer events
-- note/event timeline
+Provision or select Neon, apply and verify the PostgreSQL schema on a branch, configure Vercel secrets, deploy, and validate the authenticated workflow end to end.
+
+### Phase G: Optional bank connectivity — later / requires product review
+
+Evaluate Plaid for read-only, user-consented connections to supported bank and credit-card accounts. The goal is to prefill balances, transactions, statement details, and account freshness so routine reviews require less manual work.
+
+Before implementation, define:
+
+- which Plaid products and account types are actually needed
+- pricing, supported institutions, refresh frequency, and production-access requirements
+- token encryption, secret rotation, webhook verification, deletion, and reconnect flows
+- how imported records match existing accounts without duplicating or overwriting trusted data
+- a review-before-accept workflow for synced changes and a clear manual fallback
+- data-retention and privacy boundaries that keep banking credentials out of Debt Crusher
 
 ## Testing Status
-### Implemented coverage
-- import validation
-- styled workbook compatibility
-- unlabeled summary row rejection
-- date normalization edge cases
-- priority and status behavior
-- custom strategy behavior
-- statement-balance autopay `watch` classification
-- snapshot delta calculation
-- snapshot change detail calculation
-- save-driven activity event calculation
 
-### Pending coverage
-- JSON backup restore flow
-- UI-level save/delete flows
-- workbook export round-trip coverage
+### Implemented coverage
+
+- workbook validation and normalization
+- styled workbook compatibility and bad summary-row rejection
+- priority, status, custom-strategy, and promo-threshold behavior
+- snapshot deltas, change detail, and activity-event calculation
+- normalized operations forecasting and promotion assessment
+- monthly review state and audit persistence
+- migration backfill and count-verification scripts
+
+### Still valuable
+
+- browser-level setup and monthly-review flows
+- database-backed migration rehearsal against representative production data
+- JSON backup restore and workbook export round trips
+- browser-level forecast and unknown-value rendering
 
 ## Recommended Next Slice
-1. Add explicit payment and cash-transfer events.
-2. Add richer historical comparison views between snapshots.
-3. Improve recommendation explanations around due dates and promo pressure.
-4. Tighten keyboard-first entry flows and mobile form ergonomics.
 
-## Next-Level Suggestions
-1. Add a dedicated payment log so users record actual payments instead of only editing balances; that would make progress charts and payoff velocity far more trustworthy.
-2. Add a monthly review mode with snapshot compare, “what changed since last month,” and a rollover checklist for balances, promos, and cash buffers.
-3. Add an upcoming-calendar layer that groups due dates, promo expirations, and autopay checkpoints into a single timeline.
-4. Add strategy simulation so users can compare avalanche, snowball, promo-first, and custom plans against projected payoff dates and interest cost.
-5. Add a recurring habits surface: weekly check-in prompts, stale-account warnings, and reminders when balances or cash buffers have not been updated recently.
-6. Add portfolio export/backup polish with import preview, conflict review, and side-by-side merge summaries before overwrite.
-5. Add strategy modes for payoff ranking.
+1. Rehearse the documented database upgrade against a disposable copy or Neon branch.
+2. Add explicit payment and cash-transfer events with audit-backed history.
+3. Add a month-over-month review summary and unified timeline.
+4. Add payoff-date and interest-cost strategy simulation.
+5. Finish production Neon/Vercel configuration and validate private access.
+6. Evaluate a read-only Plaid proof of concept after the core review and migration workflows are stable.
 
 ## Notes
-- Local development currently uses SQLite through Prisma.
-- A later move to Neon/Postgres is still possible, but it is not required for current progress.
-- The app is already usable without Excel; Excel is now support tooling, not the main operating surface.
+
+- The app remains usable without Excel; spreadsheet support is utility tooling.
+- Legacy fields are intentionally retained during the additive migration and compatibility period.
+- Native iPhone intake is optional because screenshot upload and OCR review already work on the web.
+- Plaid connectivity is a roadmap candidate, not a committed or currently implemented feature.

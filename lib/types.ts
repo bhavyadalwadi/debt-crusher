@@ -1,5 +1,5 @@
 export type StatusFlag = "danger" | "warning" | "watch" | "paid" | "ok";
-export type AppView = "dashboard" | "credit-cards" | "cash-accounts";
+export type AppView = "dashboard" | "setup" | "monthly-review" | "credit-cards" | "cash-accounts" | "utilities";
 export type PayoffStrategy = "avalanche" | "snowball" | "promo-first" | "custom";
 
 export interface CustomStrategyWeights {

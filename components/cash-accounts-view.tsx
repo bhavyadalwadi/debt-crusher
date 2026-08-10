@@ -34,12 +34,17 @@ export function CashAccountsView({
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(
     accounts[0]?.id ?? null,
   );
+  const [reviewMetadata, setReviewMetadata] = useState<Record<string, { lastReviewedAt: string | null } | null>>({});
 
   useEffect(() => {
     if (!selectedAccountId && accounts[0]) {
       setSelectedAccountId(accounts[0].id);
     }
   }, [accounts, selectedAccountId]);
+
+  useEffect(() => {
+    fetch("/api/operations/config").then((response) => response.json()).then((payload: { accounts?: Array<{ id: string; review: { lastReviewedAt: string | null } | null }> }) => setReviewMetadata(Object.fromEntries((payload.accounts ?? []).map((account) => [account.id, account.review])))).catch(() => undefined);
+  }, [accounts]);
 
   const safeCapacity = accounts.reduce(
     (sum, account) => sum + Math.max(0, account.available_above_minimum),
@@ -158,6 +163,7 @@ export function CashAccountsView({
                 <th>Account</th>
                 <th>Type</th>
                 <th>Status</th>
+                <th>Review</th>
                 <th>Balance</th>
                 <th>Required minimum</th>
                 <th>Available above minimum</th>
@@ -178,6 +184,7 @@ export function CashAccountsView({
                   <td>
                     <StatusBadge status={account.status_flag} />
                   </td>
+                  <td>{(() => { const reviewed = reviewMetadata[account.id]?.lastReviewedAt; const thisMonth = reviewed?.slice(0, 7) === new Date().toISOString().slice(0, 7); return <span className={`review-chip ${thisMonth ? "complete" : "due"}`}>{thisMonth ? "Reviewed this month" : reviewed ? `Last ${new Date(reviewed).toLocaleDateString()}` : "Needs review"}</span>; })()}</td>
                   <td>{currencyFormatter.format(account.current_balance)}</td>
                   <td>
                     {currencyFormatter.format(

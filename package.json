@@ -6,14 +6,19 @@
     "predev": "prisma generate",
     "dev": "next dev",
     "build": "prisma generate --schema prisma/schema.postgres.prisma && next build",
-    "prestart": "prisma generate",
+    "prestart": "prisma generate --schema prisma/schema.postgres.prisma",
     "start": "next start",
     "test": "vitest run",
     "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:generate:postgres": "prisma generate --schema prisma/schema.postgres.prisma",
     "db:push": "prisma db push",
-    "db:push:postgres": "prisma db push --schema prisma/schema.postgres.prisma"
+    "db:push:postgres": "prisma db push --schema prisma/schema.postgres.prisma",
+    "db:migrate": "prisma migrate deploy",
+    "db:backfill:operations": "node scripts/backfill-operations.mjs",
+    "db:verify:operations": "node scripts/verify-operations.mjs",
+    "db:backfill:operations:postgres": "prisma generate --schema prisma/schema.postgres.prisma && node scripts/backfill-operations.mjs",
+    "db:verify:operations:postgres": "prisma generate --schema prisma/schema.postgres.prisma && node scripts/verify-operations.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
