@@ -175,3 +175,31 @@ export interface WorkbookImportResult {
   errors: string[];
   warnings: string[];
 }
+
+/** The original, portfolio-only JSON backup shape. */
+export interface LegacyPortfolioBackup {
+  portfolio: PortfolioState;
+}
+
+/**
+ * Complete JSON backup format. Keep this versioned so future migrations can
+ * distinguish persisted history from older portfolio-only exports.
+ */
+export interface PortfolioBackupV2 {
+  version: 2;
+  exportedAt: string;
+  portfolio: PortfolioState;
+  snapshots: ActivitySnapshot[];
+  events: ActivityEvent[];
+}
+
+export type PortfolioBackup = LegacyPortfolioBackup | PortfolioBackupV2;
+
+/** Canonical restore input produced from either supported backup format. */
+export interface NormalizedPortfolioBackup {
+  sourceVersion: 1 | 2;
+  exportedAt: string | null;
+  portfolio: PortfolioState;
+  snapshots: ActivitySnapshot[];
+  events: ActivityEvent[];
+}

@@ -13,6 +13,7 @@ import {
   type ScreenshotReviewDraft,
 } from "@/components/screenshot-review-panel";
 import { exportPortfolioWorkbook } from "@/lib/export-workbook";
+import { validatePortfolio } from "@/lib/form-validation";
 import { importWorkbook } from "@/lib/import-workbook";
 import {
   buildSnapshotDelta,
@@ -39,12 +40,66 @@ const views: { id: AppView; label: string }[] = [
   { id: "utilities", label: "Utilities" },
 ];
 
+const AUTOSAVE_DELAY_MS = 800;
+
+type SaveStatus = "loading" | "idle" | "saving" | "saved" | "invalid" | "error";
+
+function portfolioComparable(portfolio: PortfolioState) {
+  return {
+    setup: portfolio.setup,
+    creditAccounts: portfolio.creditAccounts.map((account) => ({
+      id: account.id,
+      institution: account.institution,
+      nickname: account.nickname,
+      account_type: account.account_type,
+      current_balance: account.current_balance,
+      credit_limit: account.credit_limit,
+      apr_percent: account.apr_percent,
+      promo_flag: account.promo_flag,
+      promo_end_date: account.promo_end_date,
+      min_payment: account.min_payment,
+      interest_fees_this_month: account.interest_fees_this_month,
+      auto_payment: account.auto_payment,
+      payment_due: account.payment_due,
+      how_are_we_taking_care_of_it: account.how_are_we_taking_care_of_it,
+      rewards_available: account.rewards_available,
+      points_available: account.points_available,
+    })),
+    cashAccounts: portfolio.cashAccounts.map((account) => ({
+      id: account.id,
+      institution: account.institution,
+      account_name: account.account_name,
+      type: account.type,
+      current_balance: account.current_balance,
+      min_day_end_balance_required: account.min_day_end_balance_required,
+    })),
+  };
+}
+
+function portfolioFingerprint(portfolio: PortfolioState) {
+  return JSON.stringify(portfolioComparable(portfolio));
+}
+
+function snapshotFingerprint(snapshot: ActivitySnapshot) {
+  return JSON.stringify(
+    portfolioComparable({
+      id: "snapshot",
+      updatedAt: snapshot.importedAt,
+      setup: snapshot.setup,
+      creditAccounts: snapshot.creditAccounts,
+      cashAccounts: snapshot.cashAccounts,
+    }),
+  );
+}
+
 export function DebtCrusherApp() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [errors, setErrors] = useState<string[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [dirty, setDirty] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("loading");
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [importMode, setImportMode] = useState<"replace" | "merge">("replace");
   const [draftPortfolio, setDraftPortfolio] = useState<PortfolioState>(
@@ -65,6 +120,12 @@ export function DebtCrusherApp() {
   const [loggingOut, startLogoutTransition] = useTransition();
   const [reviewSummary, setReviewSummary] = useState<{ setupNeeded: boolean; monthlyReviewDue: boolean; lastCompletedAt: string | null } | null>(null);
   const backupInputRef = useRef<HTMLInputElement | null>(null);
+  const autosaveTimerRef = useRef<number | null>(null);
+  const autosaveInFlightRef = useRef(false);
+  const pendingAutosaveRef = useRef<PortfolioState | null>(null);
+  const latestDraftRef = useRef(draftPortfolio);
+  const persistenceVersionRef = useRef<string | null>(null);
+  const autosaveConflictRetriesRef = useRef(0);
 
   const activeView = (searchParams.get("view") as AppView) || "dashboard";
   const computedSnapshot = useMemo(
@@ -74,6 +135,12 @@ export function DebtCrusherApp() {
   const currentDelta = useMemo(
     () => buildSnapshotDelta(computedSnapshot, snapshots[0] ?? null),
     [computedSnapshot, snapshots],
+  );
+  const hasCheckpointChanges = useMemo(
+    () =>
+      snapshots.length === 0 ||
+      portfolioFingerprint(draftPortfolio) !== snapshotFingerprint(snapshots[0]),
+    [draftPortfolio, snapshots],
   );
   const lastSavedLabel = useMemo(() => {
     if (!savedPortfolio) {
@@ -87,6 +154,26 @@ export function DebtCrusherApp() {
       minute: "2-digit",
     });
   }, [savedPortfolio]);
+  const portfolioValidation = useMemo(
+    () => validatePortfolio(draftPortfolio),
+    [draftPortfolio],
+  );
+  const saveStatusLabel =
+    saveStatus === "loading"
+      ? "Loading"
+      : saveStatus === "saving"
+        ? "Saving"
+        : saveStatus === "error"
+          ? "Save failed"
+          : saveStatus === "invalid"
+            ? "Waiting for valid values"
+            : !savedPortfolio
+              ? "Ready"
+              : dirty
+                ? "Autosave queued"
+                : "Autosaved";
+
+  latestDraftRef.current = draftPortfolio;
 
   function pushToast(
     tone: "success" | "error" | "warning",
@@ -142,6 +229,7 @@ export function DebtCrusherApp() {
           portfolio?: PortfolioState;
           snapshots?: ActivitySnapshot[];
           recentEvents?: ActivityEvent[];
+          persistenceVersion?: string | null;
           error?: string;
         };
         const reviewPayload = await reviewResponse.json() as { setupNeeded?: boolean; monthlyReviewDue?: boolean; lastCompletedAt?: string | null };
@@ -151,12 +239,19 @@ export function DebtCrusherApp() {
         }
 
         if (!cancelled && payload.portfolio) {
-          setSavedPortfolio(payload.portfolio);
+          setSavedPortfolio(
+            payload.persistenceVersion === null ? null : payload.portfolio,
+          );
           setDraftPortfolio(payload.portfolio);
           setSnapshots(payload.snapshots ?? []);
           setRecentEvents(payload.recentEvents ?? []);
+          persistenceVersionRef.current =
+            payload.persistenceVersion !== undefined
+              ? payload.persistenceVersion
+              : payload.portfolio.updatedAt;
           setDirty(false);
           setReviewSummary({ setupNeeded: reviewPayload.setupNeeded ?? true, monthlyReviewDue: reviewPayload.monthlyReviewDue ?? false, lastCompletedAt: reviewPayload.lastCompletedAt ?? null });
+          setSaveStatus("saved");
           setLoaded(true);
           if (!searchParams.get("view") && (reviewPayload.setupNeeded ?? true)) router.replace("/?view=setup");
         }
@@ -165,6 +260,10 @@ export function DebtCrusherApp() {
           setErrors([
             error instanceof Error ? error.message : "Failed to load portfolio",
           ]);
+          setSaveStatus("error");
+          setSaveError(
+            error instanceof Error ? error.message : "Failed to load portfolio",
+          );
           setLoaded(true);
         }
       }
@@ -176,6 +275,37 @@ export function DebtCrusherApp() {
       cancelled = true;
     };
   }, [router, searchParams]);
+
+  useEffect(() => {
+    if (!loaded || !dirty) {
+      return;
+    }
+
+    const validation = validatePortfolio(draftPortfolio);
+    if (validation.hasErrors) {
+      setSaveStatus("invalid");
+      setSaveError("Fix the highlighted fields before autosave can continue.");
+      return;
+    }
+
+    pendingAutosaveRef.current = draftPortfolio;
+    setSaveStatus("idle");
+    setSaveError(null);
+    if (autosaveTimerRef.current !== null) {
+      window.clearTimeout(autosaveTimerRef.current);
+    }
+    autosaveTimerRef.current = window.setTimeout(() => {
+      autosaveTimerRef.current = null;
+      void flushAutosave();
+    }, AUTOSAVE_DELAY_MS);
+
+    return () => {
+      if (autosaveTimerRef.current !== null) {
+        window.clearTimeout(autosaveTimerRef.current);
+        autosaveTimerRef.current = null;
+      }
+    };
+  }, [draftPortfolio, dirty, loaded]);
 
   function handleAddCard() {
     replaceDraft({
@@ -276,7 +406,7 @@ export function DebtCrusherApp() {
     setDirty(false);
   }
 
-  async function persistPortfolio(
+  async function createCheckpoint(
     portfolio: PortfolioState,
     source: ActivitySnapshot["source"],
     options?: { filename?: string; label?: string },
@@ -286,7 +416,7 @@ export function DebtCrusherApp() {
       updatedAt: new Date().toISOString(),
     };
 
-    const response = await fetch("/api/portfolio", {
+    const response = await fetch("/api/portfolio/checkpoints", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -302,6 +432,7 @@ export function DebtCrusherApp() {
       portfolio?: PortfolioState;
       snapshots?: ActivitySnapshot[];
       recentEvents?: ActivityEvent[];
+      persistenceVersion?: string | null;
       error?: string;
     };
 
@@ -309,7 +440,102 @@ export function DebtCrusherApp() {
       throw new Error(payload.error ?? "Failed to save portfolio");
     }
 
+    pendingAutosaveRef.current = null;
+    persistenceVersionRef.current =
+      payload.persistenceVersion !== undefined
+        ? payload.persistenceVersion
+        : (payload.portfolio?.updatedAt ?? null);
     applySavedBundle(payload);
+    setSaveStatus("saved");
+    setSaveError(null);
+  }
+
+  async function flushAutosave() {
+    if (autosaveInFlightRef.current || !pendingAutosaveRef.current) {
+      return;
+    }
+
+    const portfolio = pendingAutosaveRef.current;
+    pendingAutosaveRef.current = null;
+    autosaveInFlightRef.current = true;
+    let shouldContinue = true;
+    setSaveStatus("saving");
+    setSaveError(null);
+    const submittedFingerprint = portfolioFingerprint(portfolio);
+
+    try {
+      const response = await fetch("/api/portfolio", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          portfolio: {
+            ...portfolio,
+            updatedAt: new Date().toISOString(),
+          },
+          expectedUpdatedAt: persistenceVersionRef.current,
+        }),
+      });
+      const payload = (await response.json()) as {
+        portfolio?: PortfolioState;
+        persistenceVersion?: string | null;
+        error?: string;
+      };
+
+      if (response.status === 409 && payload.portfolio) {
+        persistenceVersionRef.current =
+          payload.persistenceVersion !== undefined
+            ? payload.persistenceVersion
+            : payload.portfolio.updatedAt;
+        setSavedPortfolio(payload.portfolio);
+        autosaveConflictRetriesRef.current += 1;
+        if (autosaveConflictRetriesRef.current <= 2) {
+          pendingAutosaveRef.current = latestDraftRef.current;
+        } else {
+          shouldContinue = false;
+          setSaveStatus("error");
+          setSaveError("Autosave found repeated conflicting updates. Retry when ready.");
+        }
+        return;
+      }
+      if (!response.ok || !payload.portfolio) {
+        throw new Error(payload.error ?? "Autosave failed");
+      }
+
+      persistenceVersionRef.current =
+        payload.persistenceVersion !== undefined
+          ? payload.persistenceVersion
+          : payload.portfolio.updatedAt;
+      autosaveConflictRetriesRef.current = 0;
+      setSavedPortfolio(payload.portfolio);
+      if (portfolioFingerprint(latestDraftRef.current) === submittedFingerprint) {
+        setDraftPortfolio(payload.portfolio);
+        setDirty(false);
+        setSaveStatus("saved");
+      } else {
+        pendingAutosaveRef.current = latestDraftRef.current;
+      }
+    } catch (error) {
+      shouldContinue = false;
+      pendingAutosaveRef.current = latestDraftRef.current;
+      setDirty(true);
+      setSaveStatus("error");
+      setSaveError(error instanceof Error ? error.message : "Autosave failed");
+    } finally {
+      autosaveInFlightRef.current = false;
+      if (pendingAutosaveRef.current && shouldContinue) {
+        void flushAutosave();
+      }
+    }
+  }
+
+  function retryAutosave() {
+    if (validatePortfolio(latestDraftRef.current).hasErrors) {
+      setSaveStatus("invalid");
+      return;
+    }
+    pendingAutosaveRef.current = latestDraftRef.current;
+    autosaveConflictRetriesRef.current = 0;
+    void flushAutosave();
   }
 
   function replaceDraft(nextPortfolio: PortfolioState) {
@@ -347,7 +573,7 @@ export function DebtCrusherApp() {
           importMode === "replace"
             ? importedPortfolio
             : mergePortfolio(draftPortfolio, importedPortfolio);
-        await persistPortfolio(nextPortfolio, "import", {
+        await createCheckpoint(nextPortfolio, "import", {
           filename: file.name,
           label:
             importMode === "replace"
@@ -533,25 +759,26 @@ export function DebtCrusherApp() {
     }
   }
 
-  async function handleSave(label: string) {
+  async function handleRecordUpdate(label = "Portfolio update") {
     setErrors([]);
     try {
-      await persistPortfolio(draftPortfolio, "manual_save", { label });
-      pushToast("success", `${label} saved locally.`);
+      await createCheckpoint(draftPortfolio, "manual_save", { label });
+      pushToast("success", "Recorded a new history checkpoint.");
     } catch (error) {
       setErrors([
         error instanceof Error ? error.message : "Failed to save portfolio",
       ]);
-      pushToast("error", "Save failed.");
+      pushToast("error", "Could not record this update.");
     }
   }
 
-  function handleExportBackup() {
-    const payload = {
-      exportedAt: new Date().toISOString(),
-      portfolio: draftPortfolio,
-      snapshots,
-    };
+  async function handleExportBackup() {
+    const response = await fetch("/api/portfolio/backup", { cache: "no-store" });
+    if (!response.ok) {
+      pushToast("error", "Backup export failed.");
+      return;
+    }
+    const payload = await response.json();
     const blob = new Blob([JSON.stringify(payload, null, 2)], {
       type: "application/json",
     });
@@ -561,7 +788,7 @@ export function DebtCrusherApp() {
     anchor.download = `debt-crusher-backup-${new Date().toISOString().slice(0, 10)}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
-    pushToast("success", "Exported local backup JSON.");
+    pushToast("success", "Exported portfolio and complete history.");
   }
 
   function handleExportWorkbook() {
@@ -587,18 +814,28 @@ export function DebtCrusherApp() {
     }
 
     try {
-      const payload = JSON.parse(await file.text()) as {
-        portfolio?: PortfolioState;
-      };
-
-      if (!payload.portfolio) {
-        throw new Error("Backup file does not contain a portfolio payload.");
-      }
-
-      await persistPortfolio(payload.portfolio, "manual_save", {
-        label: "Backup restore",
-        filename: file.name,
+      const payload = JSON.parse(await file.text()) as unknown;
+      const response = await fetch("/api/portfolio/backup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
+      const restored = (await response.json()) as {
+        portfolio?: PortfolioState;
+        snapshots?: ActivitySnapshot[];
+        recentEvents?: ActivityEvent[];
+        persistenceVersion?: string | null;
+        error?: string;
+      };
+      if (!response.ok || !restored.portfolio) {
+        throw new Error(restored.error ?? "Backup restore failed");
+      }
+      persistenceVersionRef.current =
+        restored.persistenceVersion !== undefined
+          ? restored.persistenceVersion
+          : restored.portfolio.updatedAt;
+      applySavedBundle(restored);
+      setSaveStatus("saved");
       pushToast("success", `Restored backup from ${file.name}.`);
     } catch (error) {
       setErrors([
@@ -619,9 +856,22 @@ export function DebtCrusherApp() {
         </div>
         <div className="header-meta">
           <div className="save-state-strip">
-            <span className={`save-state-dot${dirty ? " dirty" : ""}`} />
-            <strong>{dirty ? "Unsaved changes" : "Saved"}</strong>
-            <span>Last saved {lastSavedLabel}</span>
+            <span
+              className={`save-state-dot${
+                saveStatus === "error"
+                  ? " error"
+                  : saveStatus === "saving" || dirty
+                    ? " dirty"
+                    : ""
+              }`}
+            />
+            <strong>{saveStatusLabel}</strong>
+            <span>Last autosaved {lastSavedLabel}</span>
+            {saveStatus === "error" ? (
+              <button className="text-button" onClick={retryAutosave} type="button">
+                Retry
+              </button>
+            ) : null}
           </div>
           <div className="legend-row">
             <span className="legend-chip danger">Danger</span>
@@ -645,6 +895,18 @@ export function DebtCrusherApp() {
           </p>
         </div>
         <div className="toolbar-actions">
+          <button
+            className="primary-button"
+            disabled={
+              !hasCheckpointChanges ||
+              portfolioValidation.hasErrors ||
+              saveStatus === "saving"
+            }
+            onClick={() => void handleRecordUpdate()}
+            type="button"
+          >
+            Record Update
+          </button>
           <button className="primary-button" onClick={handleAddCard} type="button">
             Add Card
           </button>
@@ -682,6 +944,7 @@ export function DebtCrusherApp() {
             Reset Unsaved
           </button>
         </div>
+        {saveError ? <p className="form-warning">{saveError}</p> : null}
       </section>
 
       {activeView === "utilities" ? <>
@@ -702,7 +965,7 @@ export function DebtCrusherApp() {
 
       {errors.length > 0 ? (
         <section className="message-panel error-panel">
-          <p className="eyebrow">Import Errors</p>
+          <p className="eyebrow">Problems</p>
           {errors.map((error) => (
             <p key={error}>{error}</p>
           ))}
@@ -740,9 +1003,8 @@ export function DebtCrusherApp() {
               <p className="eyebrow">Start Here</p>
               <h2>No saved portfolio yet.</h2>
               <p className="subtle-copy">
-                Add cards and cash accounts directly through the forms and save
-                them locally. Use workbook import only if you want to seed the app
-                from a spreadsheet.
+                Add cards and cash accounts directly through the forms. Valid
+                changes autosave; use Record Update when you want a history point.
               </p>
               <div className="toolbar-actions">
                 <button className="primary-button" onClick={handleAddCard} type="button">
@@ -765,30 +1027,27 @@ export function DebtCrusherApp() {
               activitySnapshots={snapshots}
               setup={draftPortfolio.setup}
               deltaFromPrevious={currentDelta}
-              dirty={dirty}
               onSetupChange={(setup) =>
                 replaceDraft({
                   ...draftPortfolio,
                   setup,
                 })
               }
-              onSave={() => handleSave("Settings update")}
-            /></>
+            />
+            </>
           ) : null}
-          {activeView === "setup" ? <ManualWorkflow mode="setup" setup={draftPortfolio.setup} onSetupChange={(setup) => replaceDraft({ ...draftPortfolio, setup })} onSaveSetup={() => handleSave("Setup preferences")} onFinished={() => { setReviewSummary((current) => current ? { ...current, setupNeeded: false } : current); router.push("/?view=dashboard"); }} /> : null}
-          {activeView === "monthly-review" ? <ManualWorkflow mode="review" setup={draftPortfolio.setup} onSetupChange={(setup) => replaceDraft({ ...draftPortfolio, setup })} onSaveSetup={() => handleSave("Monthly settings")} onFinished={() => { setReviewSummary((current) => current ? { ...current, monthlyReviewDue: false, lastCompletedAt: new Date().toISOString() } : current); router.push("/?view=dashboard"); }} /> : null}
+          {activeView === "setup" ? <ManualWorkflow mode="setup" setup={draftPortfolio.setup} onSetupChange={(setup) => replaceDraft({ ...draftPortfolio, setup })} onSaveSetup={() => handleRecordUpdate("Setup preferences")} onFinished={() => { setReviewSummary((current) => current ? { ...current, setupNeeded: false } : current); router.push("/?view=dashboard"); }} /> : null}
+          {activeView === "monthly-review" ? <ManualWorkflow mode="review" setup={draftPortfolio.setup} onSetupChange={(setup) => replaceDraft({ ...draftPortfolio, setup })} onSaveSetup={() => handleRecordUpdate("Monthly settings")} onFinished={() => { setReviewSummary((current) => current ? { ...current, monthlyReviewDue: false, lastCompletedAt: new Date().toISOString() } : current); router.push("/?view=dashboard"); }} /> : null}
           {activeView === "credit-cards" ? (
             <CreditCardsView
               accounts={computedSnapshot.creditAccounts}
               draftAccounts={draftPortfolio.creditAccounts}
-              dirty={dirty}
               onChange={(creditAccounts) =>
                 replaceDraft({
                   ...draftPortfolio,
                   creditAccounts,
                 })
               }
-              onSave={() => handleSave("Credit card update")}
               onAdd={handleAddCard}
             />
           ) : null}
@@ -797,14 +1056,12 @@ export function DebtCrusherApp() {
               accounts={computedSnapshot.cashAccounts}
               draftAccounts={draftPortfolio.cashAccounts}
               globalBufferOverride={draftPortfolio.setup.global_cash_buffer_override}
-              dirty={dirty}
               onChange={(cashAccounts) =>
                 replaceDraft({
                   ...draftPortfolio,
                   cashAccounts,
                 })
               }
-              onSave={() => handleSave("Cash account update")}
               onAdd={handleAddCashAccount}
             />
           ) : null}

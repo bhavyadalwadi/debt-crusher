@@ -1,6 +1,7 @@
 import type {
   CashAccountInput,
   CreditCardInput,
+  PortfolioState,
   SetupConfig,
 } from "@/lib/types";
 
@@ -162,5 +163,19 @@ export function validateCashAccounts(accounts: CashAccountInput[]) {
       messages.length > 0
         ? `${messages.length} cash account${messages.length === 1 ? "" : "s"} need attention before saving.`
         : null,
+  };
+}
+
+export function validatePortfolio(portfolio: PortfolioState) {
+  const setupErrors = validateSetup(portfolio.setup);
+  const credit = validateCreditAccounts(portfolio.creditAccounts);
+  const cash = validateCashAccounts(portfolio.cashAccounts);
+
+  return {
+    hasErrors:
+      Object.keys(setupErrors).length > 0 || credit.hasErrors || cash.hasErrors,
+    setupErrors,
+    credit,
+    cash,
   };
 }

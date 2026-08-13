@@ -1,8 +1,9 @@
 # Debt Crusher Project Status
 
 - Review state: Reviewed
+- Source type: project_status
 - Confidence: High
-- Last updated: 2026-08-09
+- Last updated: 2026-08-12
 - Status: Working
 
 ## Purpose
@@ -13,6 +14,9 @@ Debt Crusher is a private, forms-first financial operations console for managing
 
 - app-owned manual entry with workbook, JSON, and screenshot utilities as secondary paths
 - local SQLite persistence and production PostgreSQL/Neon schema support
+- debounced autosave for current values, separated from explicit historical checkpoints
+- portfolio and per-account historical trends across selectable time ranges
+- versioned, transactional full-history backups with legacy import compatibility
 - private sign-in and signed session-cookie protection
 - normalized operations entities with legacy compatibility
 - additive migration baselines, stable-ID backfill, verification, and rollback documentation

@@ -130,7 +130,7 @@ export function buildComputedSnapshot(
   portfolio: PortfolioState,
   options?: Partial<Pick<ActivitySnapshot, "id" | "source" | "label" | "filename" | "importedAt">>,
 ): ActivitySnapshot {
-  const importedAt = options?.importedAt ?? nowIso().slice(0, 10);
+  const importedAt = options?.importedAt ?? nowIso();
   const creditAccounts = deriveCreditAccounts(
     portfolio.creditAccounts,
     portfolio.setup,

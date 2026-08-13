@@ -37,18 +37,14 @@ function formatAutoPayment(value: CreditCardInput["auto_payment"]): string {
 interface CreditCardsViewProps {
   accounts: CreditCardAccount[];
   draftAccounts: CreditCardInput[];
-  dirty: boolean;
   onChange: (accounts: CreditCardInput[]) => void;
-  onSave: () => Promise<void>;
   onAdd: () => void;
 }
 
 export function CreditCardsView({
   accounts,
   draftAccounts,
-  dirty,
   onChange,
-  onSave,
   onAdd,
 }: CreditCardsViewProps) {
   const [statusFilter, setStatusFilter] = useState("all");
@@ -168,15 +164,6 @@ export function CreditCardsView({
     );
   }
 
-  function handleEnterSave(event: React.KeyboardEvent) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      if (dirty && !validation.hasErrors) {
-        void onSave();
-      }
-    }
-  }
-
   function removeSelected() {
     if (!selectedDraft) {
       return;
@@ -222,14 +209,9 @@ export function CreditCardsView({
             <button className="secondary-button" onClick={onAdd} type="button">
               Add Card
             </button>
-            <button
-              className="primary-button save-button"
-              disabled={!dirty || validation.hasErrors}
-              onClick={onSave}
-              type="button"
-            >
-              Save Cards
-            </button>
+            <span className="form-status-note">
+              Valid changes autosave. Use Record Update above for history.
+            </span>
           </div>
         </div>
         {validation.message ? (
@@ -521,7 +503,6 @@ export function CreditCardsView({
                         points_available: nullableNumberValue(event.target.value),
                       }))
                     }
-                    onKeyDown={handleEnterSave}
                   />
                 </label>
               </div>
@@ -535,29 +516,13 @@ export function CreditCardsView({
                       how_are_we_taking_care_of_it: event.target.value,
                     }))
                   }
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
-                      event.preventDefault();
-                      if (dirty && !validation.hasErrors) {
-                        void onSave();
-                      }
-                    }
-                  }}
                 />
-                <small className="field-hint">Cmd/Ctrl+Enter saves the form.</small>
+                <small className="field-hint">Add any context that will help later.</small>
               </label>
               <div className="form-actions">
                 <span className="form-status-note">
-                  Changes stay in the draft until you click Save Cards.
+                  Valid changes autosave. Record an update when you want a history point.
                 </span>
-                <button
-                  className="primary-button save-button"
-                  disabled={!dirty || validation.hasErrors}
-                  onClick={onSave}
-                  type="button"
-                >
-                  Save Cards
-                </button>
                 <button className="secondary-button" onClick={removeSelected} type="button">
                   Remove Card
                 </button>

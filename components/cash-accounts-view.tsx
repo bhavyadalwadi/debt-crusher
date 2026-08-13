@@ -16,9 +16,7 @@ interface CashAccountsViewProps {
   accounts: CashAccount[];
   draftAccounts: CashAccountInput[];
   globalBufferOverride: number | null;
-  dirty: boolean;
   onChange: (accounts: CashAccountInput[]) => void;
-  onSave: () => Promise<void>;
   onAdd: () => void;
 }
 
@@ -26,9 +24,7 @@ export function CashAccountsView({
   accounts,
   draftAccounts,
   globalBufferOverride,
-  dirty,
   onChange,
-  onSave,
   onAdd,
 }: CashAccountsViewProps) {
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(
@@ -80,15 +76,6 @@ export function CashAccountsView({
     );
   }
 
-  function handleEnterSave(event: React.KeyboardEvent) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      if (dirty && !validation.hasErrors) {
-        void onSave();
-      }
-    }
-  }
-
   function removeSelected() {
     if (!selectedDraft) {
       return;
@@ -109,8 +96,8 @@ export function CashAccountsView({
           <p className="eyebrow">Cash Accounts</p>
           <h2>Edit the liquidity that protects your plan.</h2>
           <p className="subtle-copy">
-            Cash changes save into the local portfolio and feed the history chart
-            on the dashboard.
+            Valid cash changes autosave. Record an update when you want them to
+            become a history checkpoint.
           </p>
         </div>
         <div className="focus-strip">
@@ -141,14 +128,9 @@ export function CashAccountsView({
             <button className="secondary-button" onClick={onAdd} type="button">
               Add Account
             </button>
-            <button
-              className="primary-button save-button"
-              disabled={!dirty || validation.hasErrors}
-              onClick={onSave}
-              type="button"
-            >
-              Save Accounts
-            </button>
+            <span className="form-status-note">
+              Valid changes autosave. Use Record Update above for history.
+            </span>
           </div>
           {validation.message ? (
             <p className="form-warning">{validation.message}</p>
@@ -305,7 +287,6 @@ export function CashAccountsView({
                         ),
                       }))
                     }
-                    onKeyDown={handleEnterSave}
                   />
                   {selectedErrors.min_day_end_balance_required ? (
                     <small className="field-error">
@@ -313,23 +294,15 @@ export function CashAccountsView({
                     </small>
                   ) : (
                     <small className="field-hint">
-                      Use the real day-end floor you do not want to breach. Press Enter to save.
+                      Use the real day-end floor you do not want to breach.
                     </small>
                   )}
                 </label>
               </div>
               <div className="form-actions">
                 <span className="form-status-note">
-                  Changes stay in the draft until you click Save Accounts.
+                  Valid changes autosave. Record an update when you want a history point.
                 </span>
-                <button
-                  className="primary-button save-button"
-                  disabled={!dirty || validation.hasErrors}
-                  onClick={onSave}
-                  type="button"
-                >
-                  Save Accounts
-                </button>
                 <button className="secondary-button" onClick={removeSelected} type="button">
                   Remove Account
                 </button>

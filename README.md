@@ -132,9 +132,26 @@ npm run db:push:postgres          # Synchronize the configured PostgreSQL schema
 7. Review **Today**, **Next 7 Days**, **Cash Health**, **Promo Deadlines**, and **Recommended Actions** on the dashboard.
 8. Use **Utilities** for XLSX import/export, JSON backup/restore, templates, and screenshot-assisted entry. These are secondary to manual entry.
 
+Valid edits autosave after a short debounce and update the current portfolio without creating a history point for every keystroke. Use **Record Update** when the current values should become an intentional historical checkpoint. Workbook, backup, and screenshot imports create checkpoints automatically.
+
+With the default `DATABASE_URL="file:./dev.db"`, Prisma stores local data in
+`prisma/dev.db`. Values and recorded checkpoints survive browser and dev-server
+restarts. The SQLite file is intentionally ignored by Git.
+
+Local SQLite and hosted Neon are independent datasets. There is no automatic
+sync between them; use the versioned JSON backup export/restore flow when data
+needs to be moved between environments. Backup v2 contains the current
+portfolio, checkpoints, and activity events. Older `{ "portfolio": ... }`
+backups remain supported.
+
 Unknown statement balances or minimum payments remain explicitly unknown. The forecast does not invent an expected payment amount.
 
 ## Authentication and security
+
+If `DATABASE_URL` is missing, invalid, or points to a database whose schema has
+not been initialized, the app reports a configuration/database error instead
+of silently falling back to browser-only state. See [LOCAL_DB.md](./LOCAL_DB.md)
+for bootstrap and troubleshooting details.
 
 - The middleware protects the application and API routes.
 - Successful sign-in creates a signed `HttpOnly`, `SameSite=Lax` session cookie.

@@ -1,30 +1,33 @@
-# Graph Report - debt-crusher  (2026-08-09)
+# Graph Report - debt-crusher  (2026-08-12)
 
 ## Corpus Check
-- 89 files · ~77,124 words
+- 98 files · ~82,942 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 632 nodes · 1096 edges · 40 communities (27 shown, 13 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 3 edges (avg confidence: 0.8)
+- 724 nodes · 1279 edges · 43 communities (30 shown, 13 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 9 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `eb777375`
+- Built from commit: `7b0cb64e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- types.ts
+- credit-cards-view.tsx
 - backfill-operations.mjs
 - debt-crusher Project Context
 - verify-operations.mjs
 - import-workbook.ts
 - manual-workflow.tsx
 - operations.ts
+- portfolio-store.ts
+- trend-panels.tsx
 - build-template.mjs
 - layout.tsx
-- portfolio.ts
+- Debt Crusher Mobile App Plan
+- types.ts
 - debt-crusher Architecture
 - debt-crusher Workflows
 - debt-crusher Coding Rules
@@ -56,18 +59,20 @@
 - next-env.d.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `savePortfolioBundle()` - 19 edges
-2. `scripts` - 17 edges
-3. `compilerOptions` - 16 edges
-4. `debt-crusher Project Context` - 16 edges
-5. `Finance Console` - 15 edges
-6. `debt-crusher Architecture` - 14 edges
-7. `Debt Crusher User Guide` - 14 edges
-8. `parseCreditRows()` - 13 edges
-9. `loadOperationsData()` - 13 edges
-10. `loadPortfolioBundle()` - 13 edges
+1. `savePortfolioBundle()` - 22 edges
+2. `loadPortfolioBundle()` - 17 edges
+3. `scripts` - 17 edges
+4. `compilerOptions` - 16 edges
+5. `debt-crusher Project Context` - 16 edges
+6. `Debt Crusher User Guide` - 16 edges
+7. `Finance Console` - 15 edges
+8. `createEmptyPortfolio()` - 14 edges
+9. `debt-crusher Architecture` - 14 edges
+10. `DebtCrusherApp()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `POST()` --calls--> `savePortfolioBundle()`  [EXTRACTED]
+  app/api/screenshot-import/save/route.ts → lib/portfolio-store.ts
 - `POST()` --calls--> `portfolioStateToDb()`  [EXTRACTED]
   app/api/manual-entry/route.ts → lib/persistence.ts
 - `POST()` --calls--> `createEmptyPortfolio()`  [EXTRACTED]
@@ -76,17 +81,15 @@
   app/api/operations/actions/route.ts → lib/operations-store.ts
 - `GET()` --calls--> `loadOperationsData()`  [EXTRACTED]
   app/api/operations/config/route.ts → lib/operations-store.ts
-- `PATCH()` --calls--> `loadOperationsData()`  [EXTRACTED]
-  app/api/operations/config/route.ts → lib/operations-store.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (40 total, 13 thin omitted)
+## Communities (43 total, 13 thin omitted)
 
-### Community 0 - "types.ts"
-Cohesion: 0.08
-Nodes (48): CashAccountsView(), CashAccountsViewProps, numberValue(), columnHelper, CreditCardsView(), CreditCardsViewProps, formatAutoPayment(), nullableNumberValue() (+40 more)
+### Community 0 - "credit-cards-view.tsx"
+Cohesion: 0.09
+Nodes (35): CashAccountsView(), CashAccountsViewProps, numberValue(), columnHelper, CreditCardsView(), CreditCardsViewProps, formatAutoPayment(), nullableNumberValue() (+27 more)
 
 ### Community 1 - "backfill-operations.mjs"
 Cohesion: 0.60
@@ -97,8 +100,8 @@ Cohesion: 0.12
 Nodes (16): Business Purpose, Critical Dependencies, Current Architecture Themes, debt-crusher Project Context, Deployment Model, Environments, Important APIs, Important Databases (+8 more)
 
 ### Community 4 - "import-workbook.ts"
-Cohesion: 0.14
-Nodes (33): CASH_HEADER_ALIASES, CashBaseRow, CREDIT_HEADER_ALIASES, CreditBaseRow, findHeaderRowIndex(), headerIndexMap(), importWorkbook(), isBlankMatrixRow() (+25 more)
+Cohesion: 0.09
+Nodes (45): buildDashboardSummary(), buildRecommendedTargetReasons(), CashBaseRow, computePriorityScore(), CreditBaseRow, deriveCashAccounts(), deriveCreditAccounts(), diffInDays() (+37 more)
 
 ### Community 5 - "manual-workflow.tsx"
 Cohesion: 0.21
@@ -108,13 +111,25 @@ Nodes (10): CardEntryForm(), jsonRequest(), ManualWorkflow(), MonthlyReview(), O
 Cohesion: 0.17
 Nodes (21): AccountForecast, assessPromotion(), AutopayMode, buildCashForecast(), centsToMoney(), ForecastEvent, isoDate(), moneyToCents() (+13 more)
 
+### Community 7 - "portfolio-store.ts"
+Cohesion: 0.08
+Nodes (54): GET(), POST(), GET(), historyRanges, POST(), GET(), POST(), PUT() (+46 more)
+
+### Community 8 - "trend-panels.tsx"
+Cohesion: 0.16
+Nodes (12): AccountMetric, AccountOption, chronologicalSnapshots(), downsampleTrend(), filterByRange(), formatCheckpoint(), PortfolioMetric, portfolioMetrics (+4 more)
+
 ### Community 9 - "build-template.mjs"
 Cohesion: 0.22
 Nodes (6): cashSheet, creditSheet, outputDir, outputPath, setupSheet, workbook
 
-### Community 14 - "portfolio.ts"
-Cohesion: 0.07
-Nodes (63): GET(), POST(), POST(), runtime, DebtCrusherApp(), views, ImportPanel(), ImportPanelProps (+55 more)
+### Community 11 - "Debt Crusher Mobile App Plan"
+Cohesion: 0.15
+Nodes (12): Current State and Baseline, Data, Connectivity, and Security, Debt Crusher Mobile App Plan, Milestones, Mobile API Contracts, Native Product Scope, Objective, Platform integrations (+4 more)
+
+### Community 14 - "types.ts"
+Cohesion: 0.06
+Nodes (60): POST(), runtime, chartColors, DashboardViewProps, DebtCrusherApp(), portfolioComparable(), portfolioFingerprint(), SaveStatus (+52 more)
 
 ### Community 16 - "debt-crusher Architecture"
 Cohesion: 0.13
@@ -153,12 +168,12 @@ Cohesion: 0.07
 Nodes (43): canonicalize(), day, entry, nullableMoney, POST(), runtime, GET(), runtime (+35 more)
 
 ### Community 50 - "Debt Crusher Product Plan"
-Cohesion: 0.08
-Nodes (26): Core data groups, Current Architecture, Current Build Status, Current Operational Logic, Debt Crusher Product Plan, Done, Execution Phases, Forecasting (+18 more)
+Cohesion: 0.07
+Nodes (27): Core data groups, Current Architecture, Current Build Status, Current Operational Logic, Debt Crusher Product Plan, Done, Execution Phases, Forecasting (+19 more)
 
 ### Community 51 - "Debt Crusher User Guide"
-Cohesion: 0.10
-Nodes (21): Cash Accounts, Credit Cards, Current Limits, Dashboard, Debt Crusher User Guide, Fast Operational Updates, First-Time Local Setup, Import, Backup, and Export (+13 more)
+Cohesion: 0.08
+Nodes (24): Cash Accounts, Credit Cards, Current Limits, Dashboard, Debt Crusher User Guide, Fast Operational Updates, First-Time Local Setup, History and Trends (+16 more)
 
 ### Community 52 - "compilerOptions"
 Cohesion: 0.07
@@ -178,7 +193,7 @@ Nodes (23): next, dependencies, next, prisma, @prisma/client, react, react-dom, 
 
 ### Community 57 - "Debt Crusher"
 Cohesion: 0.06
-Nodes (32): 1. Set local env, 2. Generate Prisma client and push the schema, 3. Start the app, 4. Vercel, Local Database Setup, Operations-core database rollout, Current Priority, Debt Crusher Project Status (+24 more)
+Nodes (34): 1. Set local env, 2. Generate Prisma client and push the schema, 3. Start the app, 4. Vercel, Local Database Setup, Moving data between environments, Troubleshooting, Operations-core database rollout (+26 more)
 
 ### Community 58 - "scripts"
 Cohesion: 0.06
@@ -189,24 +204,24 @@ Cohesion: 0.40
 Nodes (4): Code Changes, Contributing, License, Reporting Issues
 
 ## Knowledge Gaps
-- **294 isolated node(s):** `runtime`, `nullableMoney`, `day`, `entry`, `runtime` (+289 more)
+- **334 isolated node(s):** `runtime`, `nullableMoney`, `day`, `entry`, `runtime` (+329 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `ActivitySnapshot` connect `types.ts` to `trend-panels.tsx`, `portfolio-store.ts`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Why does `Debt Crusher Product Plan` connect `Debt Crusher Product Plan` to `Debt Crusher`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Why does `Debt Crusher User Guide` connect `Debt Crusher User Guide` to `Debt Crusher`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **Why does `SetupConfig` connect `types.ts` to `import-workbook.ts`, `manual-workflow.tsx`, `portfolio.ts`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+- **Are the 2 inferred relationships involving `loadPortfolioBundle()` (e.g. with `dbRowToActivityEvent()` and `dbRowToActivitySnapshot()`) actually correct?**
+  _`loadPortfolioBundle()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `runtime`, `nullableMoney`, `day` to the rest of the system?**
-  _294 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `types.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.07656341320864991 - nodes in this community are weakly interconnected._
+  _334 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `credit-cards-view.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.09407665505226481 - nodes in this community are weakly interconnected._
 - **Should `debt-crusher Project Context` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
-- **Should `import-workbook.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.1365079365079365 - nodes in this community are weakly interconnected._

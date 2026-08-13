@@ -127,14 +127,14 @@ export function HistoryPanel({ snapshots, recentEvents }: HistoryPanelProps) {
       <div className="history-header">
         <div>
           <p className="eyebrow">Activity History</p>
-          <h3>Saves and imports stay local to this browser.</h3>
+          <h3>Recorded updates and imports stay in this app&apos;s database.</h3>
         </div>
         <span className="history-count">{snapshots.length} saved</span>
       </div>
       <div className="history-list">
         {snapshots.length === 0 ? (
           <p className="empty-copy">
-            No saves yet. Import a workbook or save form changes to start
+            No checkpoints yet. Import a workbook or record an update to start
             tracking history.
           </p>
         ) : (

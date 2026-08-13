@@ -83,6 +83,46 @@ Use this screen for checking and savings account details, required cash minimums
 
 Use Utilities for workbook import/export, JSON backup/restore, templates, and screenshot-assisted entry. These remain secondary to the manual workflow.
 
+### History and Trends
+
+Recorded updates appear in portfolio and per-account trend charts. Use the `30d`, `90d`, `1y`, and `All` ranges to review total credit balance, safe cash, weighted utilization, or an individual account's balance and utilization. Autosaves do not create trend points.
+
+## Important Save Behavior
+
+Valid edits autosave after a short pause. Autosave updates the current portfolio
+without creating a history entry for every keystroke.
+
+What happens:
+
+- typing in a form updates the draft immediately
+- after about 800 ms, valid values are persisted to the app database
+- the header shows `Autosave queued`, `Saving`, `Autosaved`, or `Save failed`
+- click `Record Update` when the current values should become a historical checkpoint
+
+Invalid form values wait in the draft until fixed. Autosaved edits survive a
+refresh, but only recorded updates and imports appear in historical trends.
+
+## How To Add A Credit Card
+
+1. Click `Add Card`.
+2. Select the new row in the card list if needed.
+3. Fill in the card form on the right.
+4. Use the `Institution` field search to find a known issuer.
+   It supports aliases like `Amex`, `BofA`, and `US Bank`.
+5. Enter your own `Nickname`.
+   This is your label for the card.
+6. Fill in balance, APR, due date, promo details, autopay details, and notes.
+7. Wait for `Autosaved`; click `Record Update` when this balance should enter history.
+
+## How To Add A Cash Account
+
+1. Click `Add Cash Account` or `Add Account`.
+2. Select the new account if needed.
+3. Fill in the account form.
+4. Use the `Institution` search to find a known bank, or type your own.
+5. Set the real day-end minimum you do not want to breach.
+6. Wait for `Autosaved`; click `Record Update` when this balance should enter history.
+
 ## Monthly Review
 
 Run **Monthly Review** once per calendar month.
@@ -127,12 +167,6 @@ Legacy card status labels are:
 
 Promotion risk is assessed separately using the balance, deadline or target date, safety buffer, deferred-interest flag, and known planned payment pace.
 
-## Save Behavior
-
-The legacy card, cash, and setup editors use a draft model. Typing marks the portfolio unsaved; click **Save Cards**, **Save Accounts**, or **Save Settings** to persist those edits and include them in history. **Reset Unsaved** restores the last saved portfolio.
-
-The Setup, Monthly Review, fast-update, promotion, and recurring-transaction workflows save through their individual action buttons.
-
 ## Import, Backup, and Export
 
 ### Workbook
@@ -146,8 +180,10 @@ The template is available at [public/debt-crusher-import-template.xlsx](./public
 
 ### JSON backup
 
-- **Export Backup** downloads app-owned portfolio and history data.
-- **Restore Backup** replaces the working portfolio after confirmation.
+- **Export Backup** downloads a versioned backup containing the current portfolio, checkpoints, and activity events.
+- **Restore Backup** replaces the app-owned portfolio and history after confirmation. Restore is transactional, so a malformed backup cannot leave partially replaced data.
+- Older portfolio-only JSON backups remain supported.
+- Local SQLite and hosted Neon are separate datasets; backup export/restore is the supported way to move data between them.
 
 ### Screenshot-assisted entry
 

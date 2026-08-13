@@ -7,12 +7,12 @@ Active development. The normalized financial-operations foundation and its manua
 ## Key Metrics
 
 - Status: Working
-- Last update: 2026-08-09
+- Last update: 2026-08-12
 - Owner: Bhavya Dalwadi
 - Local database: SQLite
 - Production database target: PostgreSQL/Neon
 
-## Recent Changes
+## Completed Locally
 
 - Added normalized institutions, credit cards, cash accounts, autopay rules, promotional offers, recurring transactions, reviews, expected payments, and audit logs.
 - Added additive SQLite and PostgreSQL migration baselines plus stable-ID backfill and verification scripts.
@@ -21,6 +21,13 @@ Active development. The normalized financial-operations foundation and its manua
 - Added a 35-day account forecast, recurring cash-flow configuration, autopay funding, promotion risk, cash-shortfall warnings, and cash-safe extra-payment guidance.
 - Retained legacy records, activity snapshots, imports, screenshot artifacts, and compatibility fields during rollout.
 - Expanded local and production setup, migration, verification, security, and rollback documentation.
+- Made local SQLite persistence turnkey while keeping Neon as the separate hosted database
+- Added current-state autosave without noisy history points
+- Added intentional checkpoints for activity history and trends
+- Expanded trends across portfolio totals and individual accounts
+- Versioned JSON backups so current data, checkpoints, and events restore together
+- Validated autosave and checkpoints against real SQLite through the browser
+- Passed the full test suite, TypeScript check, and production build
 
 ## Known Issues and Limits
 
@@ -30,6 +37,7 @@ Active development. The normalized financial-operations foundation and its manua
 - Historical comparison remains primarily snapshot- and audit-based.
 - There is no automatic bank sync; an optional read-only Plaid integration is a future evaluation item.
 - Unknown statement or minimum-payment values intentionally produce data-quality warnings instead of forecast estimates.
+- Local and hosted data do not synchronize automatically; use JSON backup export/restore
 
 ## Next Steps
 

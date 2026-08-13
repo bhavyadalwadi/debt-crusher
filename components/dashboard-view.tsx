@@ -5,8 +5,6 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -14,6 +12,7 @@ import {
 } from "recharts";
 import { StatusBadge } from "@/components/status-badge";
 import { OperationsPanel } from "@/components/operations-panel";
+import { TrendPanels } from "@/components/trend-panels";
 import { currencyFormatter, formatPercentFromValue } from "@/lib/format";
 import { validateSetup } from "@/lib/form-validation";
 import type {
@@ -30,9 +29,7 @@ interface DashboardViewProps {
   activitySnapshots: ActivitySnapshot[];
   setup: SetupConfig;
   deltaFromPrevious: SnapshotDelta | null;
-  dirty: boolean;
   onSetupChange: (setup: SetupConfig) => void;
-  onSave: () => Promise<void>;
 }
 
 export function DashboardView({
@@ -40,9 +37,7 @@ export function DashboardView({
   activitySnapshots,
   setup,
   deltaFromPrevious,
-  dirty,
   onSetupChange,
-  onSave,
 }: DashboardViewProps) {
   const setupErrors = validateSetup(setup);
   const hasSetupErrors = Object.keys(setupErrors).length > 0;
@@ -59,17 +54,6 @@ export function DashboardView({
     name: account.nickname,
     utilization: Number(account.utilization_percent.toFixed(1)),
   }));
-  const trendData = [...activitySnapshots]
-    .reverse()
-    .map((entry) => ({
-      name: new Date(entry.importedAt).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }),
-      credit: Number(entry.dashboardSummary.total_credit_balance.toFixed(2)),
-      cash: Number(entry.dashboardSummary.total_cash_above_minimums.toFixed(2)),
-    }))
-    .slice(-8);
   const cashChartData = cashAccounts.map((account) => ({
     name: account.account_name,
     value: Number(account.available_above_minimum.toFixed(2)),
@@ -483,21 +467,18 @@ export function DashboardView({
           {hasSetupErrors ? (
             <p className="form-warning">Fix setup errors before saving.</p>
           ) : null}
-          <button
-            className="primary-button save-button"
-            disabled={!dirty || hasSetupErrors}
-            onClick={onSave}
-            type="button"
-          >
-            Save Settings
-          </button>
+          {!hasSetupErrors ? (
+            <p className="form-status-note">
+              Valid settings autosave. Use Record Update above for history.
+            </p>
+          ) : null}
         </section>
       </div>
 
       <section className="signal-panel">
         <div className="signal-header">
-          <p className="eyebrow">Since Last Save</p>
-          <h3>What changed in the working portfolio</h3>
+          <p className="eyebrow">Since Last Checkpoint</p>
+          <h3>What changed since the latest recorded update</h3>
         </div>
         {deltaFromPrevious ? (
           <div className="delta-grid">
@@ -516,7 +497,7 @@ export function DashboardView({
           </div>
         ) : (
           <p className="empty-copy">
-            Save the portfolio at least once to start showing change summaries.
+            Record at least one update to start showing change summaries.
           </p>
         )}
       </section>
@@ -562,24 +543,7 @@ export function DashboardView({
           </div>
         </section>
 
-        <section className="chart-panel">
-          <div className="chart-header">
-            <p className="eyebrow">Activity Trend</p>
-            <h3>Credit and safe cash over time</h3>
-          </div>
-          <div className="chart-shell">
-            <ResponsiveContainer width="100%" height={260}>
-              <LineChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#d7d1c4" />
-                <XAxis dataKey="name" tickLine={false} axisLine={false} />
-                <YAxis tickFormatter={(value) => currencyFormatter.format(value)} tickLine={false} axisLine={false} />
-                <Tooltip formatter={(value: number) => currencyFormatter.format(value)} />
-                <Line type="monotone" dataKey="credit" stroke="#b3452f" strokeWidth={2.5} dot={false} />
-                <Line type="monotone" dataKey="cash" stroke="#1f6b5d" strokeWidth={2.5} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </section>
+        <TrendPanels snapshots={activitySnapshots} />
 
         <section className="chart-panel">
           <div className="chart-header">
