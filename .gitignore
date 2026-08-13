@@ -3,6 +3,7 @@ node_modules
 .next
 prisma/dev.db
 prisma/dev.db-journal
+prisma/dev.db.backup*
 .DS_Store
 Thumbs.db
 outputs
