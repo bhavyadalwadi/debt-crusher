@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { loadForecast } from "@/lib/operations-store";
+import { requireOwnerContext, safeRouteError } from "@/lib/security";
 
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
   try {
+    await requireOwnerContext();
     const url = new URL(request.url);
     const startDate = url.searchParams.get("startDate") ?? new Date().toISOString().slice(0, 10);
     const defaultEnd = new Date(`${startDate}T00:00:00Z`);
@@ -13,6 +15,6 @@ export async function GET(request: Request) {
     const accountId = url.searchParams.get("accountId") ?? undefined;
     return NextResponse.json({ startDate, endDate, forecasts: await loadForecast(startDate, endDate, accountId) });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Failed to build forecast" }, { status: 400 });
+    return safeRouteError(error, "Failed to build forecast");
   }
 }

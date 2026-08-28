@@ -16,6 +16,7 @@ Manual entry is the source of current financial truth. Workbook, JSON, and scree
 - recurring income, expenses, transfers, and debt payments
 - setup and monthly-review progress
 - snapshots, activity events, audit records, and screenshot artifacts
+- optional Plaid Sandbox connection metadata, encrypted credentials, sync freshness, and unaccepted field proposals
 
 Local development stores this data in SQLite. Production is designed for PostgreSQL/Neon.
 
@@ -32,7 +33,7 @@ npm run db:migrate
 npm run dev
 ```
 
-Set `DATABASE_URL`, `PRIVATE_ACCESS_USERNAME`, `PRIVATE_ACCESS_PASSWORD`, and `SESSION_SECRET` in `.env`, then open [http://localhost:3000](http://localhost:3000) and sign in.
+Set the SQLite, Clerk development, owner, Plaid Sandbox, encryption, and HMAC values documented in `.env.example`, then open [http://localhost:3000](http://localhost:3000) and sign in with the configured Clerk owner and MFA/passkey.
 
 If the local database already contains financial history, do not recreate it. Follow [prisma/MIGRATIONS.md](./prisma/MIGRATIONS.md).
 
@@ -78,6 +79,14 @@ Use this screen for the existing card list and detail editor. It includes sortin
 ### Cash Accounts
 
 Use this screen for checking and savings account details, required cash minimums, safe-cash calculations, institution search, and review freshness.
+
+### Bank Sync
+
+Bank Sync is a read-only Plaid Sandbox helper. Connect a fake Sandbox institution, then match each discovered checking, savings, money-market, or credit-card account to an account you already created. Matching never creates a trusted account automatically.
+
+After matching, **Sync** compares supported provider values with the manual trusted values. Review every field independently and choose **Accept** or **Ignore**. If a manual value changed after the proposal was captured, acceptance is rejected and a fresh sync is required. Status and timestamps distinguish current, stale, syncing, reauthentication-required, error, and disconnected data.
+
+Disconnect revokes the Plaid Item and removes encrypted credentials plus unaccepted proposals. **Delete bank data** removes the disconnected provider metadata; previously accepted trusted values and audit history remain. Both actions require Clerk reverification.
 
 ### Utilities
 
@@ -202,8 +211,9 @@ Do not upload screenshots containing full account/card numbers, routing numbers,
 
 ## Current Limits
 
-- no automatic bank sync
-- optional Plaid-based bank connectivity is on the future roadmap but is not implemented
+- Plaid is Sandbox-only and retrieves balances and supported credit-card liabilities; it does not ingest transactions
+- connected accounts must be matched manually, and every changed field requires explicit acceptance
+- real institutions, Plaid Production, account/routing data, and money movement are prohibited
 - no dedicated payment/cash-transfer ledger entry yet
 - no projected payoff-date and interest-cost simulator yet
 - historical comparison is primarily snapshot- and audit-based
@@ -216,3 +226,8 @@ Do not upload screenshots containing full account/card numbers, routing numbers,
 - [Product plan](./Plan.md)
 - [Current status](./STATUS.md)
 - [Migration and rollback guide](./prisma/MIGRATIONS.md)
+- [Financial integration security review](./SECURITY_REVIEW.md)
+- [Plaid Sandbox staging runbook](./PLAID_SANDBOX_RUNBOOK.md)
+- [Clerk security runbook](./CLERK_SECURITY_RUNBOOK.md)
+- [Local Plaid webhook tunnel](./LOCAL_PLAID_WEBHOOK_TUNNEL.md)
+- [Secret and key management](./SECRET_KEY_MANAGEMENT.md)

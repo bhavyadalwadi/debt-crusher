@@ -2,12 +2,16 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { UserButton } from "@clerk/nextjs";
+import { BankSyncPanel } from "@/components/bank-sync-panel";
 import { CashAccountsView } from "@/components/cash-accounts-view";
 import { CreditCardsView } from "@/components/credit-cards-view";
 import { DashboardView } from "@/components/dashboard-view";
 import { HistoryPanel } from "@/components/history-panel";
 import { ImportPanel } from "@/components/import-panel";
 import { ManualWorkflow } from "@/components/manual-workflow";
+import { OperationsPanel } from "@/components/operations-panel";
+import { PayoffSettingsPanel } from "@/components/payoff-settings-panel";
 import {
   ScreenshotReviewPanel,
   type ScreenshotReviewDraft,
@@ -37,6 +41,7 @@ const views: { id: AppView; label: string }[] = [
   { id: "monthly-review", label: "Monthly Review" },
   { id: "credit-cards", label: "Credit Cards" },
   { id: "cash-accounts", label: "Cash Accounts" },
+  { id: "bank-sync", label: "Bank Sync" },
   { id: "utilities", label: "Utilities" },
 ];
 
@@ -117,7 +122,6 @@ export function DebtCrusherApp() {
   const [toasts, setToasts] = useState<
     Array<{ id: string; tone: "success" | "error" | "warning"; message: string; count: number; createdAt: number }>
   >([]);
-  const [loggingOut, startLogoutTransition] = useTransition();
   const [reviewSummary, setReviewSummary] = useState<{ setupNeeded: boolean; monthlyReviewDue: boolean; lastCompletedAt: string | null } | null>(null);
   const backupInputRef = useRef<HTMLInputElement | null>(null);
   const autosaveTimerRef = useRef<number | null>(null);
@@ -207,16 +211,6 @@ export function DebtCrusherApp() {
 
   function dismissToast(id: string) {
     setToasts((current) => current.filter((toast) => toast.id !== id));
-  }
-
-  function handleLogout() {
-    startLogoutTransition(async () => {
-      await fetch("/signout", {
-        method: "POST",
-      });
-      router.replace("/signin");
-      router.refresh();
-    });
   }
 
   useEffect(() => {
@@ -850,9 +844,6 @@ export function DebtCrusherApp() {
       <header className="app-header">
         <div className="header-copy">
           <h1>Debt Crusher</h1>
-          <p className="subtle-copy">
-            Direct-entry payoff workspace with saved history and backup import.
-          </p>
         </div>
         <div className="header-meta">
           <div className="save-state-strip">
@@ -874,81 +865,14 @@ export function DebtCrusherApp() {
             ) : null}
           </div>
           <div className="legend-row">
-            <span className="legend-chip danger">Danger</span>
-            <span className="legend-chip warning">Warning</span>
-            <span className="legend-chip watch">Watch</span>
-            <span className="legend-chip ok">OK</span>
-            <span className="legend-chip paid">Paid</span>
-            <button className="ghost-button" onClick={handleLogout} type="button">
-              {loggingOut ? "Signing Out..." : "Sign Out"}
-            </button>
+            <UserButton />
           </div>
         </div>
       </header>
 
-      <section className="primary-actions-panel">
-        <div className="primary-actions-copy">
-          <p className="eyebrow">Primary Workflow</p>
-          <p className="subtle-copy">
-            Add records directly and review them monthly. Spreadsheet tools now live
-            under Utilities.
-          </p>
-        </div>
-        <div className="toolbar-actions">
-          <button
-            className="primary-button"
-            disabled={
-              !hasCheckpointChanges ||
-              portfolioValidation.hasErrors ||
-              saveStatus === "saving"
-            }
-            onClick={() => void handleRecordUpdate()}
-            type="button"
-          >
-            Record Update
-          </button>
-          <button className="primary-button" onClick={handleAddCard} type="button">
-            Add Card
-          </button>
-          <button className="primary-button" onClick={handleAddCashAccount} type="button">
-            Add Cash Account
-          </button>
-          <button
-            className="secondary-button"
-            onClick={() => router.push("/?view=setup")}
-            type="button"
-          >
-            Guided Setup
-          </button>
-          <button className="secondary-button" onClick={() => router.push("/?view=monthly-review")} type="button">Monthly Review</button>
-          <input
-            ref={backupInputRef}
-            type="file"
-            accept=".json,application/json"
-            className="hidden-input"
-            onChange={async (event) => {
-              const file = event.target.files?.[0];
-              if (!file) {
-                return;
-              }
-              await handleImportBackup(file);
-              event.target.value = "";
-            }}
-          />
-          <button
-            className="secondary-button"
-            disabled={!dirty}
-            onClick={resetUnsavedChanges}
-            type="button"
-          >
-            Reset Unsaved
-          </button>
-        </div>
-        {saveError ? <p className="form-warning">{saveError}</p> : null}
-      </section>
-
       {activeView === "utilities" ? <>
-        <section className="primary-actions-panel"><div><p className="eyebrow">Utilities</p><h2>Backups and optional spreadsheet tools</h2><p className="subtle-copy">Manual entry remains authoritative. Review imported changes before saving.</p></div><div className="toolbar-actions"><button className="secondary-button" onClick={handleExportBackup} type="button">Export Backup</button><button className="secondary-button" onClick={handleExportWorkbook} type="button">Export Workbook</button><button className="secondary-button" onClick={() => backupInputRef.current?.click()} type="button">Restore Backup</button></div></section>
+        <input ref={backupInputRef} type="file" accept=".json,application/json" className="hidden-input" onChange={async (event) => { const file = event.target.files?.[0]; if (!file) return; await handleImportBackup(file); event.target.value = ""; }} />
+        <section className="primary-actions-panel"><div><p className="eyebrow">Utilities</p><h2>History, backups, and imports</h2><p className="subtle-copy">Create a checkpoint or move data in and out of the workspace.</p></div><div className="toolbar-actions"><button className="primary-button" disabled={!hasCheckpointChanges || portfolioValidation.hasErrors || saveStatus === "saving"} onClick={() => void handleRecordUpdate()} type="button">Record Update</button>{dirty ? <button className="secondary-button" onClick={resetUnsavedChanges} type="button">Reset Unsaved</button> : null}<button className="secondary-button" onClick={handleExportBackup} type="button">Export Backup</button><button className="secondary-button" onClick={handleExportWorkbook} type="button">Export Workbook</button><button className="secondary-button" onClick={() => backupInputRef.current?.click()} type="button">Restore Backup</button></div></section>
         <ImportPanel importing={isPending} screenshotImporting={screenshotImporting} importMode={importMode} onImportModeChange={setImportMode} onImport={handleImport} onScreenshotImport={handleScreenshotImport} />
       </> : null}
 
@@ -981,8 +905,8 @@ export function DebtCrusherApp() {
         </section>
       ) : null}
 
-      <div className="workspace-grid">
-        <HistoryPanel snapshots={snapshots} recentEvents={recentEvents} />
+      <div className={`workspace-grid${activeView === "utilities" ? "" : " no-history"}`}>
+        {activeView === "utilities" ? <HistoryPanel snapshots={snapshots} recentEvents={recentEvents} /> : null}
 
         <section className="workspace-panel">
           <nav className="tabs">
@@ -1022,7 +946,7 @@ export function DebtCrusherApp() {
           ) : null}
 
           {activeView === "dashboard" ? (
-            <>{reviewSummary?.monthlyReviewDue ? <section className="control-strip"><div><p className="eyebrow">Monthly Review Due</p><h2>Confirm this month&apos;s balances and payment details.</h2><p className="subtle-copy">Your last completed review was {reviewSummary.lastCompletedAt ? new Date(reviewSummary.lastCompletedAt).toLocaleDateString() : "not recorded"}.</p></div><button className="primary-button" onClick={() => router.push("/?view=monthly-review")}>Start monthly review</button></section> : null}<DashboardView
+            <>{reviewSummary?.monthlyReviewDue ? <section className="control-strip review-reminder"><div><p className="eyebrow">Monthly Review</p><h2>Balance review is due.</h2></div><button className="primary-button" onClick={() => router.push("/?view=monthly-review")}>Review now</button></section> : null}<DashboardView
               snapshot={computedSnapshot}
               activitySnapshots={snapshots}
               setup={draftPortfolio.setup}
@@ -1036,8 +960,9 @@ export function DebtCrusherApp() {
             />
             </>
           ) : null}
-          {activeView === "setup" ? <ManualWorkflow mode="setup" setup={draftPortfolio.setup} onSetupChange={(setup) => replaceDraft({ ...draftPortfolio, setup })} onSaveSetup={() => handleRecordUpdate("Setup preferences")} onFinished={() => { setReviewSummary((current) => current ? { ...current, setupNeeded: false } : current); router.push("/?view=dashboard"); }} /> : null}
+          {activeView === "setup" ? <div className="setup-sections"><ManualWorkflow mode="setup" setup={draftPortfolio.setup} onSetupChange={(setup) => replaceDraft({ ...draftPortfolio, setup })} onSaveSetup={() => handleRecordUpdate("Setup preferences")} onFinished={() => { setReviewSummary((current) => current ? { ...current, setupNeeded: false } : current); router.push("/?view=dashboard"); }} /><PayoffSettingsPanel setup={draftPortfolio.setup} onSetupChange={(setup) => replaceDraft({ ...draftPortfolio, setup })} /><OperationsPanel variant="configuration" /></div> : null}
           {activeView === "monthly-review" ? <ManualWorkflow mode="review" setup={draftPortfolio.setup} onSetupChange={(setup) => replaceDraft({ ...draftPortfolio, setup })} onSaveSetup={() => handleRecordUpdate("Monthly settings")} onFinished={() => { setReviewSummary((current) => current ? { ...current, monthlyReviewDue: false, lastCompletedAt: new Date().toISOString() } : current); router.push("/?view=dashboard"); }} /> : null}
+          {activeView === "bank-sync" ? <BankSyncPanel /> : null}
           {activeView === "credit-cards" ? (
             <CreditCardsView
               accounts={computedSnapshot.creditAccounts}

@@ -341,6 +341,7 @@ export async function loadPortfolioBundle() {
   });
 
   const snapshots = await prisma.activitySnapshot.findMany({
+    where: { portfolioId: CURRENT_PORTFOLIO_ID },
     orderBy: { importedAt: "desc" },
     include: {
       importArtifact: {
@@ -354,6 +355,7 @@ export async function loadPortfolioBundle() {
     },
   });
   const recentEvents = await prisma.activityEvent.findMany({
+    where: { snapshot: { portfolioId: CURRENT_PORTFOLIO_ID } },
     orderBy: { occurredAt: "desc" },
     take: 40,
   });
@@ -473,7 +475,7 @@ export async function loadPortfolioHistory(range: PortfolioHistoryRange) {
   const days = range === "30d" ? 30 : range === "90d" ? 90 : range === "1y" ? 365 : null;
   const cutoff = days === null ? undefined : new Date(Date.now() - days * 86_400_000);
   const rows = await prisma.activitySnapshot.findMany({
-    where: cutoff ? { importedAt: { gte: cutoff } } : undefined,
+    where: { portfolioId: CURRENT_PORTFOLIO_ID, importedAt: cutoff ? { gte: cutoff } : undefined },
     orderBy: { importedAt: "desc" },
     include: {
       importArtifact: {
@@ -493,8 +495,8 @@ export async function loadPortfolioHistory(range: PortfolioHistoryRange) {
 
 export async function loadCompleteHistory() {
   const [snapshots, events] = await Promise.all([
-    prisma.activitySnapshot.findMany({ orderBy: { importedAt: "desc" } }),
-    prisma.activityEvent.findMany({ orderBy: { occurredAt: "desc" } }),
+    prisma.activitySnapshot.findMany({ where: { portfolioId: CURRENT_PORTFOLIO_ID }, orderBy: { importedAt: "desc" } }),
+    prisma.activityEvent.findMany({ where: { snapshot: { portfolioId: CURRENT_PORTFOLIO_ID } }, orderBy: { occurredAt: "desc" } }),
   ]);
   return {
     snapshots: enrichSnapshots(snapshots.map(dbRowToActivitySnapshot)),
@@ -532,6 +534,7 @@ export async function savePortfolioBundle(args: {
         })
       : null;
     const previousSnapshotRecord = await tx.activitySnapshot.findFirst({
+      where: { portfolioId: CURRENT_PORTFOLIO_ID },
       orderBy: { importedAt: "desc" },
     });
     const previousActivitySnapshot = previousSnapshotRecord
@@ -597,6 +600,7 @@ export async function savePortfolioBundle(args: {
     await tx.activitySnapshot.create({
       data: {
         ...activitySnapshotToDb(snapshot),
+        portfolioId: CURRENT_PORTFOLIO_ID,
         importArtifact: args.screenshotArtifact
           ? {
               create: screenshotImportArtifactToDb({
@@ -626,14 +630,14 @@ export async function restorePortfolioBackup(
       select: { updatedAt: true },
     });
 
-    await tx.activityEvent.deleteMany();
-    await tx.screenshotImportArtifact.deleteMany();
-    await tx.activitySnapshot.deleteMany();
+    await tx.activityEvent.deleteMany({ where: { snapshot: { portfolioId: CURRENT_PORTFOLIO_ID } } });
+    await tx.screenshotImportArtifact.deleteMany({ where: { snapshot: { portfolioId: CURRENT_PORTFOLIO_ID } } });
+    await tx.activitySnapshot.deleteMany({ where: { portfolioId: CURRENT_PORTFOLIO_ID } });
     await replaceCurrentPortfolio(tx, backup.portfolio, currentRecord?.updatedAt);
 
     for (const snapshot of [...backup.snapshots].reverse()) {
       await tx.activitySnapshot.create({
-        data: activitySnapshotToDb(snapshot),
+        data: { ...activitySnapshotToDb(snapshot), portfolioId: CURRENT_PORTFOLIO_ID },
       });
     }
     if (backup.events.length > 0) {

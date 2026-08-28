@@ -10,4 +10,6 @@ outputs
 graphify-out/cache/
 graphify-out/manifest.json
 graphify-out/cost.json
+# Graphify update snapshots duplicate the committed current graph.
+graphify-out/20??-??-??/
 *.tsbuildinfo

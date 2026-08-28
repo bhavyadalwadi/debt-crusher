@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { CURRENT_PORTFOLIO_ID } from "@/lib/portfolio";
 import { loadOperationsData } from "@/lib/operations-store";
+import { assertSameOrigin, readBoundedJson, requireOwnerContext, safeRouteError } from "@/lib/security";
 
 const schema = z.object({
   creditCardId: z.string().min(1),
@@ -14,15 +15,19 @@ const schema = z.object({
   targetPayoffDate: z.string().date().nullable().optional(),
   deferredInterest: z.boolean(),
   safetyBufferDays: z.number().int().min(0).max(90).default(14),
-});
+}).strict();
 
 export async function POST(request: Request) {
   try {
-    const input = schema.parse(await request.json());
+    assertSameOrigin(request);
+    await requireOwnerContext();
+    const input = schema.parse(await readBoundedJson(request));
+    const card = await prisma.creditCard.findFirst({ where: { id: input.creditCardId, portfolioId: CURRENT_PORTFOLIO_ID } });
+    if (!card) throw new Error("Credit card not found.");
     const promotion = await prisma.promotionalOffer.create({ data: { ...input, endDate: input.endDate ? new Date(input.endDate) : null, targetPayoffDate: input.targetPayoffDate ? new Date(input.targetPayoffDate) : null } });
     await prisma.auditLog.create({ data: { portfolioId: CURRENT_PORTFOLIO_ID, entityType: "promotional_offer", entityId: promotion.id, action: "CREATE", afterJson: JSON.stringify(promotion), source: "manual" } });
     return NextResponse.json(await loadOperationsData(), { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid promotion" }, { status: 400 });
+    return safeRouteError(error, "Invalid promotion");
   }
 }

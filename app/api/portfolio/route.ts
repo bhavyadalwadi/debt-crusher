@@ -1,26 +1,27 @@
 import { NextResponse } from "next/server";
-import { ZodError } from "zod";
 import {
   loadPortfolioBundle,
   saveCurrentPortfolio,
   savePortfolioBundle,
 } from "@/lib/portfolio-store";
 import { autosaveRequestSchema, checkpointRequestSchema } from "./validation";
+import { assertSameOrigin, readBoundedJson, requireOwnerContext, safeRouteError } from "@/lib/security";
 
 export async function GET() {
   try {
+    await requireOwnerContext();
     const bundle = await loadPortfolioBundle();
     return NextResponse.json(bundle);
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to load portfolio";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return safeRouteError(error, "Failed to load portfolio");
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const body = checkpointRequestSchema.parse(await request.json());
+    assertSameOrigin(request);
+    await requireOwnerContext();
+    const body = checkpointRequestSchema.parse(await readBoundedJson(request, 1_000_000));
 
     const bundle = await savePortfolioBundle({
       portfolio: body.portfolio,
@@ -31,25 +32,18 @@ export async function POST(request: Request) {
 
     return NextResponse.json(bundle);
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to save portfolio";
-    return NextResponse.json(
-      { error: message },
-      { status: error instanceof ZodError ? 400 : 500 },
-    );
+    return safeRouteError(error, "Failed to save portfolio");
   }
 }
 
 export async function PUT(request: Request) {
   try {
-    const body = autosaveRequestSchema.parse(await request.json());
+    assertSameOrigin(request);
+    await requireOwnerContext();
+    const body = autosaveRequestSchema.parse(await readBoundedJson(request, 1_000_000));
     const result = await saveCurrentPortfolio(body);
     return NextResponse.json(result.bundle, { status: result.ok ? 200 : 409 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to autosave portfolio";
-    return NextResponse.json(
-      { error: message },
-      { status: error instanceof ZodError ? 400 : 500 },
-    );
+    return safeRouteError(error, "Failed to autosave portfolio");
   }
 }

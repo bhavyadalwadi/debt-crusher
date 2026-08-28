@@ -126,8 +126,8 @@ export function HistoryPanel({ snapshots, recentEvents }: HistoryPanelProps) {
     <section className="history-panel">
       <div className="history-header">
         <div>
-          <p className="eyebrow">Activity History</p>
-          <h3>Recorded updates and imports stay in this app&apos;s database.</h3>
+          <p className="eyebrow">Recent Activity</p>
+          <h3>Latest saved changes</h3>
         </div>
         <span className="history-count">{snapshots.length} saved</span>
       </div>
@@ -138,7 +138,7 @@ export function HistoryPanel({ snapshots, recentEvents }: HistoryPanelProps) {
             tracking history.
           </p>
         ) : (
-          snapshots.map((snapshot, index) => (
+          snapshots.slice(0, 1).map((snapshot, index) => (
             <div
               key={snapshot.id}
               className={`history-item${index === 0 ? " active" : ""}`}
@@ -203,6 +203,7 @@ export function HistoryPanel({ snapshots, recentEvents }: HistoryPanelProps) {
           ))
         )}
       </div>
+      {snapshots.length > 1 ? <details className="history-more"><summary>View {snapshots.length - 1} older checkpoint{snapshots.length === 2 ? "" : "s"}</summary><div className="history-more-list">{snapshots.slice(1).map((snapshot) => <div className="event-item" key={snapshot.id}><strong>{snapshot.label}</strong><span>Credit {currencyFormatter.format(snapshot.dashboardSummary.total_credit_balance)}</span><span>{new Date(snapshot.importedAt).toLocaleDateString()}</span></div>)}</div></details> : null}
       <div className="history-events">
         <div className="history-subheader">
           <p className="eyebrow">Recent Events</p>
@@ -210,7 +211,7 @@ export function HistoryPanel({ snapshots, recentEvents }: HistoryPanelProps) {
         {recentEvents.length === 0 ? (
           <p className="empty-copy">No event trail yet.</p>
         ) : (
-          recentEvents.slice(0, 10).map((event) => (
+          recentEvents.slice(0, 3).map((event) => (
             <div key={event.id} className="event-item">
               <strong>{event.entityName}</strong>
               <span>{event.summary}</span>
@@ -228,6 +229,7 @@ export function HistoryPanel({ snapshots, recentEvents }: HistoryPanelProps) {
             </div>
           ))
         )}
+        {recentEvents.length > 3 ? <details className="history-more"><summary>View {recentEvents.length - 3} more events</summary><div className="history-more-list">{recentEvents.slice(3, 10).map((event) => <div key={event.id} className="event-item"><strong>{event.entityName}</strong><span>{event.summary}</span><span>{new Date(event.occurredAt).toLocaleDateString()}</span></div>)}</div></details> : null}
       </div>
     </section>
   );

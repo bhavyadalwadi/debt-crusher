@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
 import { analyzeScreenshotImport } from "@/lib/screenshot-import";
+import { assertSameOrigin, requireOwnerContext, safeRouteError, SecurityError } from "@/lib/security";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
+    assertSameOrigin(request);
+    await requireOwnerContext();
+    if (Number(request.headers.get("content-length") ?? "0") > 10_000_000) {
+      throw new SecurityError(413, "BODY_TOO_LARGE", "Screenshot upload is too large.");
+    }
     const formData = await request.formData();
     const file = formData.get("file");
 
@@ -15,6 +21,7 @@ export async function POST(request: Request) {
     if (!file.type.startsWith("image/")) {
       return NextResponse.json({ error: "Only image uploads are supported." }, { status: 400 });
     }
+    if (file.size > 8_000_000) throw new SecurityError(413, "FILE_TOO_LARGE", "Screenshot upload is too large.");
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const analysis = await analyzeScreenshotImport(buffer);
@@ -28,8 +35,6 @@ export async function POST(request: Request) {
       warnings: analysis.warnings,
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to analyze screenshot";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return safeRouteError(error, "Failed to analyze screenshot");
   }
 }

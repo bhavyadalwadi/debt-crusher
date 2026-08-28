@@ -30,6 +30,8 @@ interface DashboardViewProps {
   setup: SetupConfig;
   deltaFromPrevious: SnapshotDelta | null;
   onSetupChange: (setup: SetupConfig) => void;
+  showSettings?: boolean;
+  showSupplemental?: boolean;
 }
 
 export function DashboardView({
@@ -38,6 +40,8 @@ export function DashboardView({
   setup,
   deltaFromPrevious,
   onSetupChange,
+  showSettings = false,
+  showSupplemental = false,
 }: DashboardViewProps) {
   const setupErrors = validateSetup(setup);
   const hasSetupErrors = Object.keys(setupErrors).length > 0;
@@ -75,6 +79,11 @@ export function DashboardView({
 
   return (
     <section className="view-shell">
+      <aside className="sandbox-notice" role="note">
+        <strong>Plaid Sandbox</strong>
+        <span>Test values only</span>
+      </aside>
+
       <div className="hero-band">
         <div className="hero-copy">
           <p className="eyebrow">Immediate Focus</p>
@@ -83,19 +92,8 @@ export function DashboardView({
               ? `${dashboardSummary.recommended_target_card.nickname} should take the next extra dollar.`
               : "All credit cards are paid off right now."}
           </h2>
-          <p className="subtle-copy">
-            The ranking still weights active interest first, but statement-balance
-            autopay cards are downgraded to a watch state unless a promo has
-            already expired. Current strategy:{" "}
-            <strong>{formatStrategyLabel(dashboardSummary.payoff_strategy)}</strong>.
-          </p>
-          {recommendedReasons.length > 0 ? (
-            <ul className="reason-list">
-              {recommendedReasons.map((reason) => (
-                <li key={reason}>{reason}</li>
-              ))}
-            </ul>
-          ) : null}
+          <p className="subtle-copy">Strategy: <strong>{formatStrategyLabel(dashboardSummary.payoff_strategy)}</strong>.</p>
+          {recommendedReasons.length > 0 ? <details className="why-details"><summary>Why this card?</summary><ul className="reason-list">{recommendedReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul></details> : null}
         </div>
         <div className="focus-strip">
           {dashboardSummary.recommended_target_card ? (
@@ -125,7 +123,7 @@ export function DashboardView({
         </div>
       </div>
 
-      <div className="metric-grid">
+      <div className="metric-grid dashboard-metrics">
         <article>
           <span>Total Credit Balance</span>
           <strong>{currencyFormatter.format(dashboardSummary.total_credit_balance)}</strong>
@@ -139,14 +137,6 @@ export function DashboardView({
           </strong>
         </article>
         <article>
-          <span>Cash Above Minimums</span>
-          <strong>
-            {currencyFormatter.format(
-              dashboardSummary.total_cash_above_minimums,
-            )}
-          </strong>
-        </article>
-        <article>
           <span>Extra Payment Budget</span>
           <strong>{currencyFormatter.format(dashboardSummary.extra_payment_budget)}</strong>
         </article>
@@ -154,7 +144,7 @@ export function DashboardView({
 
       <OperationsPanel />
 
-      <div className="two-column-grid">
+      {showSupplemental ? <><div className="dashboard-watch-grid">
         <section className="signal-panel">
           <div className="signal-header">
             <p className="eyebrow">Watchlist</p>
@@ -208,7 +198,7 @@ export function DashboardView({
           </div>
         </section>
 
-        <section className="detail-panel">
+        {showSettings ? <section className="detail-panel">
           <div className="detail-header">
             <p className="eyebrow">Setup</p>
             <h3>Edit payoff settings</h3>
@@ -472,7 +462,7 @@ export function DashboardView({
               Valid settings autosave. Use Record Update above for history.
             </p>
           ) : null}
-        </section>
+        </section> : null}
       </div>
 
       <section className="signal-panel">
@@ -502,7 +492,9 @@ export function DashboardView({
         )}
       </section>
 
-      <div className="chart-grid">
+      <details className="dashboard-analytics">
+        <summary>Explore charts and trends</summary>
+        <div className="chart-grid">
         <section className="chart-panel">
           <div className="chart-header">
             <p className="eyebrow">Debt by Card</p>
@@ -569,7 +561,8 @@ export function DashboardView({
             </ResponsiveContainer>
           </div>
         </section>
-      </div>
+        </div>
+      </details></> : null}
     </section>
   );
 }

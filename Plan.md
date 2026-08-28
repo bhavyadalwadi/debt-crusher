@@ -9,7 +9,7 @@ Make Debt Crusher the private, forms-first source of truth for day-to-day debt a
 ### Done
 
 - Next.js application with Dashboard, Credit Cards, Cash Accounts, Setup, Monthly Review, and Utilities workflows
-- private sign-in and signed session-cookie protection for application and API routes
+- owner-only Clerk v7 authentication, managed sessions, and strict sensitive-action reverification
 - Prisma persistence with SQLite for local development and PostgreSQL/Neon support for production
 - legacy portfolio compatibility plus a normalized operations model for:
   - financial institutions
@@ -33,6 +33,7 @@ Make Debt Crusher the private, forms-first source of truth for day-to-day debt a
 - workbook import/export, JSON backup/restore, and screenshot OCR review with stored source artifacts
 - replace and merge import modes with overwrite confirmation
 - inline validation, delete confirmation, unsaved-state handling, reset, and save feedback
+- sandbox-only Plaid account/balance/liability sync with encrypted tokens, explicit matching, field-level review, verified webhooks, and no money movement
 
 ### Partially Done
 
@@ -49,7 +50,7 @@ Make Debt Crusher the private, forms-first source of truth for day-to-day debt a
 - import preview and conflict-by-conflict merge review
 - notification grouping, dismissal, and stale-data reminders
 - additional keyboard-first and mobile ergonomics
-- optional Plaid integration for consent-based bank and credit-card syncing to reduce manual balance and transaction entry
+- live staging verification for the implemented Plaid Sandbox flow; transaction ingestion and Plaid Production remain separate security-reviewed phases
 - optional native iPhone wrapper / Share Sheet target for direct screenshot intake
 - production Neon provisioning and end-to-end Vercel authentication validation
 
@@ -134,9 +135,9 @@ Add payoff-date and interest-cost comparisons, stronger month-over-month views, 
 
 Provision or select Neon, apply and verify the PostgreSQL schema on a branch, configure Vercel secrets, deploy, and validate the authenticated workflow end to end.
 
-### Phase G: Optional bank connectivity — later / requires product review
+### Phase G: Sandbox bank connectivity — implementation complete, staging gate pending
 
-Evaluate Plaid for read-only, user-consented connections to supported bank and credit-card accounts. The goal is to prefill balances, transactions, statement details, and account freshness so routine reviews require less manual work.
+Plaid Sandbox now discovers supported accounts and proposes balances and credit-card liability fields. It does not ingest transactions, create trusted accounts, overwrite manual values, retrieve account/routing numbers, or move money.
 
 Before implementation, define:
 
@@ -180,4 +181,4 @@ Before implementation, define:
 - The app remains usable without Excel; spreadsheet support is utility tooling.
 - Legacy fields are intentionally retained during the additive migration and compatibility period.
 - Native iPhone intake is optional because screenshot upload and OCR review already work on the web.
-- Plaid connectivity is a roadmap candidate, not a committed or currently implemented feature.
+- Plaid connectivity is implemented for Sandbox only; production and transaction ingestion require separate security approval.

@@ -63,7 +63,7 @@ export async function getReviewState(reviewId?: string) {
   const month = currentReviewMonth();
   const [review, completedThisMonth, lastCompleted, cashCount, cardCount] = await Promise.all([
     reviewId
-      ? prisma.financialReview.findUnique({ where: { id: reviewId }, include: { items: { orderBy: [{ entityType: "asc" }, { entityName: "asc" }] } } })
+      ? prisma.financialReview.findFirst({ where: { id: reviewId, portfolioId: CURRENT_PORTFOLIO_ID }, include: { items: { orderBy: [{ entityType: "asc" }, { entityName: "asc" }] } } })
       : prisma.financialReview.findFirst({ where: { portfolioId: CURRENT_PORTFOLIO_ID, status: "IN_PROGRESS" }, orderBy: { startedAt: "desc" }, include: { items: { orderBy: [{ entityType: "asc" }, { entityName: "asc" }] } } }),
     prisma.financialReview.findUnique({ where: { portfolioId_type_reviewMonth: { portfolioId: CURRENT_PORTFOLIO_ID, type: "MONTHLY", reviewMonth: month } } }),
     prisma.financialReview.findFirst({ where: { portfolioId: CURRENT_PORTFOLIO_ID, status: "COMPLETED" }, orderBy: { completedAt: "desc" } }),
@@ -82,19 +82,25 @@ export async function getReviewState(reviewId?: string) {
 }
 
 export async function saveReviewItem(args: { reviewId: string; entityType: string; entityId: string; status: ReviewItemStatus; asOfDate?: string | null; after?: unknown; warnings?: string[] }) {
+  const item = await prisma.financialReviewItem.findFirst({
+    where: { reviewId: args.reviewId, entityType: args.entityType, entityId: args.entityId, review: { portfolioId: CURRENT_PORTFOLIO_ID } },
+  });
+  if (!item) throw new Error("Review item not found.");
   return prisma.financialReviewItem.update({
-    where: { reviewId_entityType_entityId: { reviewId: args.reviewId, entityType: args.entityType, entityId: args.entityId } },
+    where: { id: item.id },
     data: { status: args.status, asOfDate: args.asOfDate ? new Date(args.asOfDate) : null, afterJson: args.after === undefined ? undefined : JSON.stringify(args.after), warningsJson: args.warnings ? JSON.stringify(args.warnings) : undefined, reviewedAt: new Date() },
   });
 }
 
 export async function saveReviewStep(reviewId: string, currentStep: number) {
-  return prisma.financialReview.update({ where: { id: reviewId }, data: { currentStep } });
+  const updated = await prisma.financialReview.updateMany({ where: { id: reviewId, portfolioId: CURRENT_PORTFOLIO_ID }, data: { currentStep } });
+  if (updated.count !== 1) throw new Error("Review not found.");
+  return updated;
 }
 
 export async function completeReview(reviewId: string) {
   return prisma.$transaction(async (tx) => {
-    const review = await tx.financialReview.findUniqueOrThrow({ where: { id: reviewId }, include: { items: true } });
+    const review = await tx.financialReview.findFirstOrThrow({ where: { id: reviewId, portfolioId: CURRENT_PORTFOLIO_ID }, include: { items: true } });
     if (review.status === "COMPLETED") return review;
     for (const item of review.items.filter((value) => value.status === "PENDING")) {
       const warnings = item.warningsJson ? JSON.parse(item.warningsJson) as string[] : [];
@@ -105,7 +111,7 @@ export async function completeReview(reviewId: string) {
     const portfolio = await tx.portfolio.findUniqueOrThrow({ where: { id: CURRENT_PORTFOLIO_ID }, include: { creditAccounts: true, cashAccounts: { where: { active: true } } } });
     const state = dbRowToPortfolioState({ portfolio, creditAccounts: portfolio.creditAccounts, cashAccounts: portfolio.cashAccounts });
     const snapshot = buildActivitySnapshot(state, "manual_save", { label: review.type === "SETUP" ? "Initial manual setup" : `Monthly review ${review.reviewMonth}` });
-    await tx.activitySnapshot.create({ data: activitySnapshotToDb(snapshot) });
+    await tx.activitySnapshot.create({ data: { ...activitySnapshotToDb(snapshot), portfolioId: CURRENT_PORTFOLIO_ID } });
     const warningCount = review.items.reduce((sum, item) => sum + (item.warningsJson ? (JSON.parse(item.warningsJson) as unknown[]).length : 0), 0);
     const completed = await tx.financialReview.update({ where: { id: reviewId }, data: { status: "COMPLETED", completedAt: new Date(), warningCount, snapshotId: snapshot.id, currentStep: 6 } });
     await tx.auditLog.createMany({ data: review.items.map((item) => ({ portfolioId: CURRENT_PORTFOLIO_ID, entityType: item.entityType, entityId: item.entityId, action: `REVIEW_${item.status === "PENDING" ? "UNKNOWN" : item.status}`, beforeJson: item.beforeJson, afterJson: item.afterJson, source: "manual_review" })) });

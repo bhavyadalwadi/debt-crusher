@@ -1,18 +1,28 @@
-import { NextResponse } from "next/server";
 import { createPortfolioBackup, parsePortfolioBackup } from "@/lib/backup";
 import {
   loadCompleteHistory,
   loadPortfolioBundle,
   restorePortfolioBackup,
 } from "@/lib/portfolio-store";
+import {
+  assertSameOrigin,
+  financialJson,
+  readBoundedJson,
+  requireOwnerContext,
+  requireStrictReverification,
+  safeRouteError,
+} from "@/lib/security";
 
 export async function GET() {
   try {
+    const context = await requireOwnerContext();
+    const reverification = requireStrictReverification(context);
+    if (reverification) return reverification;
     const [bundle, history] = await Promise.all([
       loadPortfolioBundle(),
       loadCompleteHistory(),
     ]);
-    return NextResponse.json(
+    return financialJson(
       createPortfolioBackup({
         portfolio: bundle.portfolio,
         snapshots: history.snapshots,
@@ -20,18 +30,20 @@ export async function GET() {
       }),
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to export backup";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return safeRouteError(error, "Failed to export backup");
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const backup = parsePortfolioBackup(await request.json());
+    assertSameOrigin(request);
+    const context = await requireOwnerContext();
+    const reverification = requireStrictReverification(context);
+    if (reverification) return reverification;
+    const backup = parsePortfolioBackup(await readBoundedJson(request, 5_000_000));
     const bundle = await restorePortfolioBackup(backup);
-    return NextResponse.json(bundle);
+    return financialJson(bundle);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to restore backup";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return safeRouteError(error, "Failed to restore backup");
   }
 }

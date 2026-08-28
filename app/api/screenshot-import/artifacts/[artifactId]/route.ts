@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { NO_STORE_HEADERS, requireOwnerContext } from "@/lib/security";
 
 export const runtime = "nodejs";
 
@@ -7,9 +8,10 @@ export async function GET(
   _request: Request,
   context: { params: Promise<{ artifactId: string }> },
 ) {
+  const owner = await requireOwnerContext();
   const { artifactId } = await context.params;
-  const artifact = await prisma.screenshotImportArtifact.findUnique({
-    where: { id: artifactId },
+  const artifact = await prisma.screenshotImportArtifact.findFirst({
+    where: { id: artifactId, snapshot: { portfolioId: owner.portfolioId } },
     select: {
       fileName: true,
       mimeType: true,
@@ -20,12 +22,13 @@ export async function GET(
   if (!artifact) {
     return new NextResponse("Not found", { status: 404 });
   }
+  const safeFileName = artifact.fileName.replace(/["\\\r\n\u0000-\u001f]/g, "_").slice(0, 180) || "screenshot";
 
   return new NextResponse(artifact.imageData, {
     headers: {
       "Content-Type": artifact.mimeType,
-      "Content-Disposition": `inline; filename="${artifact.fileName}"`,
-      "Cache-Control": "private, max-age=31536000, immutable",
+      "Content-Disposition": `inline; filename="${safeFileName}"`,
+      ...NO_STORE_HEADERS,
     },
   });
 }

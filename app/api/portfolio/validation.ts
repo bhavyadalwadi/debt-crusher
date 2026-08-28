@@ -17,8 +17,8 @@ const setupSchema = z.object({
     balance_size: z.number().finite(),
     due_soon: z.number().finite(),
     statement_balance_autopay_penalty: z.number().finite(),
-  }),
-});
+  }).strict(),
+}).strict();
 
 const creditAccountSchema = z.object({
   id: z.string().min(1),
@@ -37,7 +37,7 @@ const creditAccountSchema = z.object({
   how_are_we_taking_care_of_it: z.string(),
   rewards_available: nullableString,
   points_available: nullableNumber,
-});
+}).strict();
 
 const cashAccountSchema = z.object({
   id: z.string().min(1),
@@ -46,7 +46,7 @@ const cashAccountSchema = z.object({
   type: z.string(),
   current_balance: z.number().finite(),
   min_day_end_balance_required: z.number().finite(),
-});
+}).strict();
 
 export const portfolioStateSchema = z.object({
   id: z.string(),
@@ -54,7 +54,7 @@ export const portfolioStateSchema = z.object({
   setup: setupSchema,
   creditAccounts: z.array(creditAccountSchema),
   cashAccounts: z.array(cashAccountSchema),
-});
+}).strict();
 
 const persistenceVersionSchema = z.string().datetime().nullable();
 
@@ -63,7 +63,7 @@ export const autosaveRequestSchema = z
     portfolio: portfolioStateSchema,
     expectedUpdatedAt: persistenceVersionSchema.optional(),
     persistenceVersion: persistenceVersionSchema.optional(),
-  })
+  }).strict()
   .refine(
     (value) =>
       value.expectedUpdatedAt !== undefined || value.persistenceVersion !== undefined,
@@ -82,4 +82,4 @@ export const checkpointRequestSchema = z.object({
   source: z.enum(["import", "manual_save", "screenshot_import"]),
   label: z.string().optional(),
   filename: z.string().optional(),
-});
+}).strict();

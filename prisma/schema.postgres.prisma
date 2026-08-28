@@ -9,6 +9,7 @@ datasource db {
 
 model Portfolio {
   id                       String                 @id
+  ownerId                  String                 @default("owner")
   extraPaymentBudget       Float
   promoEndSoonDays         Int
   globalCashBufferOverride Float?
@@ -24,6 +25,23 @@ model Portfolio {
   expectedPayments         ExpectedPayment[]
   auditLogs                AuditLog[]
   financialReviews         FinancialReview[]
+  snapshots                ActivitySnapshot[]
+  financialConnections     FinancialConnection[]
+  financialLinkSessions    FinancialLinkSession[]
+  securityEvents           SecurityEvent[]
+  owner                    AppUser                @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+
+  @@index([ownerId])
+}
+
+model AppUser {
+  id             String              @id @default(cuid())
+  clerkUserId    String?             @unique
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  portfolios     Portfolio[]
+  securityEvents SecurityEvent[]
+  rateLimits     SecurityRateLimit[]
 }
 
 model CreditAccount {
@@ -72,6 +90,7 @@ model CashAccount {
   recurringSources         RecurringTransaction[] @relation("RecurringSource")
   recurringDestinations    RecurringTransaction[] @relation("RecurringDestination")
   expectedPayments         ExpectedPayment[]
+  syncedAccounts           FinancialAccount[]     @relation("MatchedCashAccount")
 
   @@index([portfolioId, position])
 }
@@ -235,6 +254,7 @@ model CreditCard {
   autopayRule         AutopayRule?
   promotions          PromotionalOffer[]
   expectedPayments    ExpectedPayment[]
+  syncedAccounts      FinancialAccount[]    @relation("MatchedCreditCard")
 
   @@index([portfolioId, position])
 }
@@ -340,6 +360,7 @@ model AuditLog {
 
 model ActivitySnapshot {
   id                   String                    @id @default(cuid())
+  portfolioId          String                    @default("current")
   source               String
   label                String
   filename             String
@@ -353,7 +374,9 @@ model ActivitySnapshot {
   events               ActivityEvent[]
   importArtifact       ScreenshotImportArtifact?
   financialReview      FinancialReview?
+  portfolio            Portfolio                 @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
 
+  @@index([portfolioId, importedAt])
   @@index([importedAt])
 }
 
@@ -387,4 +410,191 @@ model ActivityEvent {
 
   @@index([occurredAt])
   @@index([snapshotId])
+}
+
+enum FinancialConnectionStatus {
+  CONNECTING
+  CURRENT
+  STALE
+  SYNCING
+  REAUTH_REQUIRED
+  ERROR
+  DISCONNECTED
+}
+
+enum FinancialAccountMatchStatus {
+  UNMATCHED
+  MATCHED
+}
+
+enum SyncJobReason {
+  INITIAL
+  MANUAL
+  WEBHOOK
+}
+
+enum SyncJobStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
+
+enum StagedChangeStatus {
+  PENDING
+  ACCEPTED
+  IGNORED
+  SUPERSEDED
+}
+
+model FinancialLinkSession {
+  id          String    @id @default(cuid())
+  portfolioId String
+  tokenHash   String?   @unique
+  consumedAt  DateTime?
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioId, expiresAt])
+}
+
+model FinancialConnection {
+  id                 String                    @id @default(cuid())
+  portfolioId        String
+  provider           String                    @default("PLAID")
+  providerItemId     String                    @unique
+  institutionId      String?
+  institutionName    String
+  consentedProducts  String
+  status             FinancialConnectionStatus @default(CONNECTING)
+  tokenCiphertext    String?
+  tokenIv            String?
+  tokenTag           String?
+  wrappedKey         String?
+  wrappedKeyIv       String?
+  wrappedKeyTag      String?
+  tokenKeyVersion    String?
+  lastAttemptedSync  DateTime?
+  lastSuccessfulSync DateTime?
+  dataAsOf           DateTime?
+  errorCode          String?
+  disconnectedAt     DateTime?
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+  portfolio          Portfolio                 @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  accounts           FinancialAccount[]
+  syncJobs           SyncJob[]
+  webhookReceipts    WebhookReceipt[]
+
+  @@index([portfolioId, status])
+}
+
+model FinancialAccount {
+  id                String                      @id @default(cuid())
+  connectionId      String
+  providerAccountId String
+  name              String
+  officialName      String?
+  mask              String?
+  category          String
+  subcategory       String?
+  matchStatus       FinancialAccountMatchStatus @default(UNMATCHED)
+  cashAccountId     String?
+  creditCardId      String?
+  createdAt         DateTime                    @default(now())
+  updatedAt         DateTime                    @updatedAt
+  connection        FinancialConnection         @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  cashAccount       CashAccount?                @relation("MatchedCashAccount", fields: [cashAccountId], references: [id], onDelete: SetNull)
+  creditCard        CreditCard?                 @relation("MatchedCreditCard", fields: [creditCardId], references: [id], onDelete: SetNull)
+  stagedChanges     StagedChange[]
+
+  @@unique([connectionId, providerAccountId])
+  @@index([connectionId, matchStatus])
+}
+
+model SyncJob {
+  id             String              @id @default(cuid())
+  connectionId   String
+  reason         SyncJobReason
+  status         SyncJobStatus       @default(PENDING)
+  idempotencyKey String              @unique
+  errorCode      String?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime            @default(now())
+  connection     FinancialConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  stagedChanges  StagedChange[]
+
+  @@index([connectionId, createdAt])
+}
+
+model StagedChange {
+  id                 String             @id @default(cuid())
+  syncJobId          String
+  financialAccountId String
+  targetEntityType   String
+  targetEntityId     String
+  field              String
+  trustedValueJson   String?
+  proposedValueJson  String?
+  providerUpdatedAt  DateTime?
+  dataAsOf           DateTime
+  status             StagedChangeStatus @default(PENDING)
+  version            Int                @default(1)
+  decidedAt          DateTime?
+  createdAt          DateTime           @default(now())
+  syncJob            SyncJob            @relation(fields: [syncJobId], references: [id], onDelete: Cascade)
+  financialAccount   FinancialAccount   @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+
+  @@index([financialAccountId, status])
+  @@index([targetEntityType, targetEntityId, field, status])
+}
+
+model WebhookReceipt {
+  id               String               @id @default(cuid())
+  fingerprint      String               @unique
+  connectionId     String?
+  providerItemHash String
+  eventType        String
+  eventCode        String
+  verified         Boolean
+  processingStatus String
+  receivedAt       DateTime             @default(now())
+  processedAt      DateTime?
+  connection       FinancialConnection? @relation(fields: [connectionId], references: [id], onDelete: SetNull)
+
+  @@index([connectionId, receivedAt])
+}
+
+model SecurityEvent {
+  id           String    @id @default(cuid())
+  ownerId      String
+  portfolioId  String
+  event        String
+  result       String
+  ipHash       String?
+  sessionHash  String?
+  metadataJson String?
+  occurredAt   DateTime  @default(now())
+  owner        AppUser   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  portfolio    Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, occurredAt])
+  @@index([portfolioId, occurredAt])
+}
+
+model SecurityRateLimit {
+  id          String   @id @default(cuid())
+  ownerId     String?
+  action      String
+  subjectHash String
+  windowStart DateTime
+  count       Int      @default(1)
+  expiresAt   DateTime
+  owner       AppUser? @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@unique([action, subjectHash, windowStart])
+  @@index([expiresAt])
 }

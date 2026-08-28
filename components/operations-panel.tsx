@@ -25,11 +25,12 @@ type ActionSummary = {
 const today = () => new Date().toISOString().slice(0, 10);
 const amountLabel = (amount: string | null) => amount == null ? "Amount unknown" : currencyFormatter.format(Math.abs(Number(amount)));
 
-export function OperationsPanel() {
+export function OperationsPanel({ variant = "summary" }: { variant?: "summary" | "configuration" }) {
   const [config, setConfig] = useState<Config | null>(null);
   const [actions, setActions] = useState<ActionSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [showHealthyForecasts, setShowHealthyForecasts] = useState(false);
 
   const refresh = useCallback(async () => {
     const [configResponse, actionResponse] = await Promise.all([fetch("/api/operations/config"), fetch(`/api/operations/actions?asOfDate=${today()}`)]);
@@ -65,44 +66,46 @@ export function OperationsPanel() {
 
   if (!config || !actions) return <section className="detail-panel"><p>{error ?? "Loading operations forecast…"}</p></section>;
 
+  const riskForecasts = actions.forecasts.filter((forecast) => forecast.firstShortfallDate);
+  const visibleForecasts = showHealthyForecasts ? actions.forecasts : riskForecasts;
+  const upcomingEventCount = actions.todayEvents.length + actions.upcomingEvents.length;
+
   return (
-    <section className="operations-core">
-      <div className="detail-header"><p className="eyebrow">Financial Operations</p><h3>Today, upcoming cash flow, and configuration</h3></div>
+    <section className={`operations-core operations-${variant}`}>
+      {variant === "configuration" ? <div className="detail-header"><p className="eyebrow">Operations Setup</p><h3>Statements, autopay, promotions, and recurring cash flow</h3></div> : null}
       {error ? <p className="field-error">{error}</p> : null}
-      <div className="metric-grid">
-        <article><span>Due today</span><strong>{actions.todayEvents.length}</strong></article>
-        <article><span>Next 7 days</span><strong>{actions.upcomingEvents.length}</strong></article>
-        <article><span>Cash warnings</span><strong>{actions.cashWarnings.length}</strong></article>
-        <article><span>Cash-safe extra / planned</span><strong>{amountLabel(actions.cashSafeExtraAmount)} / {amountLabel(actions.plannedExtraPaymentBudget)}</strong></article>
-      </div>
-      <div className="two-column-grid">
-        <section className="signal-panel">
+      {variant === "summary" ? <>
+      <div className={`two-column-grid${upcomingEventCount === 0 ? " actions-only" : ""}`}>
+        {upcomingEventCount > 0 ? <section className="signal-panel">
           <div className="signal-header"><p className="eyebrow">Next 7 Days</p><h3>Expected account activity</h3></div>
           <div className="signal-list">
             {[...actions.todayEvents.map((event) => ({ ...event, date: "Today" })), ...actions.upcomingEvents].map((event) => (
               <div className="signal-item" key={event.id}><div><strong>{event.label}</strong><span>{event.date} • {amountLabel(event.amount)}</span>{event.unknownReason ? <small>{event.unknownReason}</small> : null}</div></div>
             ))}
-            {actions.todayEvents.length + actions.upcomingEvents.length === 0 ? <p className="subtle-copy">No configured activity in this window.</p> : null}
           </div>
-        </section>
+        </section> : null}
         <section className="signal-panel">
           <div className="signal-header"><p className="eyebrow">Recommended Actions</p><h3>Shortfalls and missing data</h3></div>
           <div className="signal-list">
             {actions.cashWarnings.map((warning) => <div className="signal-item danger" key={warning.accountId}><div><strong>Fund {warning.accountName}</strong><span>Projected {amountLabel(warning.shortfallAmount)} short on {warning.date}</span></div></div>)}
-            {actions.promoWarnings.map((promo) => <div className="signal-item warning" key={promo.promotionId}><div><strong>Promo {promo.riskStatus.toLowerCase().replace("_", " ")}</strong><span>Required pace: {amountLabel(promo.requiredMonthlyPayment)}</span>{promo.reasons.map((reason) => <small key={reason}>{reason}</small>)}</div></div>)}
+            {actions.promoWarnings.length > 0 ? <div className="signal-item warning"><div><strong>Complete promotion details</strong><span>{actions.promoWarnings.length} promotion{actions.promoWarnings.length === 1 ? " is" : "s are"} missing a balance, expiration date, or payment pace.</span></div></div> : null}
             {actions.dataQualityActions.map((action, index) => <div className="signal-item watch" key={`${action.code}-${index}`}><div><strong>Update statement data</strong><span>{action.message}</span></div></div>)}
           </div>
         </section>
       </div>
-      <section className="detail-panel">
-        <div className="detail-header"><p className="eyebrow">Cash Health</p><h3>35-day account forecast</h3></div>
+      <details className="detail-panel forecast-panel">
+        <summary className="forecast-summary"><span>35-day cash forecast</span><strong>{riskForecasts.length} risk{riskForecasts.length === 1 ? "" : "s"}</strong></summary>
+        <div className="forecast-controls">{actions.forecasts.length > riskForecasts.length ? <button className="text-button neutral" type="button" onClick={() => setShowHealthyForecasts((current) => !current)}>{showHealthyForecasts ? "Show risks only" : `Show all ${actions.forecasts.length} accounts`}</button> : null}</div>
         <div className="two-column-grid">
-          {actions.forecasts.map((forecast) => <details key={forecast.accountId} open={Boolean(forecast.firstShortfallDate)}>
+          {visibleForecasts.map((forecast) => <details key={forecast.accountId}>
             <summary><strong>{forecast.accountName}</strong> — low {amountLabel(forecast.projectedLowBalance)}, final {amountLabel(forecast.projectedFinalBalance)}</summary>
             <div className="signal-list">{forecast.events.map((event) => <div className="signal-item" key={event.id}><div><strong>{event.date} · {event.label}</strong><span>{amountLabel(event.amount)} · running {amountLabel(event.runningBalance)}</span></div></div>)}</div>
           </details>)}
+          {visibleForecasts.length === 0 ? <p className="empty-copy">No projected cash shortfalls in the next 35 days.</p> : null}
         </div>
-      </section>
+      </details>
+      </> : null}
+      {variant === "configuration" ? <>
       <section className="detail-panel">
         <div className="detail-header"><p className="eyebrow">Fast Update</p><h3>Statement, minimum, due date, and autopay</h3></div>
         <div className="operations-card-list">
@@ -164,6 +167,7 @@ export function OperationsPanel() {
         </form>
         <div className="signal-list">{config.recurringTransactions.map((tx) => <div className="signal-item" key={tx.id}><div><strong>{tx.name}</strong><span>{tx.type.toLowerCase().replace("_", " ")} • {amountLabel(tx.amount)} on day {tx.dayOfMonth}</span></div></div>)}</div>
       </section>
+      </> : null}
     </section>
   );
 }

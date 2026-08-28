@@ -12,14 +12,20 @@ Copy the example env if you have not already:
 cp .env.example .env
 ```
 
-Then keep the local SQLite path and set your private sign-in values:
+Then keep the local SQLite path and configure a Clerk development instance plus Sandbox-only financial secrets as shown in `.env.example`:
 
 ```env
 DATABASE_URL="file:./dev.db"
-PRIVATE_ACCESS_USERNAME="..."
-PRIVATE_ACCESS_PASSWORD="..."
-SESSION_SECRET="..."
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
+CLERK_SECRET_KEY="sk_test_..."
+DEBT_CRUSHER_OWNER_CLERK_USER_ID="user_..."
+PLAID_ENV="sandbox"
+SECURITY_HASH_KEY="..."
+FINANCIAL_TOKEN_KEY_VERSION="v1"
+FINANCIAL_TOKEN_KEK_V1="32-byte-base64-key"
 ```
+
+Generate and validate the independent keys with [SECRET_KEY_MANAGEMENT.md](./SECRET_KEY_MANAGEMENT.md). Use [CLERK_SECURITY_RUNBOOK.md](./CLERK_SECURITY_RUNBOOK.md) for the required owner/MFA/session configuration and [LOCAL_PLAID_WEBHOOK_TUNNEL.md](./LOCAL_PLAID_WEBHOOK_TUNNEL.md) when Plaid needs to reach the local webhook.
 
 ## 2. Generate Prisma client and push the schema
 
@@ -40,7 +46,7 @@ contains private financial data and is ignored by Git; do not commit it.
 npm run dev
 ```
 
-The app will redirect unauthenticated users to `/signin`.
+The app redirects unauthenticated users to `/sign-in`. Configure MFA or passkeys as required in Clerk.
 
 After signing in, saved values should survive both a browser refresh and a
 local dev-server restart. Autosaves update the current portfolio. Explicit
@@ -51,11 +57,11 @@ activity and trend views.
 
 Set these values in Vercel project env vars:
 - `DATABASE_URL`
-- `PRIVATE_ACCESS_USERNAME`
-- `PRIVATE_ACCESS_PASSWORD`
-- `SESSION_SECRET`
+- the Clerk development keys, exact frontend API origin, and owner user ID
+- Plaid Sandbox credentials and the fixed staging webhook URL
+- `SECURITY_HASH_KEY` and the versioned financial-token wrapping key
 
-For Vercel, `DATABASE_URL` should point to the separate Neon prod database.
+For private staging, `DATABASE_URL` should point to a dedicated Neon branch. Vercel Production must not receive Plaid credentials.
 
 Initialize Neon before the first hosted request, and repeat the schema push
 after Prisma schema changes:
