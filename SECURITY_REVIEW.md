@@ -8,7 +8,7 @@ Review refreshed 2026-08-28. No security review can guarantee that a system is i
 
 ## Architecture Assessment
 
-Debt Crusher is a Next.js 15 App Router application with React 19, Clerk v7, Prisma 6, SQLite for local development, and PostgreSQL/Neon for hosted staging. All application pages and API routes are protected by Clerk middleware except the Clerk sign-in page and the Plaid webhook. A configured Clerk user ID is the sole allowed identity.
+Debt Crusher is a Next.js 16 App Router application with React 19, Clerk v7, Prisma 6, SQLite for local development, and PostgreSQL/Neon for hosted staging. Clerk authenticates requests in the Next.js proxy; authorization is enforced again at every protected page and API resource. The Clerk sign-in page and signed Plaid webhook are the intentional exceptions. A configured Clerk user ID is the sole allowed identity; the application self-service sign-up flow is disabled.
 
 The server resolves the authenticated owner and fixed `current` portfolio through `requireOwnerContext()`. Existing current-state, review, snapshot, artifact, export, and restore paths are portfolio-scoped. Browser-provided identifiers are useful only after a server-side ownership query.
 
@@ -34,12 +34,12 @@ These were the pre-implementation findings that blocked bank connectivity. Each 
 ### Weak, non-revocable shared authentication
 
 Severity: HIGH
-File: deleted `lib/auth.ts`, `app/api/auth/signin/route.ts`, and `app/signout/route.ts`; replacement in `middleware.ts` and `lib/security.ts`
-Lines: current middleware and owner-context implementation
+File: deleted `lib/auth.ts`, `app/api/auth/signin/route.ts`, and `app/signout/route.ts`; replacement in `proxy.ts` and `lib/security.ts`
+Lines: current proxy and owner-context implementation
 Finding: A shared credential produced a custom 14-day cookie without provider-managed MFA, device/session management, or remote revocation.
 Attack scenario: Theft or sharing of the credential/cookie would expose every financial record and future bank connection.
 Financial/privacy impact: Complete compromise of the private portfolio and aggregated balances.
-Required fix: Implemented Clerk v7 identity, owner allowlisting, protected middleware, managed sessions, and strict reverification. Clerk development must be configured to require MFA/passkeys before staging sign-off.
+Required fix: Implemented Clerk v7 identity, resource-level owner allowlisting, managed sessions, and strict reverification. Clerk development must be configured to require MFA/passkeys before staging sign-off.
 
 ### No resource-owner identity
 
@@ -113,15 +113,15 @@ Required fix: Implemented database-backed, action-specific limits keyed by owner
 
 ## Medium / Low Findings
 
-### Dependency advisories
+### Dependency advisories — remediated for the release candidate
 
 Severity: MEDIUM for the current private Sandbox threat model; HIGH advisory labels upstream
 File: `package-lock.json`
 Lines: dependency graph
-Finding: `npm audit --omit=dev` reports seven high-severity advisories through Prisma/deepmerge-ts, Next/PostCSS/sharp, and direct `xlsx`. The suggested Next/Prisma remedies are breaking changes, and `xlsx` has no registry fix.
+Finding: The earlier review reported seven high-severity advisories through Prisma/deepmerge-ts, Next/PostCSS/sharp, and direct `xlsx`.
 Attack scenario: Specially crafted CSS/source-map/image/workbook input reaches a vulnerable dependency path.
 Financial/privacy impact: Potential denial of service, file disclosure, XSS, or unsafe workbook processing depending on reachability.
-Required fix: Do not apply forced breaking upgrades automatically. Track a tested Next 16/Prisma remediation and replace or isolate `xlsx`; keep untrusted workbook and image inputs size-limited. This blocks Plaid Production approval.
+Required fix: Completed 2026-08-30. Next.js was upgraded to the patched 16.3 line, Prisma Client/CLI were aligned on the audit-recommended compatible release, and SheetJS was replaced with ExcelJS plus round-trip coverage. `npm audit --omit=dev` now reports zero known vulnerabilities. Untrusted workbook and image inputs remain size-limited, and the audit must be rerun before release.
 
 ### CSP still requires inline script/style compatibility
 
@@ -189,7 +189,7 @@ NOT ALLOWED:
 
 ## Authentication Assessment
 
-Clerk v7 replaces the shared password and cookie. Middleware protects the app, allows only `DEBT_CRUSHER_OWNER_CLERK_USER_ID`, and delegates session expiry/revocation to Clerk. Connect, exchange, disconnect, deletion, export, and restore require strict Clerk reverification. Staging approval still requires an active owner session and an optimistic trusted-value check.
+Clerk v7 replaces the shared password and cookie. The proxy authenticates requests; the dashboard and every protected API independently allow only `DEBT_CRUSHER_OWNER_CLERK_USER_ID`, while session expiry/revocation stays with Clerk. Connect, exchange, disconnect, deletion, export, and restore require strict Clerk reverification. Staging approval still requires an active owner session and an optimistic trusted-value check.
 
 The live Clerk development configuration was verified on 2026-08-28 with Clerk CLI 3.2.0: restricted sign-up; verified email; required MFA at sign-up and sign-in; authenticator app and backup codes; passkeys; device trust; compromised-password checks; CAPTCHA, PII, enumeration, and lockout protections; single-session mode; 30-minute inactivity timeout; and seven-day maximum lifetime. These are provider settings and must be rechecked because they can drift independently of source code. Recovery and real session-revocation exercises still require hosted testing.
 
@@ -235,7 +235,9 @@ External configuration remains to be verified in the actual Vercel, Neon, Clerk,
 ## Security Test Results
 
 - PASS — TypeScript check and optimized production build.
-- PASS — 50 unit tests, including owner denial, valid/invalid/expired/future webhook signatures, token encryption/decryption, tamper rejection, key rewrap, product allowlist, production refusal, opaque client ID, origin rejection, and body-size/content-type rejection.
+- PASS — 51 Vitest tests plus four release-configuration tests, including owner denial, workbook export/import round trips, valid/invalid/expired/future webhook signatures, token encryption/decryption, tamper rejection, key rewrap, product allowlist, production refusal, opaque client ID, origin rejection, and body-size/content-type rejection.
+- PASS — Public Playwright gate verifies anonymous redirect, retired self-service sign-up, security headers, and unsigned Plaid webhook `401` without redirect.
+- PASS — Next.js 16 optimized PostgreSQL production build and `npm audit --omit=dev` with zero known vulnerabilities.
 - PASS — SQLite migration applied to a disposable copy; foreign-key verification returned no errors and existing `current` portfolio ownership was backfilled.
 - PASS — Static search found no forbidden Plaid API call and no server financial secret identifier in generated browser bundles.
 - PASS — Git history search found no committed Plaid secret/access-token marker.
@@ -245,7 +247,7 @@ External configuration remains to be verified in the actual Vercel, Neon, Clerk,
 - PASS — Live Clerk development configuration has restricted sign-up, required MFA, verified email, passkeys, attack protections, single-session mode, 30-minute inactivity timeout, and seven-day maximum lifetime.
 - NEEDS INVESTIGATION — Owner/non-owner, strict reverification, session revocation, and recovery must still be exercised end-to-end on the new hosted deployment.
 - NEEDS INVESTIGATION — End-to-end Plaid Sandbox Link, liabilities, Item error/reauthentication, webhook delivery, disconnect, and delete flows require provisioned credentials.
-- FAIL on current deployment — an unsigned `POST https://debt-crusher-taupe.vercel.app/api/plaid/webhook` returned `303` to the legacy `/signin` route on 2026-08-28. Redeploy current middleware, require an unsigned `401`, then require a signed Sandbox webhook `200`.
+- FAIL on current deployment — an unsigned `POST https://debt-crusher-taupe.vercel.app/api/plaid/webhook` returned `303` to the legacy `/signin` route on 2026-08-28. Redeploy the current proxy, require an unsigned `401`, then require a signed Sandbox webhook `200`.
 - NEEDS INVESTIGATION — Vercel Preview/Neon branch isolation, external logs, deployment visibility, and GitHub protections require account-level inspection.
 - FAIL — Dependency release gate: seven upstream high-severity advisories remain; no forced breaking upgrade was applied.
 
@@ -302,7 +304,7 @@ External configuration remains to be verified in the actual Vercel, Neon, Clerk,
 - [x] Repository/history/browser-bundle secret scan passed
 - [ ] External logs, backups, source maps, and deployment visibility inspected
 - [x] Dependencies reviewed
-- [ ] High-severity dependency advisories remediated or formally risk-accepted
+- [x] High-severity dependency advisories remediated or formally risk-accepted
 - [x] Code-level red-team matrix completed
 - [ ] Live Plaid Sandbox and Clerk staging tests passed after the new deployment
 
@@ -310,4 +312,4 @@ External configuration remains to be verified in the actual Vercel, Neon, Clerk,
 
 **IMPLEMENTATION COMPLETE — SAFE FOR SANDBOX ONLY**
 
-The repository implementation enforces the intended read-only, single-owner, staged-approval architecture. Do not configure Plaid Production or connect real institutions. Production remains blocked by live Clerk/Plaid/Vercel/Neon validation, account-level infrastructure review, the unresolved dependency advisories, nonce-based CSP follow-up, and a later review that explicitly returns `SAFE FOR PLAID PRODUCTION`.
+The repository implementation enforces the intended read-only, single-owner, staged-approval architecture. Do not configure Plaid Production or connect real institutions. Real-bank approval remains blocked by live Clerk/Plaid/Vercel/Neon validation, account-level infrastructure review, nonce-based CSP follow-up, and a later review that explicitly returns `SAFE FOR PLAID PRODUCTION`.

@@ -512,7 +512,7 @@ export async function savePortfolioBundle(args: {
   screenshotArtifact?: {
     fileName: string;
     mimeType: string;
-    imageData: Prisma.Bytes;
+    imageData: Uint8Array;
     extractedText: string;
     extraction: ScreenshotImportExtraction;
   };

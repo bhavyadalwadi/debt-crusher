@@ -8,6 +8,8 @@ It includes a security-reviewed, read-only Plaid Sandbox integration. Plaid data
 >
 > The current verdict is **IMPLEMENTATION COMPLETE — SAFE FOR SANDBOX ONLY**. Use fake Plaid Sandbox institutions and credentials only. Do not connect real institutions, configure Plaid Production credentials, or add money-movement products. The application intentionally refuses `PLAID_ENV=production` at startup and when constructing the Plaid client.
 
+**Next release steps:** follow the [Pre-Production Checklist](./PRE_PRODUCTION_CHECKLIST.md) from staging deployment through the separate real-bank approval gate.
+
 ## Contents
 
 - [Product behavior](#product-behavior)
@@ -27,6 +29,7 @@ It includes a security-reviewed, read-only Plaid Sandbox integration. Plaid data
 - [Troubleshooting](#troubleshooting)
 - [Operational security](#operational-security)
 - [Known limits and release blockers](#known-limits-and-release-blockers)
+- [Pre-production checklist](./PRE_PRODUCTION_CHECKLIST.md)
 
 ## Product behavior
 
@@ -80,7 +83,7 @@ Plaid Link is initialized with Transactions because Plaid Balance cannot initial
 ### Authentication and authorization
 
 - Clerk v7 manages identity, sessions, revocation, MFA, and passkeys.
-- Middleware protects every page and API route except `/sign-in` and the verified Plaid webhook.
+- The Clerk proxy authenticates requests; every protected page and API resource independently enforces the owner boundary.
 - Only `DEBT_CRUSHER_OWNER_CLERK_USER_ID` may access the app.
 - The server derives the owner/portfolio from the Clerk session; browser-provided owner IDs are never trusted.
 - Connect, exchange, disconnect, bank-data deletion, backup export, and backup restore require strict Clerk reverification.
@@ -102,7 +105,7 @@ Read [SECURITY_REVIEW.md](./SECURITY_REVIEW.md) for the complete threat model an
 Clerk owner session
         │
         ▼
-Next.js middleware + requireOwnerContext()
+Clerk-authenticated proxy + resource-level owner checks
         │
         ├── Manual setup / review / forecast / history
         │
@@ -151,14 +154,14 @@ Webhook payload values never update trusted balances directly.
 
 ### Technology
 
-- Next.js 15 App Router, React 19, and TypeScript.
+- Next.js 16 App Router, React 19, and TypeScript.
 - Clerk v7.
 - Plaid Node SDK and React Plaid Link.
 - Prisma 6.
 - SQLite locally and PostgreSQL/Neon for hosted staging.
 - Zod, JOSE, and Node.js AES-256-GCM.
 - Vitest.
-- Recharts, Tesseract.js, and XLSX for existing utilities.
+- Recharts, Tesseract.js, and ExcelJS for existing utilities.
 
 ### Environment separation
 
@@ -264,14 +267,14 @@ test -f package.json && echo "Repository root: OK"
 5. Enable authenticator/TOTP and backup codes; SMS may be an additional recovery option.
 6. Turn on **Require multi-factor authentication**.
 7. If using passkeys, enable the setting that allows passkeys to satisfy MFA when available.
-8. Restrict public sign-up or create the owner manually because this app is private and single-owner.
+8. Use restricted sign-up and create the owner manually because this app is private and single-owner. The application does not expose a self-service sign-up flow.
 9. Under **Users**, copy the owner's `user_...` ID.
 10. Under **API keys**, copy the development Publishable Key and Secret Key.
 11. Copy the Frontend API URL from the API keys page. It normally resembles `https://verb-noun-00.clerk.accounts.dev`.
 
 Do not use a Clerk production instance for this Sandbox integration.
 
-The current development-instance baseline and repeatable CLI audit are documented in [CLERK_SECURITY_RUNBOOK.md](./CLERK_SECURITY_RUNBOOK.md). Clerk authentication alone is not access: the server also requires the exact owner user ID, so any other valid Clerk user receives `403`.
+The current development-instance baseline and repeatable CLI audit are documented in [CLERK_SECURITY_RUNBOOK.md](./CLERK_SECURITY_RUNBOOK.md). Clerk authentication alone is not access: the server also requires the exact owner user ID, so any other valid Clerk user receives a dashboard `404` and API `403`.
 
 ### 3. Configure Plaid Sandbox
 
@@ -364,7 +367,7 @@ Expected flow:
 1. Clerk redirects to `/sign-in`.
 2. Sign in as `DEBT_CRUSHER_OWNER_CLERK_USER_ID`.
 3. Complete MFA/passkey setup.
-4. Any other authenticated Clerk user receives `403`.
+4. Any other authenticated Clerk user receives a dashboard `404` and API `403`.
 
 Restart after changing environment variables.
 
@@ -390,7 +393,7 @@ npx tsc --noEmit
 git diff --check
 ```
 
-The current baseline is 50 passing tests across 12 test files.
+The current baseline is 51 passing Vitest tests across 13 test files plus four release-configuration tests.
 
 ## Upgrading an existing SQLite database
 
@@ -667,13 +670,40 @@ npm run build
 
 Use only the dedicated staging PostgreSQL URL.
 
+### Release environment checks
+
+Run the fail-closed environment validator before deploying. It prints variable names and errors, never secret values:
+
+```bash
+npm run release:check:staging
+npm run release:check:production
+```
+
+Staging requires development Clerk keys and, when Bank Sync is configured, a complete Plaid Sandbox/encryption configuration. Production requires live Clerk keys and rejects every Plaid variable until real-bank access receives separate approval.
+
+### Browser release gates
+
+The public suite starts locally without authenticated test credentials:
+
+```bash
+npm run test:e2e:public
+```
+
+Authenticated owner/non-owner validation requires Clerk development keys and the two test-user emails described in `.env.e2e.example`:
+
+```bash
+npm run test:e2e:auth
+```
+
+The authenticated helper verifies application authorization; it does not replace the manual MFA, recovery, and session-revocation exercise in the staging runbook.
+
 ### Dependency audit
 
 ```bash
 npm audit --omit=dev
 ```
 
-The Sandbox review found seven high-severity advisories involving Prisma/deepmerge-ts, Next/PostCSS/sharp, and XLSX. Proposed fixes include breaking upgrades, and XLSX had no registry fix. Do not run `npm audit fix --force`; upgrade/replace through a tested task.
+The 2026-08-30 release-candidate audit reports zero known production dependency vulnerabilities after upgrading Next.js, aligning Prisma on the audited compatible release, and replacing the unpatched SheetJS package with ExcelJS. Keep `npm audit --omit=dev` in the release gate and never apply forced upgrades without the full regression suite.
 
 ### Current test coverage
 
@@ -889,7 +919,7 @@ The generic route logger records only an error category, not raw provider messag
 - The app is single-owner; household/multi-user sharing is unsupported.
 - Trusted accounts must exist before matching.
 - Accepted history remains after disconnect; unaccepted staging data does not.
-- Seven high-severity dependency advisories remain under review.
+- The current production dependency audit is clean; rerun it immediately before release.
 - Live Clerk, Plaid, Vercel, Neon, logging, source-map, and backup checks must pass.
 - Production requires a future verdict explicitly stating **SAFE FOR PLAID PRODUCTION**.
 
@@ -908,6 +938,7 @@ The generic route logger records only an error category, not raw provider messag
 
 ## Project documentation
 
+- [Pre-production checklist](./PRE_PRODUCTION_CHECKLIST.md)
 - [Security review](./SECURITY_REVIEW.md)
 - [Plaid Sandbox runbook](./PLAID_SANDBOX_RUNBOOK.md)
 - [Clerk security runbook](./CLERK_SECURITY_RUNBOOK.md)

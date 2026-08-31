@@ -8,7 +8,10 @@
     "build": "prisma generate --schema prisma/schema.postgres.prisma && next build",
     "prestart": "prisma generate --schema prisma/schema.postgres.prisma",
     "start": "next start",
-    "test": "vitest run",
+    "test": "vitest run && node --test tests/release-config.test.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:public": "playwright test --project=public",
+    "test:e2e:auth": "playwright test --project=owner --project=non-owner",
     "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:generate:postgres": "prisma generate --schema prisma/schema.postgres.prisma",
@@ -19,30 +22,39 @@
     "db:verify:operations": "node scripts/verify-operations.mjs",
     "security:rotate-token-key": "node scripts/rotate-financial-token-key.mjs",
     "db:backfill:operations:postgres": "prisma generate --schema prisma/schema.postgres.prisma && node scripts/backfill-operations.mjs",
-    "db:verify:operations:postgres": "prisma generate --schema prisma/schema.postgres.prisma && node scripts/verify-operations.mjs"
+    "db:verify:operations:postgres": "prisma generate --schema prisma/schema.postgres.prisma && node scripts/verify-operations.mjs",
+    "release:check:staging": "node scripts/validate-release-env.mjs staging",
+    "release:check:production": "node scripts/validate-release-env.mjs production"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.8.2",
-    "@prisma/client": "^6.19.3",
+    "@prisma/client": "^6.12.0",
     "@tanstack/react-table": "^8.21.3",
     "@tesseract.js-data/eng": "^1.0.0",
+    "exceljs": "^4.4.0",
     "jose": "^6.2.10",
-    "next": "^15.3.1",
+    "next": "^16.3.3",
     "plaid": "^46.0.0",
-    "prisma": "^6.19.3",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "react-plaid-link": "^5.0.0",
     "recharts": "^2.15.3",
     "tesseract.js": "^7.0.0",
-    "xlsx": "^0.18.5",
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@clerk/testing": "^2.2.31",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^22.15.3",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "prisma": "^6.12.0",
     "typescript": "^5.8.3",
     "vitest": "^3.1.4"
+  },
+  "overrides": {
+    "exceljs": {
+      "uuid": "^11.1.1"
+    }
   }
 }

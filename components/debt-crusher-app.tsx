@@ -785,8 +785,8 @@ export function DebtCrusherApp() {
     pushToast("success", "Exported portfolio and complete history.");
   }
 
-  function handleExportWorkbook() {
-    const blob = exportPortfolioWorkbook(draftPortfolio);
+  async function handleExportWorkbook() {
+    const blob = await exportPortfolioWorkbook(draftPortfolio);
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -872,7 +872,7 @@ export function DebtCrusherApp() {
 
       {activeView === "utilities" ? <>
         <input ref={backupInputRef} type="file" accept=".json,application/json" className="hidden-input" onChange={async (event) => { const file = event.target.files?.[0]; if (!file) return; await handleImportBackup(file); event.target.value = ""; }} />
-        <section className="primary-actions-panel"><div><p className="eyebrow">Utilities</p><h2>History, backups, and imports</h2><p className="subtle-copy">Create a checkpoint or move data in and out of the workspace.</p></div><div className="toolbar-actions"><button className="primary-button" disabled={!hasCheckpointChanges || portfolioValidation.hasErrors || saveStatus === "saving"} onClick={() => void handleRecordUpdate()} type="button">Record Update</button>{dirty ? <button className="secondary-button" onClick={resetUnsavedChanges} type="button">Reset Unsaved</button> : null}<button className="secondary-button" onClick={handleExportBackup} type="button">Export Backup</button><button className="secondary-button" onClick={handleExportWorkbook} type="button">Export Workbook</button><button className="secondary-button" onClick={() => backupInputRef.current?.click()} type="button">Restore Backup</button></div></section>
+        <section className="primary-actions-panel"><div><p className="eyebrow">Utilities</p><h2>History, backups, and imports</h2><p className="subtle-copy">Create a checkpoint or move data in and out of the workspace.</p></div><div className="toolbar-actions"><button className="primary-button" disabled={!hasCheckpointChanges || portfolioValidation.hasErrors || saveStatus === "saving"} onClick={() => void handleRecordUpdate()} type="button">Record Update</button>{dirty ? <button className="secondary-button" onClick={resetUnsavedChanges} type="button">Reset Unsaved</button> : null}<button className="secondary-button" onClick={handleExportBackup} type="button">Export Backup</button><button className="secondary-button" onClick={() => void handleExportWorkbook()} type="button">Export Workbook</button><button className="secondary-button" onClick={() => backupInputRef.current?.click()} type="button">Restore Backup</button></div></section>
         <ImportPanel importing={isPending} screenshotImporting={screenshotImporting} importMode={importMode} onImportModeChange={setImportMode} onImport={handleImport} onScreenshotImport={handleScreenshotImport} />
       </> : null}
 

@@ -1,26 +1,26 @@
-# Graph Report - debt-crusher  (2026-08-28)
+# Graph Report - debt-crusher  (2026-08-30)
 
 ## Corpus Check
-- 169 files · ~136,290 words
+- 180 files · ~139,132 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1420 nodes · 2273 edges · 129 communities (103 shown, 26 thin omitted)
+- 1469 nodes · 2350 edges · 133 communities (111 shown, 22 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 9 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `39ae302a`
+- Built from commit: `7c6b7b0c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- credit-cards-view.tsx
+- cash-accounts-view.tsx
 - backfill-operations.mjs
 - debt-crusher Project Context
 - verify-operations.mjs
 - import-workbook.ts
-- backup.ts
+- manual-workflow.tsx
 - operations.ts
 - portfolio-store.ts
 - Organizations (B2B SaaS)
@@ -30,7 +30,7 @@
 - requireOwnerContext
 - Debt Crusher Financial Integration Security Review
 - debt-crusher-app.tsx
-- readBoundedJson
+- manual-entry/route.ts
 - debt-crusher Architecture
 - debt-crusher Workflows
 - debt-crusher Coding Rules
@@ -40,12 +40,12 @@
 - graph_relationships.md
 - known_pitfalls.md
 - types.ts
-- portfolio.ts
+- trend-panels.tsx
 - Adding Clerk
 - compilerOptions
 - bank-sync-panel.tsx
 - system_prompt.md
-- middleware.ts
+- form-validation.ts
 - rotate-financial-token-key.mjs
 - screenshot-import.ts
 - plaid-webhook.ts
@@ -53,20 +53,20 @@
 - nextjs-basic-auth/package.json
 - token-envelope.ts
 - validation.ts
-- derived.ts
-- safeRouteError
+- credit-cards-view.tsx
+- security.ts
 - Webhooks
 - Custom Sign-In Flow
 - Custom Sign-Up Flow
-- review-store.ts
-- security.ts
+- backup.ts
+- release-environment.mjs
 - `<Show>` Component
 - Debt Crusher Product Plan
 - Debt Crusher User Guide
 - compilerOptions
 - Issues Found & Fixed
 - Finance Console
-- devDependencies
+- dashboard-view.tsx
 - dependencies
 - Debt Crusher
 - scripts
@@ -100,7 +100,7 @@
 - Patterns for agent-driven use
 - Middleware Strategies
 - Next.js Patterns for Organizations
-- Scripting patterns
+- Pre-Production Checklist
 - Upgrading an existing SQLite database
 - Using Plaid Sandbox
 - Testing and verification
@@ -109,22 +109,19 @@
 - Server Actions
 - Security boundaries
 - Secret and Key Management
-- Auth commands
+- Agent-first: Provision via CLI
 - Prerequisites
 - Architecture
 - Data model
-- Migrations and data movement
+- bank-connections/route.ts
 - api-specs-context.sh
 - execute-request.sh
 - extract-endpoint-detail.sh
 - extract-tag-endpoints.sh
 - proxy.ts
-- plaid
-- react
-- react-dom
-- react-plaid-link
-- @tanstack/react-table
-- @tesseract.js-data/eng
+- changes/route.ts
+- SDK Notes
+- proxy.ts
 - Plaid Sandbox Staging Runbook
 - Local Database Setup
 - Local Plaid Webhook Tunnel
@@ -132,8 +129,10 @@
 - Project Status
 - Contributing
 - plaid-webhook.test.ts
-- package.json
 - Operations-core database rollout
+- ScreenshotImportExtraction
+- Setup Process
+- Migrations and data movement
 
 ## God Nodes (most connected - your core abstractions)
 1. `requireOwnerContext()` - 51 edges
@@ -141,9 +140,9 @@
 3. `assertSameOrigin()` - 36 edges
 4. `financialJson()` - 25 edges
 5. `readBoundedJson()` - 24 edges
-6. `Debt Crusher` - 23 edges
-7. `savePortfolioBundle()` - 22 edges
-8. `scripts` - 18 edges
+6. `scripts` - 23 edges
+7. `Debt Crusher` - 23 edges
+8. `savePortfolioBundle()` - 22 edges
 9. `Debt Crusher Financial Integration Security Review` - 18 edges
 10. `loadPortfolioBundle()` - 17 edges
 
@@ -162,11 +161,11 @@
 ## Import Cycles
 - None detected.
 
-## Communities (129 total, 26 thin omitted)
+## Communities (133 total, 22 thin omitted)
 
-### Community 0 - "credit-cards-view.tsx"
-Cohesion: 0.06
-Nodes (53): CashAccountsView(), CashAccountsViewProps, numberValue(), columnHelper, CreditCardsView(), CreditCardsViewProps, formatAutoPayment(), nullableNumberValue() (+45 more)
+### Community 0 - "cash-accounts-view.tsx"
+Cohesion: 0.18
+Nodes (14): CashAccountsView(), CashAccountsViewProps, numberValue(), InstitutionCombobox(), InstitutionComboboxProps, matchesOption(), LABELS, StatusBadge() (+6 more)
 
 ### Community 1 - "backfill-operations.mjs"
 Cohesion: 0.60
@@ -177,20 +176,20 @@ Cohesion: 0.12
 Nodes (16): Business Purpose, Critical Dependencies, Current Architecture Themes, debt-crusher Project Context, Deployment Model, Environments, Important APIs, Important Databases (+8 more)
 
 ### Community 4 - "import-workbook.ts"
-Cohesion: 0.16
-Nodes (30): CASH_HEADER_ALIASES, CashBaseRow, CREDIT_HEADER_ALIASES, CreditBaseRow, findHeaderRowIndex(), headerIndexMap(), importWorkbook(), isBlankMatrixRow() (+22 more)
+Cohesion: 0.08
+Nodes (54): buildDashboardSummary(), buildRecommendedTargetReasons(), CashBaseRow, computePriorityScore(), CreditBaseRow, deriveCashAccounts(), deriveCreditAccounts(), diffInDays() (+46 more)
 
-### Community 5 - "backup.ts"
-Cohesion: 0.11
-Nodes (23): CardEntryForm(), jsonRequest(), ManualWorkflow(), MonthlyReview(), OperationsConfig, PromoForm(), ReviewItem, ReviewState (+15 more)
+### Community 5 - "manual-workflow.tsx"
+Cohesion: 0.21
+Nodes (10): CardEntryForm(), jsonRequest(), ManualWorkflow(), MonthlyReview(), OperationsConfig, PromoForm(), ReviewItem, ReviewState (+2 more)
 
 ### Community 6 - "operations.ts"
 Cohesion: 0.16
 Nodes (22): AccountForecast, assessPromotion(), AutopayMode, buildCashForecast(), centsToMoney(), ForecastEvent, isoDate(), Money (+14 more)
 
 ### Community 7 - "portfolio-store.ts"
-Cohesion: 0.16
-Nodes (32): activityEventToDb(), activitySnapshotToDb(), cashAccountToDb(), creditAccountToDb(), dbRowToActivityEvent(), dbRowToActivitySnapshot(), dbRowToPortfolioState(), normalizeCustomStrategyWeights() (+24 more)
+Cohesion: 0.10
+Nodes (47): command, GET(), POST(), runtime, activityEventToDb(), activitySnapshotToDb(), cashAccountToDb(), creditAccountToDb() (+39 more)
 
 ### Community 8 - "Organizations (B2B SaaS)"
 Cohesion: 0.06
@@ -205,8 +204,8 @@ Cohesion: 0.15
 Nodes (12): Current State and Baseline, Data, Connectivity, and Security, Debt Crusher Mobile App Plan, Milestones, Mobile API Contracts, Native Product Scope, Objective, Platform integrations (+4 more)
 
 ### Community 12 - "requireOwnerContext"
-Cohesion: 0.16
-Nodes (15): GET(), GET(), GET(), runtime, GET(), historyRanges, POST(), GET() (+7 more)
+Cohesion: 0.20
+Nodes (24): POST(), schema, POST(), PATCH(), POST(), POST(), schema, GET() (+16 more)
 
 ### Community 13 - "Debt Crusher Financial Integration Security Review"
 Cohesion: 0.07
@@ -214,11 +213,11 @@ Nodes (30): Architecture Assessment, Authentication Assessment, Authorization As
 
 ### Community 14 - "debt-crusher-app.tsx"
 Cohesion: 0.14
-Nodes (15): portfolioComparable(), portfolioFingerprint(), SaveStatus, snapshotFingerprint(), views, ImportPanel(), ImportPanelProps, ScreenshotReviewDraft (+7 more)
+Nodes (25): DebtCrusherApp(), portfolioComparable(), portfolioFingerprint(), SaveStatus, snapshotFingerprint(), views, ImportPanel(), ImportPanelProps (+17 more)
 
-### Community 15 - "readBoundedJson"
-Cohesion: 0.12
-Nodes (26): canonicalize(), day, entry, nullableMoney, POST(), runtime, day, GET() (+18 more)
+### Community 15 - "manual-entry/route.ts"
+Cohesion: 0.10
+Nodes (26): canonicalize(), day, entry, nullableMoney, runtime, GET(), runtime, day (+18 more)
 
 ### Community 16 - "debt-crusher Architecture"
 Cohesion: 0.13
@@ -245,16 +244,16 @@ Cohesion: 0.50
 Nodes (3): Critical Entrypoints, Read First, Top-Level Modules
 
 ### Community 24 - "types.ts"
-Cohesion: 0.13
-Nodes (19): DashboardViewProps, HistoryPanel(), HistoryPanelProps, ActivityEvent, ActivitySnapshot, AppView, CustomStrategyWeights, DashboardSummary (+11 more)
+Cohesion: 0.24
+Nodes (10): HistoryPanel(), HistoryPanelProps, ActivityEvent, ActivitySnapshot, AppView, LegacyPortfolioBackup, NamedDelta, NormalizedPortfolioBackup (+2 more)
 
-### Community 25 - "portfolio.ts"
-Cohesion: 0.26
-Nodes (14): DebtCrusherApp(), deriveCashAccounts(), buildActivityEvents(), buildActivitySnapshot(), buildComputedSnapshot(), createCashAccountInput(), createCreditCardInput(), createEmptyPortfolio() (+6 more)
+### Community 25 - "trend-panels.tsx"
+Cohesion: 0.16
+Nodes (12): AccountMetric, AccountOption, chronologicalSnapshots(), downsampleTrend(), filterByRange(), formatCheckpoint(), PortfolioMetric, portfolioMetrics (+4 more)
 
 ### Community 26 - "Adding Clerk"
-Cohesion: 0.07
-Nodes (30): 1. Detect the Framework, 2. Fetch the Quickstart Guide, 3. Follow the Instructions, 4. Get API Keys, Adding Clerk, Agent-first: Provision via CLI, ClerkProvider Placement (Next.js), Common Pitfalls (+22 more)
+Cohesion: 0.18
+Nodes (11): Adding Clerk, Common Pitfalls, Decision Tree, Detect Existing Auth, Documentation, Framework Detection, Migrating from Another Auth Provider, Migration Process (+3 more)
 
 ### Community 28 - "compilerOptions"
 Cohesion: 0.07
@@ -263,6 +262,10 @@ Nodes (26): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModu
 ### Community 29 - "bank-sync-panel.tsx"
 Cohesion: 0.25
 Nodes (10): BankSyncPanel(), Change, checked(), checkedReverified(), ConnectedAccount, Connection, formatValue(), MatchTarget (+2 more)
+
+### Community 31 - "form-validation.ts"
+Cohesion: 0.31
+Nodes (8): DashboardView(), PayoffSettingsPanel(), weightLabels, FieldErrors, validateCashAccounts(), validateCreditAccounts(), validatePortfolio(), validateSetup()
 
 ### Community 32 - "rotate-financial-token-key.mjs"
 Cohesion: 0.39
@@ -285,20 +288,20 @@ Cohesion: 0.09
 Nodes (21): dependencies, @clerk/nextjs, next, react, react-dom, devDependencies, @types/react, @types/react-dom (+13 more)
 
 ### Community 37 - "token-envelope.ts"
-Cohesion: 0.23
-Nodes (10): decode(), decryptAesGcm(), encode(), encryptAesGcm(), encryptFinancialToken(), KeyResolver, rewrapFinancialToken(), TOKEN_AAD (+2 more)
+Cohesion: 0.24
+Nodes (11): decode(), decryptAesGcm(), decryptFinancialToken(), encode(), encryptAesGcm(), encryptFinancialToken(), KeyResolver, rewrapFinancialToken() (+3 more)
 
 ### Community 41 - "validation.ts"
-Cohesion: 0.20
-Nodes (9): autosaveRequestSchema, cashAccountSchema, creditAccountSchema, nullableNumber, nullableString, persistenceVersionSchema, portfolioStateSchema, setupSchema (+1 more)
+Cohesion: 0.13
+Nodes (13): autosaveRequestSchema, cashAccountSchema, checkpointRequestSchema, creditAccountSchema, nullableNumber, nullableString, persistenceVersionSchema, portfolioStateSchema (+5 more)
 
-### Community 42 - "derived.ts"
-Cohesion: 0.25
-Nodes (10): buildDashboardSummary(), buildRecommendedTargetReasons(), CashBaseRow, computePriorityScore(), CreditBaseRow, deriveCreditAccounts(), diffInDays(), hasStatementBalanceAutopay() (+2 more)
+### Community 42 - "credit-cards-view.tsx"
+Cohesion: 0.33
+Nodes (10): columnHelper, CreditCardsView(), CreditCardsViewProps, formatAutoPayment(), nullableNumberValue(), numberValue(), formatPercentFromValue(), formatShortDate() (+2 more)
 
-### Community 43 - "safeRouteError"
-Cohesion: 0.26
-Nodes (21): DELETE(), POST(), POST(), POST(), schema, inputSchema, POST(), POST() (+13 more)
+### Community 43 - "security.ts"
+Cohesion: 0.27
+Nodes (16): DELETE(), POST(), POST(), inputSchema, POST(), POST(), deleteDisconnectedConnectionData(), enforceRateLimit() (+8 more)
 
 ### Community 44 - "Webhooks"
 Cohesion: 0.10
@@ -312,13 +315,13 @@ Nodes (18): Complete Example: Email/Password with MFA, Custom Sign-In Flow, Devi
 Cohesion: 0.11
 Nodes (17): Complete Example: Phone OTP Sign-Up, Custom Sign-Up Flow, Docs, Email Code, Email Link, Email / Phone Verification, Error Handling, Finalizing Sign-Up (+9 more)
 
-### Community 47 - "review-store.ts"
-Cohesion: 0.24
-Nodes (14): command, GET(), POST(), runtime, completeReview(), currentReviewMonth(), ensurePortfolio(), getReviewState() (+6 more)
+### Community 47 - "backup.ts"
+Cohesion: 0.30
+Nodes (11): BACKUP_FORMAT_VERSION, eventEntityTypes, eventKinds, isActivityEvent(), isActivitySnapshot(), isPortfolioState(), isRecord(), parsePortfolioBackup() (+3 more)
 
-### Community 48 - "security.ts"
-Cohesion: 0.15
-Nodes (11): POST(), runtime, GET(), runtime, extractionSchema, POST(), runtime, NO_STORE_HEADERS (+3 more)
+### Community 48 - "release-environment.mjs"
+Cohesion: 0.36
+Nodes (7): decodedBase64Bytes(), isHttpsUrl(), present(), usable(), validateReleaseEnvironment(), errors, base
 
 ### Community 49 - "`<Show>` Component"
 Cohesion: 0.12
@@ -334,7 +337,7 @@ Nodes (25): Bank Sync, Cash Accounts, Credit Cards, Current Limits, Dashboard, D
 
 ### Community 52 - "compilerOptions"
 Cohesion: 0.07
-Nodes (26): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+18 more)
+Nodes (27): .next/dev/types/**/*.ts, compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib (+19 more)
 
 ### Community 53 - "Issues Found & Fixed"
 Cohesion: 0.11
@@ -344,25 +347,25 @@ Nodes (18): Environment Blockers, How to Verify Fixes, Issue #1: Missing credit_
 Cohesion: 0.12
 Nodes (15): Critical Workflows, Dangerous Code Paths, Databases Used, Dependencies, Failure Modes, Finance Console, Important Source Files, Inbound APIs (+7 more)
 
-### Community 55 - "devDependencies"
-Cohesion: 0.18
-Nodes (11): devDependencies, @types/node, @types/react, @types/react-dom, typescript, vitest, @types/react, @types/react-dom (+3 more)
+### Community 55 - "dashboard-view.tsx"
+Cohesion: 0.21
+Nodes (12): chartColors, DashboardViewProps, ActionSummary, amountLabel(), Config, OperationsPanel(), today(), currencyFormatter (+4 more)
 
 ### Community 56 - "dependencies"
-Cohesion: 0.11
-Nodes (19): jose, dependencies, @clerk/nextjs, jose, next, prisma, @prisma/client, recharts (+11 more)
+Cohesion: 0.07
+Nodes (29): exceljs, jose, dependencies, @clerk/nextjs, exceljs, jose, next, plaid (+21 more)
 
 ### Community 57 - "Debt Crusher"
 Cohesion: 0.14
 Nodes (14): Account-takeover response, API reference, Backups, Contents, Daily commands, Debt Crusher, Environment variables, Final invariants (+6 more)
 
 ### Community 58 - "scripts"
-Cohesion: 0.11
-Nodes (18): scripts, build, db:backfill:operations, db:backfill:operations:postgres, db:migrate, db:push, db:push:postgres, db:verify:operations (+10 more)
+Cohesion: 0.04
+Nodes (46): @clerk/testing, devDependencies, @clerk/testing, @playwright/test, prisma, @types/node, @types/react, @types/react-dom (+38 more)
 
 ### Community 59 - "Clerk CLI - Recipes"
-Cohesion: 0.14
-Nodes (14): Applications (Platform API), Clerk CLI - Recipes, Discovery first, Environment variables, Impersonation (sign in as a user), Instance configuration, Invitations (top-level, not org-scoped), JWT templates (+6 more)
+Cohesion: 0.10
+Nodes (20): Applications (Platform API), Clerk CLI - Recipes, Discovery first, Environment variables, Impersonation (sign in as a user), Instance configuration, Invitations (top-level, not org-scoped), JWT templates (+12 more)
 
 ### Community 60 - "Clerk CLI"
 Cohesion: 0.14
@@ -405,8 +408,8 @@ Cohesion: 0.22
 Nodes (9): Application environment variables, Change control, Clerk Security Runbook, Required access tests, Safe CLI verification, Security model, Sensitive-action reverification, Session or credential exposure response (+1 more)
 
 ### Community 78 - "Clerk CLI - Authentication & Targeting Reference"
-Cohesion: 0.20
-Nodes (10): Accountless: operating without an account, `--app` and `--instance` targeting, Backend API secret key resolution order, Clerk CLI - Authentication & Targeting Reference, Common auth failure modes, Environment variables the CLI honors, Host vs sandbox behavior, Platform API auth resolution order (+2 more)
+Cohesion: 0.14
+Nodes (14): Accountless: operating without an account, `--app` and `--instance` targeting, Auth commands, Backend API secret key resolution order, `clerk auth login`, `clerk auth logout`, Clerk CLI - Authentication & Targeting Reference, `clerk whoami` (+6 more)
 
 ### Community 79 - "Enterprise SSO"
 Cohesion: 0.20
@@ -433,8 +436,8 @@ Cohesion: 0.22
 Nodes (8): Astro, Common Patterns Across Frameworks, Express, Fastify, Framework-Specific Webhook Handlers, Nuxt, React Router, TanStack Start
 
 ### Community 85 - "bank-sync.ts"
-Cohesion: 0.12
-Nodes (28): POST(), schema, CARD_FIELDS, CASH_FIELDS, createPlaidLinkSession(), decideStagedChange(), disconnectFinancialConnection(), exchangePlaidPublicToken() (+20 more)
+Cohesion: 0.13
+Nodes (26): POST(), schema, CARD_FIELDS, CASH_FIELDS, createPlaidLinkSession(), disconnectFinancialConnection(), exchangePlaidPublicToken(), FinancialOwnerContext (+18 more)
 
 ### Community 86 - "Step-by-step Vercel and Neon staging setup"
 Cohesion: 0.25
@@ -452,9 +455,9 @@ Nodes (6): Middleware Strategies, Permission-Gated Routes, Protected-First (inte
 Cohesion: 0.29
 Nodes (6): API Route Example, Key Rules, Middleware: Role + Permission Protection, Next.js Patterns for Organizations, Server Actions: Scope Writes by `orgId`, URL Slug Safety Invariant
 
-### Community 90 - "Scripting patterns"
-Cohesion: 0.33
-Nodes (6): Loop safely, Pipe to `jq`, Read body from stdin, Save large responses to a file before reading them, Scripting patterns, Target multiple instances
+### Community 90 - "Pre-Production Checklist"
+Cohesion: 0.18
+Nodes (11): 1. Commit and deploy an isolated staging environment, 2. Rehearse migration and recovery, 3. Validate hosted Clerk authorization, 4. Complete the Plaid Sandbox gate, 5. Inspect hosted operational security, 6. Product acceptance, 7. Separate real-bank approval gate, Non-blocking product expansion (+3 more)
 
 ### Community 91 - "Upgrading an existing SQLite database"
 Cohesion: 0.33
@@ -465,8 +468,8 @@ Cohesion: 0.33
 Nodes (6): Connect, Connection states, Disconnect versus delete, Match accounts, Review fields, Using Plaid Sandbox
 
 ### Community 93 - "Testing and verification"
-Cohesion: 0.33
-Nodes (6): Current test coverage, Daily checks, Dependency audit, Production-style build, Schema checks, Testing and verification
+Cohesion: 0.25
+Nodes (8): Browser release gates, Current test coverage, Daily checks, Dependency audit, Production-style build, Release environment checks, Schema checks, Testing and verification
 
 ### Community 95 - "API Routes"
 Cohesion: 0.40
@@ -488,9 +491,9 @@ Nodes (5): Allowed Plaid behavior, Authentication and authorization, Explicitly 
 Cohesion: 0.22
 Nodes (9): Generate the initial keys, HMAC-key rotation, Provider-secret rotation, Secret and Key Management, Secret exposure check, Secret inventory, Storage and deployment rules, Token-wrapping key rotation (+1 more)
 
-### Community 100 - "Auth commands"
-Cohesion: 0.50
-Nodes (4): Auth commands, `clerk auth login`, `clerk auth logout`, `clerk whoami`
+### Community 100 - "Agent-first: Provision via CLI"
+Cohesion: 0.29
+Nodes (7): Agent-first: Provision via CLI, Daily ops, Notes for agents, Rotate the secret key (replaces Dashboard rotation), Scenario A — New project, new Clerk app, Scenario B — Existing project, existing Clerk app, Scenario C — Existing project, new Clerk app
 
 ### Community 101 - "Prerequisites"
 Cohesion: 0.50
@@ -504,9 +507,9 @@ Nodes (3): Architecture, Environment separation, Technology
 Cohesion: 0.67
 Nodes (3): Data model, Plaid staging/security records, Trusted records
 
-### Community 104 - "Migrations and data movement"
-Cohesion: 0.67
-Nodes (3): Data movement, Migrations and data movement, Prisma schemas
+### Community 114 - "SDK Notes"
+Cohesion: 0.29
+Nodes (7): ClerkProvider Placement (Next.js), Dynamic Rendering (Next.js), Node.js Requirement, Package Names, SDK Notes, shadcn Theme, Themes Package
 
 ### Community 120 - "Plaid Sandbox Staging Runbook"
 Cohesion: 0.25
@@ -532,29 +535,37 @@ Nodes (7): Completed Locally, Current Phase, Documentation, Key Metrics, Known I
 Cohesion: 0.40
 Nodes (4): Code Changes, Contributing, License, Reporting Issues
 
-### Community 127 - "package.json"
-Cohesion: 0.50
-Nodes (3): name, private, version
+### Community 130 - "ScreenshotImportExtraction"
+Cohesion: 0.40
+Nodes (5): ScreenshotReviewDraft, ScreenshotReviewPanel(), ScreenshotReviewPanelProps, ScreenshotImportAnalysis, ScreenshotImportExtraction
+
+### Community 131 - "Setup Process"
+Cohesion: 0.40
+Nodes (5): 1. Detect the Framework, 2. Fetch the Quickstart Guide, 3. Follow the Instructions, 4. Get API Keys, Setup Process
+
+### Community 132 - "Migrations and data movement"
+Cohesion: 0.67
+Nodes (3): Data movement, Migrations and data movement, Prisma schemas
 
 ## Knowledge Gaps
-- **808 isolated node(s):** `api-specs-context.sh script`, `execute-request.sh script`, `extract-endpoint-detail.sh script`, `extract-tag-endpoints.sh script`, `name` (+803 more)
+- **830 isolated node(s):** `api-specs-context.sh script`, `execute-request.sh script`, `extract-endpoint-detail.sh script`, `extract-tag-endpoints.sh script`, `name` (+825 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **26 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **22 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Debt Crusher` connect `Debt Crusher` to `Security boundaries`, `Prerequisites`, `Architecture`, `Data model`, `Migrations and data movement`, `Troubleshooting`, `Upgrading an existing SQLite database`, `Step-by-step local setup`, `Step-by-step Vercel and Neon staging setup`, `README.md`, `Using Plaid Sandbox`, `Testing and verification`?**
-  _High betweenness centrality (0.018) - this node is a cross-community bridge._
-- **Why does `Debt Crusher User Guide` connect `Debt Crusher User Guide` to `README.md`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **Why does `Debt Crusher` connect `Debt Crusher` to `Security boundaries`, `Migrations and data movement`, `Prerequisites`, `Architecture`, `Data model`, `Troubleshooting`, `Upgrading an existing SQLite database`, `Step-by-step local setup`, `Step-by-step Vercel and Neon staging setup`, `README.md`, `Using Plaid Sandbox`, `Testing and verification`?**
+  _High betweenness centrality (0.020) - this node is a cross-community bridge._
 - **Why does `Debt Crusher Financial Integration Security Review` connect `Debt Crusher Financial Integration Security Review` to `README.md`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
+- **Why does `Debt Crusher Product Plan` connect `Debt Crusher Product Plan` to `README.md`?**
+  _High betweenness centrality (0.005) - this node is a cross-community bridge._
 - **What connects `api-specs-context.sh script`, `execute-request.sh script`, `extract-endpoint-detail.sh script` to the rest of the system?**
-  _808 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `credit-cards-view.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.0574400723654455 - nodes in this community are weakly interconnected._
+  _830 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `debt-crusher Project Context` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
-- **Should `backup.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.10846560846560846 - nodes in this community are weakly interconnected._
+- **Should `import-workbook.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.08192090395480225 - nodes in this community are weakly interconnected._
+- **Should `portfolio-store.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.09506531204644413 - nodes in this community are weakly interconnected._

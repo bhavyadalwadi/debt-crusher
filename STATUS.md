@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Active development. The normalized financial-operations foundation and a secure, read-only Plaid Sandbox staging integration are implemented. Real-bank/Production Plaid access remains blocked.
+Release-candidate validation. The normalized financial-operations foundation and a secure, read-only Plaid Sandbox staging integration are implemented. Real-bank/Production Plaid access remains blocked.
 
 ## Key Metrics
 
@@ -32,6 +32,9 @@ Active development. The normalized financial-operations foundation and a secure,
 - Added encrypted Plaid Sandbox account/balance/liability sync, explicit account matching, field-level review-before-accept, verified webhooks, disconnect, deletion, rate limiting, and security events.
 - Added equivalent additive SQLite/PostgreSQL migrations, a key-rewrap command, a security review, and a Sandbox staging runbook.
 - Verified the live Clerk development security baseline and added dedicated Clerk, local webhook tunnel, and secret/key-management runbooks.
+- Retired self-service sign-up in the application and retained the exact owner-ID authorization boundary.
+- Upgraded to Next.js 16, replaced the unpatched SheetJS dependency with ExcelJS, aligned Prisma on the audited compatible release, and reached a clean production dependency audit.
+- Added fail-closed staging/production environment checks and Playwright gates for anonymous redirect, retired sign-up, security headers, unsigned webhook rejection, owner access, critical navigation, and non-owner denial.
 
 ## Known Issues and Limits
 
@@ -41,7 +44,7 @@ Active development. The normalized financial-operations foundation and a secure,
 - Historical comparison remains primarily snapshot- and audit-based.
 - Plaid is Sandbox-only; live Clerk/Plaid/Vercel/Neon staging exercises are still required.
 - The currently deployed webhook still redirects to the legacy sign-in route; after the next deployment, an unsigned probe must return `401` and a signed Plaid Sandbox webhook must return `200`.
-- Seven high-severity dependency advisories remain under review; forced breaking upgrades were intentionally not applied.
+- Authenticated Playwright tests still require the provisioned Clerk development test users and isolated staging environment.
 - Unknown statement or minimum-payment values intentionally produce data-quality warnings instead of forecast estimates.
 - Local and hosted data do not synchronize automatically; use JSON backup export/restore
 
@@ -49,7 +52,7 @@ Active development. The normalized financial-operations foundation and a secure,
 
 1. Back up existing data and rehearse schema push, backfill, and verification using [prisma/MIGRATIONS.md](./prisma/MIGRATIONS.md).
 2. Provision or select the Neon production database and configure Vercel environment variables.
-3. Deploy and validate sign-in, setup, monthly review, forecasts, imports, and backups end to end.
+3. Run the release environment check, deploy, and validate sign-in, setup, monthly review, forecasts, imports, and backups end to end.
 4. Add explicit payment, balance-update, and cash-transfer events.
 5. Add richer month-over-month comparisons and payoff strategy simulation.
 6. Complete the live Sandbox release gate in `SECURITY_REVIEW.md`; do not enable real institutions.

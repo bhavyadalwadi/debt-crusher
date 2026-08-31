@@ -1,4 +1,3 @@
-import type { Prisma } from "@prisma/client";
 import type {
   ActivityEvent,
   ActivitySnapshot,
@@ -238,7 +237,7 @@ export function activitySnapshotToDb(
 export function screenshotImportArtifactToDb(args: {
   fileName: string;
   mimeType: string;
-  imageData: Prisma.Bytes;
+  imageData: Uint8Array;
   extractedText: string;
   extraction: ScreenshotImportExtraction;
 }) {

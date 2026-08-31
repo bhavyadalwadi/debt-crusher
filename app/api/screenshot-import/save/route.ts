@@ -1,4 +1,3 @@
-import type { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { savePortfolioBundle } from "@/lib/portfolio-store";
@@ -45,7 +44,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const imageData = new Uint8Array(await file.arrayBuffer()) as Prisma.Bytes;
+    const imageData = new Uint8Array(await file.arrayBuffer());
     const portfolio = portfolioStateSchema.parse(JSON.parse(portfolioRaw));
     const extraction = extractionSchema.parse(JSON.parse(extractionRaw));
     const bundle = await savePortfolioBundle({

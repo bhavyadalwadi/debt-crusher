@@ -13,3 +13,6 @@ graphify-out/cost.json
 # Graphify update snapshots duplicate the committed current graph.
 graphify-out/20??-??-??/
 *.tsbuildinfo
+playwright-report/
+test-results/
+playwright/.clerk/

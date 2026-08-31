@@ -1,4 +1,3 @@
-import * as XLSX from "xlsx";
 import { z } from "zod";
 import {
   buildDashboardSummary,
@@ -24,6 +23,7 @@ import type {
   WorkbookImportResult,
 } from "@/lib/types";
 import { WORKBOOK_SHEETS } from "@/lib/workbook-contract";
+import { readWorkbookSheets, rowsToRecords, type WorkbookSheet, type WorkbookSheets } from "@/lib/workbook-file";
 import { createDefaultCustomStrategyWeights } from "@/lib/portfolio";
 
 const DEFAULT_PROMO_END_SOON_DAYS = 21;
@@ -186,12 +186,8 @@ function isBlankMatrixRow(row: unknown[]): boolean {
   return row.every((value) => String(value ?? "").trim() === "");
 }
 
-function sheetRows(sheet: XLSX.WorkSheet): unknown[][] {
-  return XLSX.utils.sheet_to_json<unknown[]>(sheet, {
-    header: 1,
-    defval: "",
-    raw: true,
-  });
+function sheetRows(sheet: WorkbookSheet): unknown[][] {
+  return sheet;
 }
 
 function findHeaderRowIndex(
@@ -243,7 +239,7 @@ function valueAtRow(
 }
 
 function parseSetupSheet(
-  sheet: XLSX.WorkSheet,
+  sheet: WorkbookSheet,
   warnings: string[],
 ): {
   setup: SetupConfig;
@@ -318,9 +314,7 @@ function parseSetupSheet(
       }
     }
   } else {
-    const records = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, {
-      defval: null,
-    });
+    const records = rowsToRecords(sheetRows(sheet));
     const row =
       records.find((record) =>
         Object.values(record).some((value) => String(value ?? "").trim() !== ""),
@@ -363,7 +357,7 @@ function parseSetupSheet(
 }
 
 function parseCreditRows(
-  sheet: XLSX.WorkSheet,
+  sheet: WorkbookSheet,
   importedAt: string,
 ): CreditBaseRow[] {
   const rows = sheetRows(sheet);
@@ -430,7 +424,7 @@ function parseCreditRows(
 }
 
 function parseCashRows(
-  sheet: XLSX.WorkSheet,
+  sheet: WorkbookSheet,
   cashBufferDefaults: { checking: number | null; savings: number | null },
 ): CashBaseRow[] {
   const rows = sheetRows(sheet);
@@ -477,19 +471,19 @@ function parseCashRows(
 }
 
 function validateSheetHeaders(
-  workbook: XLSX.WorkBook,
+  workbook: WorkbookSheets,
   errors: string[],
 ): boolean {
   let valid = true;
 
   for (const sheetName of Object.values(WORKBOOK_SHEETS)) {
-    if (!workbook.Sheets[sheetName]) {
+    if (!workbook[sheetName]) {
       errors.push(`Missing required sheet: ${sheetName}`);
       valid = false;
     }
   }
 
-  const setupSheet = workbook.Sheets[WORKBOOK_SHEETS.setup];
+  const setupSheet = workbook[WORKBOOK_SHEETS.setup];
   if (setupSheet) {
     const rows = sheetRows(setupSheet);
     const firstRow = rows[0] ?? [];
@@ -498,9 +492,7 @@ function validateSheetHeaders(
       normalized.includes("setting") && normalized.includes("value");
 
     if (!isKeyValueLayout) {
-      const records = XLSX.utils.sheet_to_json<Record<string, unknown>>(setupSheet, {
-        defval: null,
-      });
+      const records = rowsToRecords(sheetRows(setupSheet));
       const headers = new Set(
         records.flatMap((record) =>
           Object.keys(record).map((key) => normalizeLabel(key)),
@@ -516,7 +508,7 @@ function validateSheetHeaders(
     }
   }
 
-  const creditSheet = workbook.Sheets[WORKBOOK_SHEETS.creditCards];
+  const creditSheet = workbook[WORKBOOK_SHEETS.creditCards];
   if (creditSheet) {
     const rows = sheetRows(creditSheet);
     const headerIndex = findHeaderRowIndex(rows, CREDIT_HEADER_ALIASES);
@@ -535,7 +527,7 @@ function validateSheetHeaders(
     }
   }
 
-  const cashSheet = workbook.Sheets[WORKBOOK_SHEETS.cashAccounts];
+  const cashSheet = workbook[WORKBOOK_SHEETS.cashAccounts];
   if (cashSheet) {
     const rows = sheetRows(cashSheet);
     const headerIndex = findHeaderRowIndex(rows, CASH_HEADER_ALIASES);
@@ -558,26 +550,26 @@ export async function importWorkbook(
   const warnings: string[] = [];
 
   try {
-    const workbook = XLSX.read(await file.arrayBuffer(), { type: "array" });
+    const workbook = await readWorkbookSheets(await file.arrayBuffer());
 
     if (!validateSheetHeaders(workbook, errors)) {
       return { success: false, snapshot: null, errors, warnings };
     }
 
     const parsedSetup = parseSetupSheet(
-      workbook.Sheets[WORKBOOK_SHEETS.setup],
+      workbook[WORKBOOK_SHEETS.setup],
       warnings,
     );
     const setup = parsedSetup.setup;
     const importedAt = parsedSetup.importedAt;
     const creditAccounts = deriveCreditAccounts(
-      parseCreditRows(workbook.Sheets[WORKBOOK_SHEETS.creditCards], importedAt),
+      parseCreditRows(workbook[WORKBOOK_SHEETS.creditCards], importedAt),
       setup,
       importedAt,
     );
     const cashAccounts = deriveCashAccounts(
       parseCashRows(
-        workbook.Sheets[WORKBOOK_SHEETS.cashAccounts],
+        workbook[WORKBOOK_SHEETS.cashAccounts],
         parsedSetup.cashBufferDefaults,
       ),
       setup,

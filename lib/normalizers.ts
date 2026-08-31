@@ -1,5 +1,3 @@
-import * as XLSX from "xlsx";
-
 export function normalizeLabel(value: string): string {
   return value
     .trim()
@@ -96,11 +94,9 @@ export function toISODate(
   }
 
   if (typeof value === "number" && Number.isFinite(value)) {
-    const parsed = XLSX.SSF.parse_date_code(value);
-    if (parsed) {
-      const month = String(parsed.m).padStart(2, "0");
-      const day = String(parsed.d).padStart(2, "0");
-      return `${parsed.y}-${month}-${day}`;
+    const parsed = new Date(Date.UTC(1899, 11, 30) + Math.floor(value) * 86_400_000);
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed.toISOString().slice(0, 10);
     }
   }
 

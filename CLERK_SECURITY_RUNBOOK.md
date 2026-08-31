@@ -9,9 +9,9 @@ This document covers the private development/Sandbox deployment. It does not app
 There are two independent gates:
 
 1. Clerk validates the sign-in, MFA, session, revocation, and reverification state.
-2. Debt Crusher compares Clerk's authenticated `userId` with `DEBT_CRUSHER_OWNER_CLERK_USER_ID` in middleware and again resolves an owner-scoped portfolio on the server.
+2. Debt Crusher compares Clerk's authenticated `userId` with `DEBT_CRUSHER_OWNER_CLERK_USER_ID` at each protected page and API resource, then resolves an owner-scoped portfolio on the server.
 
-Creating another Clerk user does not grant that user application access. A non-owner may be able to authenticate with Clerk if the instance configuration permits it, but Debt Crusher returns `403 Forbidden` before portfolio access. The development instance also uses restricted sign-up to reduce this surface.
+Creating another Clerk user does not grant that user application access. A non-owner may be able to authenticate with Clerk if the instance configuration permits it, but Debt Crusher returns a `404` for the dashboard and `403 Forbidden` from protected APIs before portfolio access. The development instance uses restricted sign-up, and the application redirects `/sign-up` to `/sign-in` without rendering a self-service registration form.
 
 Do not treat a browser-hidden button as authorization. Every protected API route derives identity from the verified Clerk session; browser-provided user or portfolio identifiers do not grant access.
 
@@ -121,7 +121,7 @@ Perform these in the deployed private Preview:
 1. Signed out: protected pages and APIs redirect to Clerk or return an authentication error.
 2. Owner without recent verification: sensitive bank action returns Clerk's strict reverification response.
 3. Owner after successful reverification: the same request is retried and succeeds.
-4. Different valid Clerk user: application returns `403 Forbidden` and no financial DTO.
+4. Different valid Clerk user: dashboard returns `404`; protected APIs return `403 Forbidden` and no financial DTO.
 5. Revoked owner session: the next protected request fails.
 6. Session idle longer than 30 minutes: access requires sign-in again.
 7. Recovery: verify that backup codes are stored safely and that account recovery cannot silently bypass the intended MFA policy.

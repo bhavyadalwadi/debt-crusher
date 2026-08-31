@@ -1,4 +1,3 @@
-import * as XLSX from "xlsx";
 import { describe, expect, it } from "vitest";
 import { buildDashboardSummary, deriveCashAccounts, deriveCreditAccounts } from "@/lib/derived";
 import { importWorkbook } from "@/lib/import-workbook";
@@ -10,23 +9,20 @@ import {
   createDefaultCustomStrategyWeights,
 } from "@/lib/portfolio";
 import type { SetupConfig } from "@/lib/types";
+import { writeWorkbookSheets } from "@/lib/workbook-file";
 
 function workbookFileFromSheets(
   sheets: Record<string, Record<string, unknown>[]>,
   name = "snapshot.xlsx",
 ) {
-  const workbook = XLSX.utils.book_new();
-
-  for (const [sheetName, rows] of Object.entries(sheets)) {
-    const worksheet = XLSX.utils.json_to_sheet(rows);
-    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-  }
-
-  const buffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const matrices = Object.fromEntries(Object.entries(sheets).map(([sheetName, rows]) => {
+    const headers = [...new Set(rows.flatMap((row) => Object.keys(row)))];
+    return [sheetName, [headers, ...rows.map((row) => headers.map((header) => row[header] ?? ""))]];
+  }));
 
   return {
     name,
-    arrayBuffer: async () => buffer as ArrayBuffer,
+    arrayBuffer: async () => writeWorkbookSheets(matrices),
   };
 }
 
@@ -34,18 +30,9 @@ function workbookFileFromMatrixSheets(
   sheets: Record<string, unknown[][]>,
   name = "matrix-snapshot.xlsx",
 ) {
-  const workbook = XLSX.utils.book_new();
-
-  for (const [sheetName, rows] of Object.entries(sheets)) {
-    const worksheet = XLSX.utils.aoa_to_sheet(rows);
-    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-  }
-
-  const buffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-
   return {
     name,
-    arrayBuffer: async () => buffer as ArrayBuffer,
+    arrayBuffer: async () => writeWorkbookSheets(sheets),
   };
 }
 

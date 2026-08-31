@@ -24,7 +24,7 @@ export async function GET(
   }
   const safeFileName = artifact.fileName.replace(/["\\\r\n\u0000-\u001f]/g, "_").slice(0, 180) || "screenshot";
 
-  return new NextResponse(artifact.imageData, {
+  return new NextResponse(Uint8Array.from(artifact.imageData).buffer, {
     headers: {
       "Content-Type": artifact.mimeType,
       "Content-Disposition": `inline; filename="${safeFileName}"`,

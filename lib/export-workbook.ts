@@ -1,13 +1,11 @@
-import * as XLSX from "xlsx";
 import type { PortfolioState } from "@/lib/types";
+import { writeWorkbookSheets } from "@/lib/workbook-file";
 
 function toExcelDate(value: string | null) {
   return value ? new Date(`${value}T00:00:00`) : "";
 }
 
-export function exportPortfolioWorkbook(portfolio: PortfolioState): Blob {
-  const workbook = XLSX.utils.book_new();
-
+export async function exportPortfolioWorkbook(portfolio: PortfolioState): Promise<Blob> {
   const setupRows = [
     ["Setting", "Value"],
     ["Today", new Date().toISOString().slice(0, 10)],
@@ -86,22 +84,11 @@ export function exportPortfolioWorkbook(portfolio: PortfolioState): Blob {
     ]),
   ];
 
-  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(setupRows), "Setup");
-  XLSX.utils.book_append_sheet(
-    workbook,
-    XLSX.utils.aoa_to_sheet(creditRows),
-    "Credit_Cards",
-  );
-  XLSX.utils.book_append_sheet(
-    workbook,
-    XLSX.utils.aoa_to_sheet(cashRows),
-    "Cash_Accounts",
-  );
-
-  const arrayBuffer = XLSX.write(workbook, {
-    type: "array",
-    bookType: "xlsx",
-  }) as ArrayBuffer;
+  const arrayBuffer = await writeWorkbookSheets({
+    Setup: setupRows,
+    Credit_Cards: creditRows,
+    Cash_Accounts: cashRows,
+  });
 
   return new Blob([arrayBuffer], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
